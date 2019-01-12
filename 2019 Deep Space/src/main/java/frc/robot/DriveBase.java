@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.Spark;
 
 /**
@@ -14,18 +17,25 @@ import edu.wpi.first.wpilibj.Spark;
  */
 public class DriveBase {
 
-    public Spark leftFront;
-    public Spark rightFront;
+    public CANSparkMax leftFront;
+    public CANSparkMax rightFront;
 
 
     public DriveBase() {
 
-        leftFront = new Spark(PortConstants.LEFT_FRONT_SPARK);
-        rightFront = new Spark(PortConstants.RIGHT_FRONT_SPARK);
+        leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
+        rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
+        
+    }
 
+    // set speed
+    public void setSpeed (double leftSpeed, double rightSpeed) {
+        leftFront.set(leftSpeed);
+        rightFront.set(rightSpeed);
     }
 
 
+    
 
 
 
