@@ -62,7 +62,7 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
-
+    drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
 
   }
 
