@@ -10,17 +10,18 @@ package frc.robot;
 /**
  * Add your docs here.
  */
-public class PortConstants {
+public class ControllerSecretary {
 
-
-    // CAN ids
-    public final static int LEFT_FRONT_SPARK = 0;
-    public final static int RIGHT_FRONT_SPARK = 1;
-    
-
-    // PWM
-
-
-
+    public Controller driver;
+	public Controller operator;
+	
+	public ControllerSecretary () {
+		
+		driver = new Controller (0);
+		operator = new Controller (1);
+		
+	}
+	
+	
 
 }
