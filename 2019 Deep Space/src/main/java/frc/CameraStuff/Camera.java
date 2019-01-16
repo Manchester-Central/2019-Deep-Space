@@ -20,6 +20,9 @@ public class Camera {
 
     static double robotHeight = 60D;
     static double visionTargetHeight = 80D;
+    static double cameraAngle = 30D;
+    static double maxAcceleration = 0.04;
+    static double maxSpeedDistance = 69; 
     
 
     public static NetworkTable getTable () {
@@ -34,8 +37,35 @@ public class Camera {
 
     }
 
+    public static double getDistance () {
 
+        return (visionTargetHeight - robotHeight) / (Math.tan(getEntry("ty").getDouble(69) + cameraAngle));
 
+    }
 
+    public static double GetHorizontalAngle () {
+
+        return getEntry("tx").getDouble(0);
+
+    }
+    
+    public static double[] getDriveDirections(double[] currentSpeeds) {
+
+        double[] driveValues = {0, 0};
+        double maxNewSpeed = currentSpeeds[0] + maxAcceleration;
+
+        driveValues[0] = (getDistance() / maxSpeedDistance) - (GetHorizontalAngle() / 27D);
+        driveValues[1] = (getDistance() / maxSpeedDistance) + (GetHorizontalAngle() / 27D);
+
+        driveValues[0] = Math.max((Math.min(1D, driveValues[0])), -1D);
+        driveValues[1] = Math.max((Math.min(1D, driveValues[1])), -1D);
+
+        driveValues[0] = (driveValues[0] > maxNewSpeed) ? maxNewSpeed : driveValues[0]; 
+        driveValues[1] = (driveValues[1] > maxNewSpeed) ? maxNewSpeed : driveValues[1];
+
+        return driveValues;
+
+    }
+    
 
 }

@@ -4,7 +4,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -62,7 +61,13 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
-    drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+    drive.setSpeed1(-cs.driver.getLeftY(), -cs.driver.getRightY());
+
+    drive.setSpeed2(-cs.operator1.getLeftY(), -cs.operator1.getRightY());
+
+    drive.setSpeed1(-cs.operator2.getLeftY(), -cs.operator2.getRightY());
+
+
 
   }
 
