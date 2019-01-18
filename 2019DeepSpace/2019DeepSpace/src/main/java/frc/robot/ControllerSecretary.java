@@ -12,13 +12,15 @@ package frc.robot;
  */
 public class ControllerSecretary {
 
-	public Controller driver;
+    public Controller driver;
 	public Controller operator1;
+	public Controller operator2;
 	
 	public ControllerSecretary () {
 		
 		driver = new Controller (0);
 		operator1 = new Controller (1);
+		operator2 = new Controller (2);
 		
 	}
 	

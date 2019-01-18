@@ -61,7 +61,13 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
-    drive.setSpeed(-cs.driver.getLeftY(), -cs.driver.getRightY());
+    drive.setSpeed1(-cs.driver.getLeftY(), -cs.driver.getRightY());
+
+    drive.setSpeed2(-cs.operator1.getLeftY(), -cs.operator1.getRightY());
+
+    drive.setSpeed3(-cs.operator2.getLeftY(), -cs.operator2.getRightY());
+
+
 
   }
 
