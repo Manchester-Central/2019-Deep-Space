@@ -5,23 +5,15 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot; 
+package frc;
 
 /**
  * Add your docs here.
  */
-public class PortConstants {
+public class FunctionsThatShouldBeInTheJDK {
 
-
-    // CAN ids
-    public final static int LEFT_FRONT_SPARK = 0;
-    public final static int RIGHT_FRONT_SPARK = 1; //maybe you need to change it later
-    
-    
-
-    // PWM
-
-
-
+    public static double clamp (double value, double min, double max) {
+        return Math.max((Math.min(max, value)), min);
+    }
 
 }

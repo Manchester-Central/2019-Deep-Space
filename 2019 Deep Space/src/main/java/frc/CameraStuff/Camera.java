@@ -10,6 +10,7 @@ package frc.CameraStuff;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.FunctionsThatShouldBeInTheJDK;
 
 /**
  * Add your docs here.
@@ -57,8 +58,8 @@ public class Camera {
         driveValues[0] = (getDistance() / maxSpeedDistance) - (GetHorizontalAngle() / 27D);
         driveValues[1] = (getDistance() / maxSpeedDistance) + (GetHorizontalAngle() / 27D);
 
-        driveValues[0] = Math.max((Math.min(1D, driveValues[0])), -1D);
-        driveValues[1] = Math.max((Math.min(1D, driveValues[1])), -1D);
+        driveValues[0] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[0], -1D, 1D);
+        driveValues[1] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[1], -1D, 1D);
 
         driveValues[0] = (driveValues[0] > maxNewSpeed) ? maxNewSpeed : driveValues[0]; 
         driveValues[1] = (driveValues[1] > maxNewSpeed) ? maxNewSpeed : driveValues[1];

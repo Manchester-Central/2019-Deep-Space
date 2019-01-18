@@ -1,4 +1,14 @@
 {
+"macros" : {
+
+    "buildAndDeploy" : [
+
+      "wpilibcore.buildCode",
+      "wpilibcore.deployCode"
+
+    ]
+
+}
   "java.configuration.updateBuildConfiguration": "automatic",
   "files.exclude": {
     "**/.git": true,
