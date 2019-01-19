@@ -29,7 +29,7 @@ public class DriveBase {
         leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
-
+        
         
         
     }
@@ -40,10 +40,16 @@ public class DriveBase {
         rightFront.set(-rightSpeed);
     }
 
+    public void cameraDrive() {
 
-    
+        double[] speedValues = {0,0};
+        
+        Camera.getDriveDirections(leftFront. ,rightFront)
+
+    }
 
 
 
 
+//myNemChef
 }

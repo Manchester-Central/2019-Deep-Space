@@ -16,4 +16,13 @@ public class FunctionsThatShouldBeInTheJDK {
         return Math.max((Math.min(max, value)), min);
     }
 
+    public static double getSign(double value) {
+        return Math.abs(value) / value; 
+    }
+
+    public static int getSign(int value) {
+        return Math.abs(value) / value; 
+    }
+
+    
 }
