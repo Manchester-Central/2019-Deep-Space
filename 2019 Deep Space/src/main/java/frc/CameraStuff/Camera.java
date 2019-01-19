@@ -50,10 +50,11 @@ public class Camera {
 
     }
     
-    public static double[] getDriveDirections(double[] currentSpeeds) {
+    public static double[] getDriveDirections(double currentSpeedLeft, double currentSpeedRight) {
 
-        double[] driveValues = {0, 0};
-        double maxNewSpeed = currentSpeeds[0] + maxAcceleration;
+        double[] driveValues = {0D, 0D};
+        double maxNewSpeed0 = currentSpeedLeft + maxAcceleration;
+        double maxNewSpeed1 = currentSpeedRight + maxAcceleration;
 
         driveValues[0] = (getDistance() / maxSpeedDistance) - (GetHorizontalAngle() / 27D);
         driveValues[1] = (getDistance() / maxSpeedDistance) + (GetHorizontalAngle() / 27D);
@@ -61,8 +62,8 @@ public class Camera {
         driveValues[0] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[0], -1D, 1D);
         driveValues[1] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[1], -1D, 1D);
 
-        driveValues[0] = (driveValues[0] > maxNewSpeed) ? maxNewSpeed : driveValues[0]; 
-        driveValues[1] = (driveValues[1] > maxNewSpeed) ? maxNewSpeed : driveValues[1];
+        driveValues[0] = (driveValues[0] > maxNewSpeed0) ? maxNewSpeed0 : driveValues[0]; 
+        driveValues[1] = (driveValues[1] > maxNewSpeed1) ? maxNewSpeed1 : driveValues[1];
 
         return driveValues;
 
