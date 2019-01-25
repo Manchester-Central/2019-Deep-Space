@@ -12,9 +12,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
+import frc.CameraStuff.Camera;
 
 /**
- * Add your docs here.
+ * Calculates new speed
  */
 public class DriveBase {
 
@@ -42,14 +43,17 @@ public class DriveBase {
 
     public void cameraDrive() {
 
-        double[] speedValues = {0,0};
+        double[] speedValues = Camera.getDriveDirections(leftFront.get() ,rightFront.get());
+        setSpeed(speedValues[0], speedValues[1]);
         
-        Camera.getDriveDirections(leftFront. ,rightFront)
+  
 
     }
 
+    
 
 
 
-//myNemChef
+
+//myNemChef - Chris
 }

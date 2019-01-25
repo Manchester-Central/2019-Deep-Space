@@ -8,7 +8,7 @@
 package frc;
 
 /**
- * Add your docs here.
+ * CHAOS Commands that don't exist, but now exist
  */
 public class FunctionsThatShouldBeInTheJDK {
 

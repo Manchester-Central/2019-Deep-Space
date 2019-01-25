@@ -10,7 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
- * Add your docs here.
+ * Assigns button values and functions.
  */
 public class Controller {
 

@@ -62,6 +62,10 @@ public class Robot extends IterativeRobot {
   public void teleopPeriodic() {
 
     drive.setSpeed(-cs.driver.getLeftY(), -cs.driver.getRightY());
+    if (cs.driver.buttonPressed(Controller.DOWN_A)) {
+      drive.cameraDrive();
+    }
+    
 
   }
 

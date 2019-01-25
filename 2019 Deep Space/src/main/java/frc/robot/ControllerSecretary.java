@@ -8,7 +8,7 @@
 package frc.robot;
 
 /**
- * Add your docs here.
+ * Controls controller ports
  */
 public class ControllerSecretary {
 
