@@ -21,7 +21,9 @@ public class DriveBase {
     public CANSparkMax leftFront;
     public CANSparkMax rightFront;
 
-    
+    private KYSPID leftPID;
+    private KYSPID rightPID;
+    private PIDLinked pid;
 
 
     public DriveBase() {
@@ -29,8 +31,8 @@ public class DriveBase {
         leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
-        
-        
+        //leftPID = new KYSPID(P, I, D, setPoint)
+        //pid = new PIDLinked(leftPID, rightPID);
         
     }
 
@@ -44,8 +46,6 @@ public class DriveBase {
 
         double[] speedValues = {0,0};
         
-        Camera.getDriveDirections(leftFront. ,rightFront)
-
     }
 
 

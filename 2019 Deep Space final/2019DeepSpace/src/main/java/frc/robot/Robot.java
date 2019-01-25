@@ -61,11 +61,21 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
+    System.out.println (Camera.GetHorizontalAngle());
+
     drive.setSpeed1(-cs.driver.getLeftY(), -cs.driver.getRightY());
 
-    drive.setSpeed2(-cs.operator1.getLeftY(), -cs.operator1.getRightY());
+    if (cs.driver.buttonPressed(cs.driver.DOWN_A)) {
+      drive.moveThing(1D);
+    } else if (cs.driver.buttonPressed(cs.driver.RIGHT_B)) {
+      drive.moveThing(-1D);
+    } else {
+      drive.moveThing(0);
+    }
 
-    drive.setSpeed3(-cs.operator2.getLeftY(), -cs.operator2.getRightY());
+    //drive.setSpeed2(-cs.operator1.getLeftY(), -cs.operator1.getRightY());
+
+    //drive.setSpeed3(-cs.operator2.getLeftY(), -cs.operator2.getRightY());
 
 
 
