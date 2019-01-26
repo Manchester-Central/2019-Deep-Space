@@ -16,11 +16,18 @@ public class PortConstants {
     // CAN ids
     public final static int LEFT_FRONT_SPARK = 3;
     public final static int RIGHT_FRONT_SPARK = 4; 
-    
 
-    // PWM
-
-
+	static int LEFT_BACK_TALON = 0;
+	static int LEFT_MID_TALON = 1;
+	static int LEFT_FRONT_TALON = 2;
+	
+	static int RIGHT_BACK_TALON = 3;
+	static int RIGHT_MID_TALON = 4;
+	static int RIGHT_FRONT_TALON = 5;
+	
+	
+	static int LEFT_CAN_TALON = 4;
+	static int RIGHT_CAN_TALON = 3;
 
 
 }
