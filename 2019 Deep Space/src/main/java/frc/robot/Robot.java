@@ -67,7 +67,7 @@ public class Robot extends IterativeRobot {
     //System.out.println ("Camera ta: " + Camera.getEntry("ta").getDouble(0D));
     //System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
 
-    System.out.println ("Camera Distance: " + Camera.getDistance());
+    System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
 
     drive.setSpeed(-cs.driver.getLeftY(), -cs.driver.getRightY());
 

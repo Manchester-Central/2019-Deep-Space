@@ -20,7 +20,7 @@ public class Camera {
     //
 
     static double robotHeight = 0D;
-    static double visionTargetHeight = 2D;
+    static double visionTargetHeight = 1D;
     static double cameraAngle = 0D;
     static double maxAcceleration = 0.04;
     static double maxSpeedDistance = 69; 
@@ -42,7 +42,7 @@ public class Camera {
 
     public static double getDistance () {
 
-        return (visionTargetHeight - robotHeight) / (Math.tan(getEntry("ty").getDouble(69) + cameraAngle));
+        return (visionTargetHeight - robotHeight) / (Math.tan( Math.toRadians(getEntry("ty").getDouble(69) + cameraAngle)));
 
     }
 
