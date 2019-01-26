@@ -54,7 +54,8 @@ public class KYSPID {
         errorSum += (error * 0.2);
         double changeInError = error - previousError;
 
-        return (P * error) + (I * errorSum) + (D * changeInError);
+        System.out.println("Proportional = " + P*error);
+        return ((P * error) + (I * errorSum) + (D * changeInError));
 
 
     }

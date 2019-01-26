@@ -11,11 +11,13 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
+import frc.FunctionsThatShouldBeInTheJDK;
 
 /**
  * Calculates new speed
@@ -38,10 +40,17 @@ public class DriveBase {
 	
 	ChaosBetterTalonSRX rightTalonSRX;
 	ChaosBetterTalonSRX leftTalonSRX;
+
+	PIDController leftPidController;
+	PIDController rightPidController;
+
+	TalonSRX_Encoder leftEncoder;
+	
 	
 	private double P = 0;
 	private double I = 0;
 	private double D = 0;
+	private double F = 0;
 	private double setPoint = 0;
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 0;
@@ -54,7 +63,9 @@ public class DriveBase {
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
         leftPID = new KYSPID(P, I, D, setPoint);
-        //pid = new PIDLinked(leftPID, rightPID);
+		//pid = new PIDLinked(leftPID, rightPID);
+		
+		
         
 
         // above is real code, below is raft, comment/uncomment to make work
@@ -91,7 +102,11 @@ public class DriveBase {
 		
 		rightTalonSRX.configClosedloopRamp (1, 0);
 		leftTalonSRX.configClosedloopRamp (1, 0);
-		
+
+		leftEncoder = new TalonSRX_Encoder(leftTalonSRX);
+	
+
+		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
 
 	}
 
@@ -103,7 +118,11 @@ public class DriveBase {
 
     // set speed
     public void setSpeed (double leftSpeed, double rightSpeed) {
-        leftTalonSRX.set(leftSpeed);
+		
+		leftSpeed = FunctionsThatShouldBeInTheJDK.clamp(leftSpeed, -1, 1);
+		rightSpeed = FunctionsThatShouldBeInTheJDK.clamp(rightSpeed, -1, 1);
+
+		leftTalonSRX.set(leftSpeed);
 		rightTalonSRX.set(rightSpeed);
 		
 
@@ -129,26 +148,29 @@ public class DriveBase {
 	
 	public void drivePID() {
 
-		setSpeed(leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()), 0);
+		leftPidController.enable();
 
-		SmartDashboard.putNumber("Current Set Speed", leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()));
+		System.out.println(leftPidController.get());
 	}
 
-	public void setPIDValues(double p, double i, double d) {
-		leftPID.setPIDs(P, I, D);
+	public void stopDrivePID() {
+		leftPidController.disable();
+	}
+
+	public void setPIDValues(double p, double i, double d, double f) {
+		leftPidController.setPID(p, i, d, f);
 	}
 
 	public void setDriveDistance(double setPoint) {
-		leftPID.setSetPoint(setPoint);
+		leftPidController.setSetpoint(setPoint);
 	}
 
 
 	public double getP () {return P;}
     public double getI () {return I;}
-    public double getD () {return D;}
-    public double getError () {return leftPID.getError();}
-    public double getErrorSum () {return leftPID.getErrorSum();}
-    public double getSetPoint () {return leftPID.getSetPoint();}
-    public double getPreviousError () {return leftPID.getPreviousError();}
+	public double getD () {return D;}
+	public double getSetPoint () {return leftPidController.getSetpoint();}
+    public double getError () {return leftPidController.getError();}
+ 
 //myNemChef - Chris
 }

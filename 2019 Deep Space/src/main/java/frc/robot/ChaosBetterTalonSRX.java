@@ -30,7 +30,7 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX{
     }
 
     public void resetEncoder() {
-
+        
         setSelectedSensorPosition(0, 0, 0);    
         
     }
@@ -60,6 +60,6 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX{
 		
 	}
 
-   
+  
 
 }
