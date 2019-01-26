@@ -16,6 +16,12 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX{
 
     public final double ENCODER_TICKS_PER_REVOLUTION, WHEEL_CIRCUMFERENCE_INCHES;
 
+    /***
+     * WPI TalonSRX with added functionality
+     * @param port - 
+     * @param circumference - 
+     * @param encoderTicksPerRevolution
+     */
     public ChaosBetterTalonSRX(int port, double circumference, double encoderTicksPerRevolution) {
 
         super(port);

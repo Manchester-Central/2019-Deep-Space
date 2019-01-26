@@ -59,6 +59,9 @@ public class DriveBase {
 
         // above is real code, below is raft, comment/uncomment to make work
 		
+		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
+		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
+
 		leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
 		leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
 		leftFrontVictor = new Victor(PortConstants.LEFT_FRONT_TALON);
@@ -116,12 +119,8 @@ public class DriveBase {
 
     public void cameraDrive() {
 
-        double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get() ,rightTalonSRX.get());
-        setSpeed(speedValues[0], speedValues[1]);
-	
-	}
-	
-	public void setDriveDistance(double setPoint) {
+        double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
+        setSpeed(speedValues[0] * .1D, speedValues[1] * .1D);
 
 		leftPID.setSetPoint(setPoint);
 		
@@ -137,6 +136,10 @@ public class DriveBase {
 
 	public void setPIDValues(double p, double i, double d) {
 		leftPID.setPIDs(P, I, D);
+	}
+
+	public void setDriveDistance(double setPoint) {
+		leftPID.setSetPoint(setPoint);
 	}
 
 
