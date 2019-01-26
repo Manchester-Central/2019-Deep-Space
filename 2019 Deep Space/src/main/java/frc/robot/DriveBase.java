@@ -12,7 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
-import frc.CameraStuff.Camera;
+import frc.Camera;
 
 /**
  * Calculates new speed
@@ -22,7 +22,9 @@ public class DriveBase {
     public CANSparkMax leftFront;
     public CANSparkMax rightFront;
 
-    
+    private KYSPID leftPID;
+    private KYSPID rightPID;
+    private PIDLinked pid;
 
 
     public DriveBase() {
@@ -30,8 +32,8 @@ public class DriveBase {
         leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
-        
-        
+        //leftPID = new KYSPID(P, I, D, setPoint)
+        //pid = new PIDLinked(leftPID, rightPID);
         
     }
 
@@ -45,8 +47,6 @@ public class DriveBase {
 
         double[] speedValues = Camera.getDriveDirections(leftFront.get() ,rightFront.get());
         setSpeed(speedValues[0], speedValues[1]);
-        
-  
 
     }
 

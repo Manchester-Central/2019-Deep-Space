@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.CameraStuff;
+package frc;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -17,7 +17,7 @@ import frc.FunctionsThatShouldBeInTheJDK;
  */
 public class Camera {
 
-    static String entryName = "test";
+    //
 
     static double robotHeight = 60D;
     static double visionTargetHeight = 80D;
@@ -51,6 +51,12 @@ public class Camera {
         return getEntry("tx").getDouble(0);
 
     }
+
+    //public static double getDistanceFromArea () {
+
+        // ta = 
+
+    //}
     
     public static double[] getDriveDirections(double currentSpeedLeft, double currentSpeedRight) {
 

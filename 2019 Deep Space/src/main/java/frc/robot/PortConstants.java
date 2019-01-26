@@ -14,9 +14,8 @@ public class PortConstants {
 
 
     // CAN ids
-    public final static int LEFT_FRONT_SPARK = 0;
-    public final static int RIGHT_FRONT_SPARK = 1; //maybe you need to change it later
-    
+    public final static int LEFT_FRONT_SPARK = 3;
+    public final static int RIGHT_FRONT_SPARK = 4; 
     
 
     // PWM

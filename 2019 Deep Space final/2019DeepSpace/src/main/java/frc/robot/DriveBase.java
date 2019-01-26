@@ -43,6 +43,10 @@ public class DriveBase {
         
     }
 
+    public void moveThing (double x) {
+        leftMid.set(x);
+    }
+
     // set speed
     public void setSpeed1 (double leftSpeed, double rightSpeed) {
         leftFront.set(leftSpeed);
