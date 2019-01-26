@@ -34,6 +34,20 @@ public class KYSPID {
 
     }
 
+    public void setSetPoint (double newSetPoint) {
+
+        reset(P, I, D, newSetPoint);
+    }
+
+    public void setPIDs (double P, double I, double D) {
+        
+        this.P = P;
+        this.I = I;
+        this.D = D;
+    
+
+    }
+
     public double getPIDSpeed (double currentPosition) {
 
         error = setPoint - currentPosition;
@@ -51,5 +65,5 @@ public class KYSPID {
     public double getError () {return error;}
     public double getErrorSum () {return errorSum;}
     public double getSetPoint () {return setPoint;}
-    public double gePreviousError () {return previousError;}
+    public double getPreviousError () {return previousError;}
 }

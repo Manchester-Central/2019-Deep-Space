@@ -15,6 +15,7 @@ public class Robot extends IterativeRobot {
 
   DriveBase drive;
   ControllerSecretary cs;
+  
 
   /**
    * 
@@ -33,6 +34,8 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
   }
 
   /**
@@ -61,9 +64,13 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
-    drive.setSpeed(-cs.driver.getLeftY(), -cs.driver.getRightY());
+    
     if (cs.driver.buttonPressed(Controller.DOWN_A)) {
       drive.cameraDrive();
+    } else if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+      drive.drivePID();
+    } else {
+      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
     }
     
 
@@ -78,4 +85,16 @@ public class Robot extends IterativeRobot {
     
 
   }
+  @Override
+  public void disabledPeriodic() {
+
+    drive.resetEncoders();
+
+    drive.setPIDValues(SmartDashboard.getNumber("p-value", 0), SmartDashboard.getNumber("i-value", 0),
+     SmartDashboard.getNumber("d-value", 0));
+
+     drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 0));
+  }
+
+
 }

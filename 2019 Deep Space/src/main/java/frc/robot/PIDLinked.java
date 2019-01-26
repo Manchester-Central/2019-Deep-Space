@@ -13,7 +13,7 @@ package frc.robot;
 public class PIDLinked {
 
     KYSPID[] pids;
-    double[][] pidValues;
+    Double[][] pidValues;
 
     public PIDLinked (KYSPID ... pids) {
 
@@ -35,7 +35,7 @@ public class PIDLinked {
         int i = 0;
         for (double setPoint : setPoints) {
 
-            double[] pidV =  pidValues[i];
+            Double[] pidV =  pidValues[i];
 
             pids[i].reset(pidV[0], pidV[1], pidV[2], setPoint);
 
@@ -45,7 +45,7 @@ public class PIDLinked {
 
     }
 
-    public double[] getLinkedPID (double currentPosition) {
+    public double[] getLinkedPID (double ... currentPositions) {
 
         double[] returnValues = new double[pids.length];
 
@@ -64,7 +64,7 @@ public class PIDLinked {
             
             double adjustment = pids[i].getError() - averageError;
 
-            returnValue = pids[i].getPIDSpeed(currentPosition) + adjustment;
+            returnValues[i] = pids[i].getPIDSpeed(currentPositions[i]) + adjustment;
 
             i++;
         }
