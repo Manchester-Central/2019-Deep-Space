@@ -5,6 +5,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.Camera;
 
 /**
  * 
@@ -61,7 +62,15 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
+    //System.out.println ("Camera ty: " + Camera.getEntry("ty").getDouble(0D));
+    //System.out.println ("Camera tx: " + Camera.getEntry("tx").getDouble(0D));
+    //System.out.println ("Camera ta: " + Camera.getEntry("ta").getDouble(0D));
+    //System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
+
+    System.out.println ("Camera Distance: " + Camera.getDistance());
+
     drive.setSpeed(-cs.driver.getLeftY(), -cs.driver.getRightY());
+
     if (cs.driver.buttonPressed(Controller.DOWN_A)) {
       drive.cameraDrive();
     }

@@ -49,6 +49,9 @@ public class DriveBase {
 
         // above is real code, below is raft, comment/uncomment to make work
 		
+		rightTalonSRX = new WPI_TalonSRX(PortConstants.RIGHT_CAN_TALON);
+		leftTalonSRX = new WPI_TalonSRX(PortConstants.LEFT_CAN_TALON);
+
 		leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
 		leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
 		leftFrontVictor = new Victor(PortConstants.LEFT_FRONT_TALON);
@@ -84,14 +87,22 @@ public class DriveBase {
 
     // set speed
     public void setSpeed (double leftSpeed, double rightSpeed) {
-        leftFront.set(leftSpeed);
-        rightFront.set(-rightSpeed);
+        leftTalonSRX.set(leftSpeed);
+		rightTalonSRX.set(rightSpeed);
+		
+		leftFrontVictor.set(leftSpeed);
+		leftMidVictor.set(leftSpeed);
+		leftBackVictor.set(leftSpeed);
+
+		rightFrontVictor.set(rightSpeed);
+		rightMidVictor.set(rightSpeed);
+		rightBackVictor.set(rightSpeed);
     }
 
     public void cameraDrive() {
 
-        double[] speedValues = Camera.getDriveDirections(leftFront.get() ,rightFront.get());
-        setSpeed(speedValues[0], speedValues[1]);
+        double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
+        setSpeed(speedValues[0] * .1D, speedValues[1] * .1D);
 
     }
 
