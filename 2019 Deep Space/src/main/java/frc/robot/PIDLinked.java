@@ -30,6 +30,10 @@ public class PIDLinked {
 
     }
 
+    /***
+     * set setpoint for each pid
+     * @param setPoints setpoits 
+     */
     public void set (double ... setPoints) {
 
         int i = 0;
@@ -47,7 +51,9 @@ public class PIDLinked {
 
     public double[] getLinkedPID (double currentPosition) {
 
-        double[] returnValues = new double[pids.length];
+        int length = pids.length;
+
+        double[] returnValues = new double[length];
 
         double averageError = 0D;
 
@@ -57,16 +63,16 @@ public class PIDLinked {
 
         }
 
-        averageError /= pids.length;
+        averageError /= length;
 
-        int i = 0;
-        for (double returnValue : returnValues) {
+        for ( int i = 0; i < length; i++ ) {
             
-            double adjustment = pids[i].getError() - averageError;
+            KYSPID pid = pids[i];
 
-            returnValue = pids[i].getPIDSpeed(currentPosition) + adjustment;
+            double adjustment = (pid.getError() / pid.getSetPoint()) - averageError;
 
-            i++;
+            returnValues[i] = pid.getPIDSpeed(currentPosition) + adjustment;
+
         }
 
         return returnValues;
