@@ -116,7 +116,11 @@ public class DriveBase {
 	}
 	
 
-    // set speed
+    /***
+	 * sets speed
+	 * @param leftSpeed speed of left side wheels
+	 * @param rightSpeed speed of right side wheels
+	 */
     public void setSpeed (double leftSpeed, double rightSpeed) {
 		
 		leftSpeed = FunctionsThatShouldBeInTheJDK.clamp(leftSpeed, -1, 1);
@@ -131,11 +135,18 @@ public class DriveBase {
 		leftFrontVictor.set(leftSpeed);
 
 		rightBackVictor.set(rightSpeed);
+<<<<<<< HEAD
+
+=======
 		rightMidVictor.set(rightSpeed);
 		rightFrontVictor.set(rightSpeed);
 		
+>>>>>>> 00331ec9f050307cf289a610e4c7a03f4aaae866
     }
 
+	/***
+	 * drive based on the camera autonomously
+	 */
     public void cameraDrive() {
 
         double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
