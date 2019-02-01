@@ -7,21 +7,28 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.PIDOutput;
 
 /**
  * Add your docs here.
  */
-public class ChaosBetterTalonSRX extends WPI_TalonSRX{
+public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
 
     public final double ENCODER_TICKS_PER_REVOLUTION, WHEEL_CIRCUMFERENCE_INCHES;
 
+
+
+    double currentSet = 0;
     /***
      * WPI TalonSRX with added functionality
      * @param port - 
      * @param circumference - 
      * @param encoderTicksPerRevolution
      */
+    
     public ChaosBetterTalonSRX(int port, double circumference, double encoderTicksPerRevolution) {
 
         super(port);
@@ -58,8 +65,20 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX{
 		
 		return ticks * WHEEL_CIRCUMFERENCE_INCHES / ENCODER_TICKS_PER_REVOLUTION;
 		
-	}
+    }
 
+    @Override
+    public void pidWrite(double output) {
+        
+        output *= 0.4;
+        set(ControlMode.PercentOutput, output);
+        System.out.println (get() + " : " + output);
+        currentSet = output;
+    }
   
+    public double getPIDWrite() {
+        return currentSet;
+    }
+
 
 }
