@@ -52,6 +52,13 @@ public class Robot extends IterativeRobot {
 
     SmartDashboard.updateValues();
 
+    SmartDashboard.putNumber("Current p", drive.getP());
+    SmartDashboard.putNumber("Current i", drive.getI());
+    SmartDashboard.putNumber("Current d", drive.getD());
+    SmartDashboard.putNumber("Current f", drive.getF());
+
+    SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
+
   }
 
   /**
