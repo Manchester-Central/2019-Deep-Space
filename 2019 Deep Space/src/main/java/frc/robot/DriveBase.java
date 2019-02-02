@@ -11,9 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 
@@ -27,7 +29,9 @@ public class DriveBase {
 
     private KYSPID leftPID;
     private KYSPID rightPID;
-    private PIDLinked pid;
+	private PIDLinked pid;
+	
+	
 
     Victor leftBackVictor;
 	Victor leftMidVictor;
@@ -54,8 +58,9 @@ public class DriveBase {
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
         leftPID = new KYSPID(P, I, D, setPoint);
-        //pid = new PIDLinked(leftPID, rightPID);
-        
+		//pid = new PIDLinked(leftPID, rightPID);
+		
+	
 
         // above is real code, below is raft, comment/uncomment to make work
 		
@@ -101,11 +106,7 @@ public class DriveBase {
 	}
 	
 
-    /***
-	 * sets speed
-	 * @param leftSpeed speed of left side wheels
-	 * @param rightSpeed speed of right side wheels
-	 */
+    // set speed
     public void setSpeed (double leftSpeed, double rightSpeed) {
         leftTalonSRX.set(leftSpeed);
 		rightTalonSRX.set(rightSpeed);
@@ -116,18 +117,11 @@ public class DriveBase {
 		leftFrontVictor.set(leftSpeed);
 
 		rightBackVictor.set(rightSpeed);
-<<<<<<< HEAD
-
-=======
 		rightMidVictor.set(rightSpeed);
 		rightFrontVictor.set(rightSpeed);
 		
->>>>>>> 00331ec9f050307cf289a610e4c7a03f4aaae866
     }
 
-	/***
-	 * drive based on the camera autonomously
-	 */
     public void cameraDrive() {
 
         double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());

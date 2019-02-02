@@ -9,10 +9,12 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.PIDOutput;
+
 /**
  * Add your docs here.
  */
-public class ChaosBetterTalonSRX extends WPI_TalonSRX{
+public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
 
     public final double ENCODER_TICKS_PER_REVOLUTION, WHEEL_CIRCUMFERENCE_INCHES;
 
@@ -58,7 +60,9 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX{
 		
 		return ticks * WHEEL_CIRCUMFERENCE_INCHES / ENCODER_TICKS_PER_REVOLUTION;
 		
-	}
+    }
+    
+    
 
    
 

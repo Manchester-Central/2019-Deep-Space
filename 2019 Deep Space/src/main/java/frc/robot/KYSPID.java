@@ -54,6 +54,9 @@ public class KYSPID {
         errorSum += (error * 0.2);
         double changeInError = error - previousError;
 
+        
+        previousError = error;
+        
         return (P * error) + (I * errorSum) + (D * changeInError);
 
 
