@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import static org.junit.Assume.assumeNoException;
 
 import edu.wpi.first.wpilibj.Victor;
 
