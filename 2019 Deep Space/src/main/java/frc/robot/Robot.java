@@ -26,6 +26,11 @@ public class Robot extends IterativeRobot {
     
     drive = new DriveBase();
     cs = new ControllerSecretary();
+    SmartDashboard.putNumber("p-value", 0);
+    SmartDashboard.putNumber("i-value", 0);
+    SmartDashboard.putNumber("d-value", 0);
+    SmartDashboard.putNumber("f-value", 0);
+    SmartDashboard.putNumber("setpoint", 0);
 
     
   }
@@ -37,6 +42,9 @@ public class Robot extends IterativeRobot {
   public void robotPeriodic() {
 
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
+
+    SmartDashboard.putNumber("Current Encoder Count", drive.getDistance());
+
   }
 
   /**
@@ -59,6 +67,19 @@ public class Robot extends IterativeRobot {
 
   }
 
+
+  @Override
+  public void teleopInit() {
+    
+    //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
+     //smartdashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
+
+    // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+     drive.setTolerance();
+  }
+
+
+
   /**
    * 
    */
@@ -70,17 +91,25 @@ public class Robot extends IterativeRobot {
     //System.out.println ("Camera ta: " + Camera.getEntry("ta").getDouble(0D));
     //System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
 
-    System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
+   //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
 
-    drive.setSpeed(-cs.driver.getLeftY(), -cs.driver.getRightY());
-
+    
+    /*
     if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      drive.cameraDrive();
-    } else if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+      //drive.cameraDrive();
+      //drive.stopDrivePID();
+    } else 
+    */
+    if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+      
       drive.drivePID();
+      
     } else {
       drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+      drive.stopDrivePID();
     }
+
+    SmartDashboard.updateValues();
     
 
   }
@@ -98,11 +127,16 @@ public class Robot extends IterativeRobot {
   public void disabledPeriodic() {
 
     drive.resetEncoders();
+    //\drive.stopDrivePID();
+    
+   //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
+     //SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
 
-    drive.setPIDValues(SmartDashboard.getNumber("p-value", 0), SmartDashboard.getNumber("i-value", 0),
-     SmartDashboard.getNumber("d-value", 0));
+     //drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+  
+    SmartDashboard.updateValues();
 
-     drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 0));
+
   }
 
 

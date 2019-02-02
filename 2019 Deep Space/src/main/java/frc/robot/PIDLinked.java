@@ -25,6 +25,7 @@ public class PIDLinked {
             pidValues[i][0] = pid.getP();
             pidValues[i][1] = pid.getI();
             pidValues[i][2] = pid.getD();
+            pidValues[i][3] = pid.getF();
             i ++;
         }
 
@@ -41,7 +42,7 @@ public class PIDLinked {
 
             Double[] pidV =  pidValues[i];
 
-            pids[i].reset(pidV[0], pidV[1], pidV[2], setPoint);
+            pids[i].reset(pidV[0], pidV[1], pidV[2], pidV[3],setPoint);
 
             i++;
 

@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
+import frc.FunctionsThatShouldBeInTheJDK;
 
 /**
  * Calculates new speed
@@ -42,14 +44,22 @@ public class DriveBase {
 	
 	ChaosBetterTalonSRX rightTalonSRX;
 	ChaosBetterTalonSRX leftTalonSRX;
-	
-	private double P = 0;
-	private double I = 0;
-	private double D = 0;
-	private double setPoint = 0;
 
-	public static final double ENCODER_TICKS_PER_REVOLUTION = 0;
-	public static final double WHEEL_CIRCUMFERENCE_INCHES = 0;
+	PIDController leftPidController;
+	PIDController rightPidController;
+
+	TalonSRX_Encoder leftEncoder;
+	TalonSRX_Encoder rightEncoder;
+	
+	
+	private double P = 0.25;
+	private double I = 0.4;
+	private double D = 0;
+	private double F = 0.5;
+	private double setPoint = 4550;
+
+	public static final double ENCODER_TICKS_PER_REVOLUTION = 4150D;
+	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
 
 
     public DriveBase() {
@@ -57,15 +67,18 @@ public class DriveBase {
        // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
-        leftPID = new KYSPID(P, I, D, setPoint);
+        leftPID = new KYSPID(P, I, D, F,setPoint);
 		//pid = new PIDLinked(leftPID, rightPID);
 		
-	
+		
+        
 
         // above is real code, below is raft, comment/uncomment to make work
 		
 		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
 		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
+
+		leftTalonSRX.set(ControlMode.PercentOutput, 0);
 
 		leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
 		leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
@@ -96,7 +109,13 @@ public class DriveBase {
 		
 		rightTalonSRX.configClosedloopRamp (1, 0);
 		leftTalonSRX.configClosedloopRamp (1, 0);
+
+		leftEncoder = new TalonSRX_Encoder(leftTalonSRX);
+		rightEncoder = new TalonSRX_Encoder(rightTalonSRX);
 		
+
+		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
+		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
 
 	}
 
@@ -108,9 +127,16 @@ public class DriveBase {
 
     // set speed
     public void setSpeed (double leftSpeed, double rightSpeed) {
-        leftTalonSRX.set(leftSpeed);
+		
+		leftSpeed = FunctionsThatShouldBeInTheJDK.clamp(leftSpeed, -1, 1);
+		rightSpeed = FunctionsThatShouldBeInTheJDK.clamp(rightSpeed, -1, 1);
+
+		
+		//leftTalonSRX.set(ControlMode.PercentOutput, leftSpeed);
+		leftTalonSRX.set(leftSpeed);
 		rightTalonSRX.set(rightSpeed);
 		
+		//System.out.println(leftSpeed);
 
 		leftBackVictor.set(leftSpeed);
 		leftMidVictor.set(leftSpeed);
@@ -134,26 +160,54 @@ public class DriveBase {
 	
 	public void drivePID() {
 
-		setSpeed(leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()), 0);
+		leftPidController.enable();
+		System.out.println (leftTalonSRX.getCurrentPositionInches());
+		//rightPidController.enable();
+		//setSpeed(leftTalonSRX.getPIDWrite(), rightTalonSRX.getPIDWrite());
+		setSpeed(leftTalonSRX.getPIDWrite(), 0d/*rightTalonSRX.getPIDWrite()*/);
 
-		SmartDashboard.putNumber("Current Set Speed", leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()));
+		//leftTalonSRX.set(leftPidController.get());
+		
+		//leftTalonSRX.set(ControlMode.Velocity, leftPidController.get());
+		// System.out.println(leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()));
+		// setSpeed(leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()), 0);
+	
 	}
 
-	public void setPIDValues(double p, double i, double d) {
-		leftPID.setPIDs(P, I, D);
+	public void stopDrivePID() {
+		leftPidController.disable();
+		rightPidController.disable();
+
+	}
+
+	public void setTolerance() {
+		leftPidController.setPercentTolerance(0.1);
+		rightPidController.setPercentTolerance(0.1);
+		
+	}
+
+	public void setPIDValues(double p, double i, double d, double f) {
+		leftPidController.setPID(p, i, d, f);
+		//leftPID.setPIDs (p, i, d, f);
+		rightPidController.setPID(p, i, d, f);
+		//leftPID.setPIDs (p, i, d, f);
 	}
 
 	public void setDriveDistance(double setPoint) {
-		leftPID.setSetPoint(setPoint);
+		leftPidController.setSetpoint(setPoint);
+		//leftPID.setSetPoint(setPoint);
+		rightPidController.setSetpoint(setPoint);
+		//leftPID.setSetPoint(setPoint);
 	}
 
 
 	public double getP () {return P;}
     public double getI () {return I;}
-    public double getD () {return D;}
-    public double getError () {return leftPID.getError();}
-    public double getErrorSum () {return leftPID.getErrorSum();}
-    public double getSetPoint () {return leftPID.getSetPoint();}
-    public double getPreviousError () {return leftPID.getPreviousError();}
+	public double getD () {return D;}
+	public double getF () {return F;}
+	public double getSetPoint () {return /*leftPidController.getSetpoint()*/ leftPID.getSetPoint();}
+	public double getError () {return /*leftPidController.getError()*/ leftPID.getError();}
+	public double getDistance() { return leftTalonSRX.getCurrentPositionInches();}
+ 
 //myNemChef - Chris
 }
