@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.PIDOutput;
 public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
 
     public final double ENCODER_TICKS_PER_REVOLUTION, WHEEL_CIRCUMFERENCE_INCHES;
-
+    private double sign;
 
 
     double currentSet = 0;
@@ -29,23 +29,24 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
      * @param encoderTicksPerRevolution
      */
     
-    public ChaosBetterTalonSRX(int port, double circumference, double encoderTicksPerRevolution) {
+    public ChaosBetterTalonSRX(int port, double circumference, double encoderTicksPerRevolution, boolean isInverted) {
 
         super(port);
         WHEEL_CIRCUMFERENCE_INCHES = circumference;
         ENCODER_TICKS_PER_REVOLUTION = encoderTicksPerRevolution;
+        sign = (isInverted) ? -1 : 1;
     }
 
     public void resetEncoder() {
         
-        setSelectedSensorPosition(0, 0, 0);    
-        
+        //setSelectedSensorPosition(0, 0, 0);    
+        getSensorCollection().setQuadraturePosition(0,10);
     }
 
 
     public double getCurrentPositionTicks() {
 
-        return getSelectedSensorPosition(0);
+        return sign * getSensorCollection().getQuadraturePosition();
 
     }
 

@@ -43,7 +43,14 @@ public class Robot extends IterativeRobot {
 
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
-    SmartDashboard.putNumber("Current Encoder Count", drive.getDistance());
+    SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
+    SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
+
+    
+    SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
+    SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
+
+    SmartDashboard.updateValues();
 
   }
 
@@ -76,6 +83,7 @@ public class Robot extends IterativeRobot {
 
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
      drive.setTolerance();
+     drive.resetEncoders();
   }
 
 
@@ -126,14 +134,17 @@ public class Robot extends IterativeRobot {
   @Override
   public void disabledPeriodic() {
 
-    drive.resetEncoders();
+    //drive.resetEncoders();
     //\drive.stopDrivePID();
     
    //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
      //SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
 
-     //drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+     drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
   
+     if (cs.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
+       drive.resetEncoders();
+     }
     SmartDashboard.updateValues();
 
 
