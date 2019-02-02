@@ -101,6 +101,8 @@ public class Camera {
         return driveValues;
 
     }
+
+    //public static 
     
     /***
      *  change the state of the camera to vision or image processing
