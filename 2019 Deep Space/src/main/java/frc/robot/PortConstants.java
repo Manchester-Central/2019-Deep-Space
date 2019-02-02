@@ -13,7 +13,7 @@ package frc.robot;
 public class PortConstants {
 
 
-    // CAN ids
+    // test robot ports
     public final static int LEFT_FRONT_SPARK = 3;
     public final static int RIGHT_FRONT_SPARK = 4; 
 
@@ -29,5 +29,14 @@ public class PortConstants {
 	static int LEFT_CAN_TALON = 4;
 	static int RIGHT_CAN_TALON = 3;
 
+	// real robot ports
+	public final static int ELBOW_JOINT = 0;
+	public final static int EXTENDER = 0;
 
+	public final static int INTAKE_0 = 0;
+	public final static int INTAKE_1 = 0;
+
+	public final static int FLYWHEEL = 0;
+
+	public final static int Potentiometer = 0;
 }

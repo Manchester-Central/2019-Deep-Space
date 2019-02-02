@@ -137,8 +137,8 @@ public class Robot extends IterativeRobot {
     //drive.resetEncoders();
     //\drive.stopDrivePID();
     
-   //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
-     //SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
+    drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
+      SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
 
      drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
   

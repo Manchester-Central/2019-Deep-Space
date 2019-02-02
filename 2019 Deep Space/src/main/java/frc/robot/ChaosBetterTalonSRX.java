@@ -71,9 +71,8 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
     @Override
     public void pidWrite(double output) {
         
-        output *= 0.4;
         set(ControlMode.PercentOutput, output);
-        System.out.println (get() + " : " + output);
+       
         currentSet = output;
     }
   
