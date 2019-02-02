@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
@@ -30,7 +31,9 @@ public class DriveBase {
 
     private KYSPID leftPID;
     private KYSPID rightPID;
-    private PIDLinked pid;
+	private PIDLinked pid;
+	
+	
 
     Victor leftBackVictor;
 	Victor leftMidVictor;
@@ -53,9 +56,9 @@ public class DriveBase {
 	private double I = 0.4;
 	private double D = 0;
 	private double F = 0.5;
-	private double setPoint = 24.0;
+	private double setPoint = 4550;
 
-	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
+	public static final double ENCODER_TICKS_PER_REVOLUTION = 4150D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
 
 
@@ -72,8 +75,8 @@ public class DriveBase {
 
         // above is real code, below is raft, comment/uncomment to make work
 		
-		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
-		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
+		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
+		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
 
 		leftTalonSRX.set(ControlMode.PercentOutput, 0);
 
@@ -119,15 +122,10 @@ public class DriveBase {
 	public void resetEncoders () {
 		rightTalonSRX.resetEncoder();
 		leftTalonSRX.resetEncoder();
-		
 	}
 	
 
-    /***
-	 * sets speed
-	 * @param leftSpeed speed of left side wheels
-	 * @param rightSpeed speed of right side wheels
-	 */
+    // set speed
     public void setSpeed (double leftSpeed, double rightSpeed) {
 		
 		leftSpeed = FunctionsThatShouldBeInTheJDK.clamp(leftSpeed, -1, 1);
@@ -150,9 +148,6 @@ public class DriveBase {
 		
     }
 
-	/***
-	 * drive based on the camera autonomously
-	 */
     public void cameraDrive() {
 
         double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
@@ -169,11 +164,11 @@ public class DriveBase {
 		System.out.println (leftTalonSRX.getCurrentPositionInches());
 		//rightPidController.enable();
 		//setSpeed(leftTalonSRX.getPIDWrite(), rightTalonSRX.getPIDWrite());
-		//setSpeed(leftTalonSRX.getPIDWrite(), 0d/*rightTalonSRX.getPIDWrite()*/);
+		setSpeed(leftTalonSRX.getPIDWrite(), 0d/*rightTalonSRX.getPIDWrite()*/);
 
 		//leftTalonSRX.set(leftPidController.get());
 		
-		
+		//leftTalonSRX.set(ControlMode.Velocity, leftPidController.get());
 		// System.out.println(leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()));
 		// setSpeed(leftPID.getPIDSpeed(leftTalonSRX.getCurrentPositionInches()), 0);
 	
@@ -199,9 +194,9 @@ public class DriveBase {
 	}
 
 	public void setDriveDistance(double setPoint) {
-		leftPidController.setSetpoint(leftTalonSRX.inchesToTicks(setPoint));
+		leftPidController.setSetpoint(setPoint);
 		//leftPID.setSetPoint(setPoint);
-		rightPidController.setSetpoint(rightTalonSRX.inchesToTicks(setPoint));
+		rightPidController.setSetpoint(setPoint);
 		//leftPID.setSetPoint(setPoint);
 	}
 
@@ -212,10 +207,7 @@ public class DriveBase {
 	public double getF () {return F;}
 	public double getSetPoint () {return /*leftPidController.getSetpoint()*/ leftPID.getSetPoint();}
 	public double getError () {return /*leftPidController.getError()*/ leftPID.getError();}
-	public double getDistanceInchesL() { return leftTalonSRX.getCurrentPositionInches();}
-	public double getDistanceTicksL() { return leftTalonSRX.getCurrentPositionTicks();}
-	public double getDistanceInchesR() { return rightTalonSRX.getCurrentPositionInches();}
-	public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
-	
+	public double getDistance() { return leftTalonSRX.getCurrentPositionInches();}
+ 
 //myNemChef - Chris
 }
