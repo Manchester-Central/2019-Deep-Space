@@ -54,6 +54,8 @@ public class DriveBase {
 	private double D = 0;
 	private double F = 0.5;
 	private double setPoint = 24.0;
+	
+	public static final double TOLERANCE = 0.1;
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
@@ -122,6 +124,7 @@ public class DriveBase {
 		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
 		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
 
+		setTolerance();
 	}
 
 	public void resetEncoders () {
@@ -156,7 +159,13 @@ public class DriveBase {
 		rightMidVictor.set(rightSpeed);
 		rightFrontVictor.set(rightSpeed);
 		
-    }
+	}
+	
+	public String getDriveSpeeds() {
+
+		return "Left speed = " + leftTalonSRX.get() + ", Right speed = " + rightTalonSRX.get();
+
+	}
 
 	/***
 	 * drive based on the camera autonomously
@@ -200,7 +209,7 @@ public class DriveBase {
 	public void drivePID() {
 
 		leftPidController.enable();
-		System.out.println (leftTalonSRX.getCurrentPositionInches());
+		//System.out.println (leftTalonSRX.getCurrentPositionInches());
 		//rightPidController.enable();
 		//setSpeed(leftTalonSRX.getPIDWrite(), rightTalonSRX.getPIDWrite());
 		//setSpeed(leftTalonSRX.getPIDWrite(), 0d/*rightTalonSRX.getPIDWrite()*/);
@@ -220,8 +229,8 @@ public class DriveBase {
 	}
 
 	public void setTolerance() {
-		leftPidController.setPercentTolerance(0.1);
-		rightPidController.setPercentTolerance(0.1);
+		leftPidController.setPercentTolerance(TOLERANCE);
+		rightPidController.setPercentTolerance(TOLERANCE);
 		
 	}
 
@@ -240,10 +249,10 @@ public class DriveBase {
 	}
 
 
-	public double getP () {return P;}
-    public double getI () {return I;}
-	public double getD () {return D;}
-	public double getF () {return F;}
+	public double getP () {return leftPidController.getP();}
+    public double getI () {return leftPidController.getI();}
+	public double getD () {return leftPidController.getD();}
+	public double getF () {return leftPidController.getF();}
 	public double getSetPoint () {return /*leftPidController.getSetpoint()*/ leftPID.getSetPoint();}
 	public double getError () {return /*leftPidController.getError()*/ leftPID.getError();}
 	public double getDistanceInchesL() { return leftTalonSRX.getCurrentPositionInches();}
