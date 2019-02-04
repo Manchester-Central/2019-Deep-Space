@@ -17,10 +17,14 @@ public class FunctionsThatShouldBeInTheJDK {
     }
 
     public static double getSign(double value) {
+        if (value == 0)
+            return 0;
         return Math.abs(value) / value; 
     }
 
     public static int getSign(int value) {
+        if (value == 0)
+            return 0;
         return Math.abs(value) / value; 
     }
 

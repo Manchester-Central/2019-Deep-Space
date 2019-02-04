@@ -57,9 +57,17 @@ public class DriveBase {
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
+	public static final double LENGTH_BETWEEN_WHEELS = 25.6;
 
+	// used for camera stuff
+	private boolean turningLeft;
+	private double distance;
+	private double arcLength;
+	// used for camera stuff
 
     public DriveBase() {
+
+		turningLeft = false;
 
        // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
@@ -153,6 +161,7 @@ public class DriveBase {
 	/***
 	 * drive based on the camera autonomously
 	 */
+	@Deprecated
     public void cameraDrive() {
 
         double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
@@ -162,6 +171,31 @@ public class DriveBase {
 		
 	}
 
+	public void cameraDriveWithPID () {
+		
+		double horizontalAngle = Camera.getEntry("tx").getDouble(0D);
+		double sign = FunctionsThatShouldBeInTheJDK.getSign(horizontalAngle);
+		double absoluteHorizontalAngle = sign * horizontalAngle;
+
+		if (!(leftPidController.isEnabled() || rightPidController.isEnabled()))  {
+
+			turningLeft = sign > 0D;
+
+			arcLength = (Math.toRadians(90 - absoluteHorizontalAngle))*LENGTH_BETWEEN_WHEELS;
+
+			//distance = 
+
+			//leftPidController.setSetpoint(arcLength + );
+
+		}
+
+		if (turningLeft) {
+
+		} else {
+
+		}
+
+	}
 	
 	public void drivePID() {
 
