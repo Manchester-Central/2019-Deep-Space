@@ -82,8 +82,11 @@ public class DriveBase {
 
         // above is real code, below is raft, comment/uncomment to make work
 		
-		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
-		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON, WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
+		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
+		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
+		
+		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON,
+		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
 
 		leftTalonSRX.set(ControlMode.PercentOutput, 0);
 
@@ -176,7 +179,7 @@ public class DriveBase {
         double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
         setSpeed(speedValues[0] * .1D, speedValues[1] * .1D);
 
-		leftPID.setSetPoint(setPoint);
+
 		
 	}
 
@@ -185,23 +188,27 @@ public class DriveBase {
 		double horizontalAngle = Camera.getEntry("tx").getDouble(0D);
 		double sign = FunctionsThatShouldBeInTheJDK.getSign(horizontalAngle);
 		double absoluteHorizontalAngle = sign * horizontalAngle;
+		double absCamAngleRadians = Math.toRadians (absoluteHorizontalAngle);
 
 		if (!(leftPidController.isEnabled() || rightPidController.isEnabled()))  {
 
 			turningLeft = sign > 0D;
 
-			arcLength = (Math.toRadians(90 - absoluteHorizontalAngle))*LENGTH_BETWEEN_WHEELS;
+			arcLength = ((Math.PI/2) - absCamAngleRadians) * LENGTH_BETWEEN_WHEELS;
+			distance = Camera.getDistance() - (LENGTH_BETWEEN_WHEELS* Math.sin(absCamAngleRadians));
 
-			//distance = 
-
-			//leftPidController.setSetpoint(arcLength + );
-
+			if (turningLeft)
+				rightPidController.enable();
+			else
+				leftPidController.enable();
 		}
 
 		if (turningLeft) {
-
+			if (rightTalonSRX.getCurrentPositionInches() > arcLength)
+				leftPidController.enable();
 		} else {
-
+			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
+				rightPidController.enable();
 		}
 
 	}
