@@ -28,9 +28,7 @@ public class DriveBase {
     //public CANSparkMax leftFront;
     //public CANSparkMax rightFront;
 
-    private KYSPID leftPID;
-    private KYSPID rightPID;
-    private PIDLinked pid;
+    private PIDLinked pids;
 
     Victor leftBackVictor;
 	Victor leftMidVictor;
@@ -55,7 +53,7 @@ public class DriveBase {
 	private double F = 0.5;
 	private double setPoint = 24.0;
 	
-	public static final double TOLERANCE = 0.1;
+	public static final double TOLERANCE = 2.5;
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
@@ -65,7 +63,7 @@ public class DriveBase {
 	private boolean turningLeft;
 	private double distance;
 	private double arcLength;
-	// used for camera stuff
+	// used for camera stuff 
 
     public DriveBase() {
 
@@ -74,8 +72,6 @@ public class DriveBase {
        // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
        
-        leftPID = new KYSPID(P, I, D, F,setPoint);
-		//pid = new PIDLinked(leftPID, rightPID);
 		
 		
         
@@ -128,6 +124,11 @@ public class DriveBase {
 		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
 
 		setTolerance();
+
+		
+		pids = new PIDLinked(leftPidController, rightPidController);
+		
+		pids.setsrxs(leftTalonSRX, rightTalonSRX);
 	}
 
 	public void resetEncoders () {
@@ -215,7 +216,8 @@ public class DriveBase {
 	
 	public void drivePID() {
 
-		leftPidController.enable();
+		pids.drive();
+		//leftPidController.enable();
 		//System.out.println (leftTalonSRX.getCurrentPositionInches());
 		//rightPidController.enable();
 		//setSpeed(leftTalonSRX.getPIDWrite(), rightTalonSRX.getPIDWrite());
@@ -236,23 +238,19 @@ public class DriveBase {
 	}
 
 	public void setTolerance() {
-		leftPidController.setPercentTolerance(TOLERANCE);
-		rightPidController.setPercentTolerance(TOLERANCE);
+		rightPidController.setAbsoluteTolerance(TOLERANCE);
+		leftPidController.setAbsoluteTolerance(TOLERANCE);
 		
 	}
 
 	public void setPIDValues(double p, double i, double d, double f) {
-		leftPidController.setPID(p, i, d, f);
-		//leftPID.setPIDs (p, i, d, f);
-		rightPidController.setPID(p, i, d, f);
-		//leftPID.setPIDs (p, i, d, f);
+		pids.setPIDValues(p, i, d, f);
 	}
 
 	public void setDriveDistance(double setPoint) {
-		leftPidController.setSetpoint(leftTalonSRX.inchesToTicks(setPoint));
-		//leftPID.setSetPoint(setPoint);
-		rightPidController.setSetpoint(rightTalonSRX.inchesToTicks(setPoint));
-		//leftPID.setSetPoint(setPoint);
+		pids.set(leftTalonSRX.inchesToTicks(setPoint), leftTalonSRX.inchesToTicks(setPoint));
+		//leftPidController.setSetpoint(leftTalonSRX.inchesToTicks(setPoint));
+		//rightPidController.setSetpoint(rightTalonSRX.inchesToTicks(setPoint));
 	}
 
 
@@ -260,12 +258,13 @@ public class DriveBase {
     public double getI () {return leftPidController.getI();}
 	public double getD () {return leftPidController.getD();}
 	public double getF () {return leftPidController.getF();}
-	public double getSetPoint () {return /*leftPidController.getSetpoint()*/ leftPID.getSetPoint();}
-	public double getError () {return /*leftPidController.getError()*/ leftPID.getError();}
+	public double getSetPoint () {return leftPidController.getSetpoint();}
+	public double getError () {return leftPidController.getError();}
 	public double getDistanceInchesL() { return leftTalonSRX.getCurrentPositionInches();}
 	public double getDistanceTicksL() { return leftTalonSRX.getCurrentPositionTicks();}
 	public double getDistanceInchesR() { return rightTalonSRX.getCurrentPositionInches();}
 	public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
+	public PIDLinked getPids () {return pids;}
 	
 //myNemChef - Chris
 }

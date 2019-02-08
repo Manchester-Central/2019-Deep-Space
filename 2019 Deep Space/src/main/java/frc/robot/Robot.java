@@ -2,6 +2,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,12 +19,15 @@ public class Robot extends IterativeRobot {
   DriveBase drive;
   ControllerSecretary cs;
   
+  AnalogInput x;
 
   /**
    * 
    */
   @Override
   public void robotInit() {
+
+    x = new AnalogInput(2);
     
     drive = new DriveBase();
     cs = new ControllerSecretary();
@@ -143,15 +148,21 @@ public class Robot extends IterativeRobot {
 
     //drive.resetEncoders();
     //\drive.stopDrivePID();
+
+    SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
+    SmartDashboard.putNumber("analog out", x.getVoltage());
     
-    drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
-      SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
+    //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
+     // SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
+
+    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
 
      drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
   
      if (cs.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
        drive.resetEncoders();
      }
+
     SmartDashboard.updateValues();
 
 

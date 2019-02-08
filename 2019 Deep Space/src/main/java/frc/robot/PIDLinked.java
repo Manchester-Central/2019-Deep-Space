@@ -7,26 +7,41 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PIDController;
+
 /**
  * Add your docs here.
  */
 public class PIDLinked {
 
-    KYSPID[] pids;
-    Double[][] pidValues;
+    //KYSPID[] pids;
+    
+    PIDController[] pids;
+    ChaosBetterTalonSRX[] srxs;
 
-    public PIDLinked (KYSPID ... pids) {
+    public final double TURN_ERROR_CONSTANT = 6;
+
+    public PIDController[] getPids () {return pids;}
+
+    public PIDLinked (PIDController ... pids) {
 
         this.pids = pids;
+        //pids[0].setSetpoint(0D);
 
-        int i = 0;
-        for (KYSPID pid : this.pids) {
+    }
 
-            pidValues[i][0] = pid.getP();
-            pidValues[i][1] = pid.getI();
-            pidValues[i][2] = pid.getD();
-            pidValues[i][3] = pid.getF();
-            i ++;
+    public void setsrxs (ChaosBetterTalonSRX ... srxs) {
+
+        this.srxs = srxs;
+
+    }
+
+    public void setPIDValues (double P, double I, double D, double F) {
+
+        for (PIDController pid : pids) {
+
+            pid.setPID(P, I, D, F);
+
         }
 
     }
@@ -40,9 +55,7 @@ public class PIDLinked {
         int i = 0;
         for (double setPoint : setPoints) {
 
-            Double[] pidV =  pidValues[i];
-
-            pids[i].reset(pidV[0], pidV[1], pidV[2], pidV[3],setPoint);
+            pids[i].setSetpoint(setPoint);
 
             i++;
 
@@ -50,33 +63,36 @@ public class PIDLinked {
 
     }
 
-    public double[] getLinkedPID (double ... currentPositions) {
+    public void drive () {
 
         int length = pids.length;
 
-        double[] returnValues = new double[length];
-
         double averageError = 0D;
 
-        for (KYSPID pid : pids) {
+        for (PIDController pid : pids) {
             
-            averageError += pid.getError() / pid.getSetPoint();
+            averageError += pid.getError() / pid.getSetpoint();
+
+
+
 
         }
 
         averageError /= length;
 
+       // System.out.print ("average error: " + averageError + ", ");
+
         for ( int i = 0; i < length; i++ ) {
             
-            KYSPID pid = pids[i];
+            PIDController pid = pids[i];
 
-            double adjustment = (pid.getError() / pid.getSetPoint()) - averageError;
+            srxs[i].setAdjustment(((pid.getError() / pid.getSetpoint()) - averageError) * TURN_ERROR_CONSTANT);
 
-            returnValues[i] = pid.getPIDSpeed(currentPositions[i]) + adjustment;
+           // System.out.print ("adjustment " + i + ": " + ((pid.getError() / pid.getSetpoint()) - averageError) + ", ");
+
+            pid.enable();
 
         }
-
-        return returnValues;
 
     }
 
