@@ -66,6 +66,10 @@ public class Camera {
 
     }
 
+   // public static double getBetterDistance () {
+     //   return ;
+    //}
+
     /***
      * tx: horizontal angle from the center of the camera to the vision target
      * @return angle in degrees

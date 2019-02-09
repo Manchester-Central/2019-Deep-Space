@@ -152,8 +152,16 @@ public class DriveBase {
 		//leftTalonSRX.set(ControlMode.PercentOutput, leftSpeed);
 		leftTalonSRX.set(leftSpeed);
 		rightTalonSRX.set(rightSpeed);
+		followTalon();
 		
 		//System.out.println(leftSpeed);
+
+	}
+
+	public void followTalon () {
+
+		double leftSpeed = leftTalonSRX.get();
+		double rightSpeed = rightTalonSRX.get();
 
 		leftBackVictor.set(leftSpeed);
 		leftMidVictor.set(leftSpeed);
@@ -170,6 +178,8 @@ public class DriveBase {
 		return "Left speed = " + leftTalonSRX.get() + ", Right speed = " + rightTalonSRX.get();
 
 	}
+
+
 
 	/***
 	 * drive based on the camera autonomously
@@ -211,12 +221,15 @@ public class DriveBase {
 			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
 				rightPidController.enable();
 		}
+		
+		followTalon();
 
 	}
 	
 	public void drivePID() {
 
 		pids.drive();
+		followTalon();
 		//leftPidController.enable();
 		//System.out.println (leftTalonSRX.getCurrentPositionInches());
 		//rightPidController.enable();

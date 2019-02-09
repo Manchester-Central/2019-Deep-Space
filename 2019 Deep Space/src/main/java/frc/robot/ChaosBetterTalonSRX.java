@@ -43,12 +43,10 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
 
     public void setAdjustment (double value) {
         value = FunctionsThatShouldBeInTheJDK.clamp(value, -ADJUSTMENT_MAX, ADJUSTMENT_MAX);
-        adjustment = 1D - value;
+        adjustment = 1D + value;
     }
 
-    public void resetEncoder() {
-        
-        //setSelectedSensorPosition(0, 0, 0);    
+    public void resetEncoder() {   
         getSensorCollection().setQuadraturePosition(0,10);
     }
 
@@ -79,11 +77,8 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
 
     @Override
     public void pidWrite(double output) {
-       
-        System.out.println(adjustment);
+        System.out.print(adjustment * output + ", ");
         set(ControlMode.PercentOutput, output * adjustment);
-       
-        // currentSet = output;
     }
   
     public double getPIDWrite() {

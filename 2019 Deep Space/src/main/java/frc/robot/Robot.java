@@ -131,7 +131,8 @@ public class Robot extends IterativeRobot {
 
     SmartDashboard.updateValues();
     
-
+    System.out.println();
+  
   }
 
   /**
