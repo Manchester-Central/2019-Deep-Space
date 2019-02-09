@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import frc.ChaosSensors.ChaosBetterTalon;
 
 /**
  * Add your docs here.
  */
 public class Arm {
 
-    Talon elbow;
+    ChaosBetterTalon elbow;
     Victor extender;
 
     Encoder extenderEncoder;
@@ -74,6 +75,7 @@ public class Arm {
     public double getCenterOfMass() {
 
         return (ARM_WEIGHT * ARM_DISTANCE + EXTENTION_WEIGHT * getExtenderPosition()) / TOTAL_WEIGHT;
+
     }
 
     public double getExtenderPosition() {

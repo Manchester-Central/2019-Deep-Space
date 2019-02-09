@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
+import frc.ChaosSensors.TalonSRX_Encoder;
+import frc.robot.Controller.DPadDirection;
 
 /**
  * Calculates new speed
@@ -192,6 +195,29 @@ public class DriveBase {
 
 
 		
+	}
+
+	@Deprecated
+	public void testMotors (ControllerSecretary cs) {
+		if (cs.driver.getDPad()  == Controller.DPadDirection.UP) {
+			leftTalonSRX.set(1);
+		} else if (cs.driver.getDPad()  == Controller.DPadDirection.LEFT) {
+			leftBackVictor.set(1);
+		} else if (cs.driver.getDPad()  == Controller.DPadDirection.DOWN) {
+			leftMidVictor.set(1);
+		} else if (cs.driver.getDPad()  == Controller.DPadDirection.RIGHT) {
+			leftFrontVictor.set(1);
+		} else if (cs.driver.buttonHeld(Controller.UP_Y)) {
+			rightTalonSRX.set(1);
+		} else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
+			rightBackVictor.set(1);
+		} else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+			rightMidVictor.set(1);
+		} else if (cs.driver.buttonHeld(Controller.RIGHT_B)) {
+			rightFrontVictor.set(1);
+		} else {
+		  setSpeed(0.0, 0.0);
+		}
 	}
 
 	public void cameraDriveWithPID () {

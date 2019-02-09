@@ -5,32 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.ChaosSensors;
 
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.Talon;
+import com.revrobotics.CANSparkMax;
+
 import frc.FunctionsThatShouldBeInTheJDK;
 
 /**
  * Add your docs here.
  */
-public class ChaosBetterTalon extends Talon implements PIDOutput{
+public class ChaosBetterCANSpark extends CANSparkMax{
 
     private double sign;
     private double adjustment;
     public final double ADJUSTMENT_MAX = 1;
 
-
-    double currentSet = 0;
-    /***
-     * Talon with added functionality
-     * @param port - 
-     */
-    
-    public ChaosBetterTalon(int port) {
-
-        super(port);
-        adjustment = 1D;
+    public ChaosBetterCANSpark(int port) {
+        super(port, MotorType.kBrushless);
     }
 
     public void setAdjustment (double value) {
@@ -44,9 +35,4 @@ public class ChaosBetterTalon extends Talon implements PIDOutput{
         System.out.print(adjustment * output );
         set(output * adjustment);
     }
-  
-    public double getPIDWrite() {
-        return currentSet;
-    }
-
 }

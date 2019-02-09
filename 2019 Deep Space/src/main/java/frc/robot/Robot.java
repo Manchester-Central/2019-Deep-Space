@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
+import frc.Camera.camState;
 
 /**
  * 
@@ -46,11 +47,19 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotPeriodic() {
 
+    Camera.changeCamMode(camState.image);
+
+    if (cs.driver.buttonPressed(Controller.UP_Y)) {
+  Camera.toggleCamState();
+
+    }
+
+    //  System.out.println (Camera.GetHorizontalAngle()); 
+
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
     SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
     SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
-
     
     SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
     SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
@@ -112,26 +121,20 @@ public class Robot extends IterativeRobot {
     //System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
 
    //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
-
     
-    /*
-    if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      //drive.cameraDrive();
-      //drive.stopDrivePID();
-    } else 
-    */
-    if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+    // if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+    //   drive.stopDrivePID();  
+    //   drive.cameraDriveWithPID();
+    // } else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
       
-      drive.drivePID();
+    //   drive.drivePID();
       
-    } else {
-      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
-      drive.stopDrivePID();
-    }
+    // } else {
+    //   drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+    //   drive.stopDrivePID();
+    // }
 
     SmartDashboard.updateValues();
-    
-    System.out.println();
   
   }
 
@@ -160,7 +163,7 @@ public class Robot extends IterativeRobot {
 
      drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
   
-     if (cs.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
+     if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
        drive.resetEncoders();
      }
 

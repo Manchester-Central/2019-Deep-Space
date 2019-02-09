@@ -19,6 +19,10 @@ public class Camera {
 
     //
 
+    public static camState state = camState.driver;
+
+    public  static boolean isDriver = true;
+
     static double robotHeight = 0D;
     static double visionTargetHeight = 1D;
     static double cameraAngle = 0D;
@@ -66,10 +70,6 @@ public class Camera {
 
     }
 
-   // public static double getBetterDistance () {
-     //   return ;
-    //}
-
     /***
      * tx: horizontal angle from the center of the camera to the vision target
      * @return angle in degrees
@@ -116,10 +116,40 @@ public class Camera {
 
         if (set.equals(camState.image)) {
             getEntry("camMode").setNumber(0);
+            isDriver = false;
         } else  {
             getEntry("camMode").setNumber(1); 
+            isDriver = true;
         } 
+
+        state = set;
     
+    }
+
+    public static void toggleCamState () {
+        
+        System.out.println(getEntry("camMode").getDouble(0) == 1);
+       // if (getEntry("camMode").getDouble(0) == 1) {
+         //   getEntry("camMode").setDouble(1);
+        //} else {
+         //   getEntry("camMode").setDouble(1);
+        //}
+        getEntry("camMode").setDouble(1);
+        System.out.println(getEntry("camState").getDouble(0));
+    }
+
+    public static camState getCameraState () {
+
+        return state;
+
+    }
+
+    public static boolean isDriver() {
+        return isDriver;
+    }
+
+    public static boolean cameraStateIsDriver () {
+        return((double) getEntry("camMode").getNumber(0)) == 1.0;
     }
 
     /**

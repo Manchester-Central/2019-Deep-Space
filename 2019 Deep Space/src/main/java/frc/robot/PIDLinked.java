@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PIDController;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
 
 /**
  * Add your docs here.
