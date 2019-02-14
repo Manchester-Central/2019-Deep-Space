@@ -56,7 +56,7 @@ public class PIDLinked {
         int i = 0;
         for (double setPoint : setPoints) {
 
-            pids[i].setSetpoint(setPoint);
+            pids[i].setSetpoint(srxs[0].inchesToTicks(setPoint));
 
             i++;
 
@@ -94,6 +94,12 @@ public class PIDLinked {
             pid.enable();
 
         }
+
+    }
+
+    public void enableSpecificPID (int index){
+
+        pids[index].enable();
 
     }
 

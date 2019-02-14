@@ -55,6 +55,13 @@ public class DriveBase {
 	private double D = 0;
 	private double F = 0.5;
 	private double setPoint = 24.0;
+
+	private double minAngleFound;
+	private int i;
+	private double[] squareSum;
+
+	public static final int SQUARE_COUNTER = 20;
+	public static final double SPIN_DISTANCE = 12;
 	
 	public static final double TOLERANCE = 2.5;
 
@@ -63,14 +70,19 @@ public class DriveBase {
 	public static final double LENGTH_BETWEEN_WHEELS = 25.6;
 
 	// used for camera stuff
-	private boolean turningLeft;
+	private boolean turningRight;
 	private double distance;
 	private double arcLength;
 	// used for camera stuff 
 
     public DriveBase() {
 
-		turningLeft = false;
+		minAngleFound = 90D;
+		squareSum = new double[SQUARE_COUNTER];
+		i = 0;
+
+
+		turningRight = false;
 
        // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
@@ -132,6 +144,57 @@ public class DriveBase {
 		pids = new PIDLinked(leftPidController, rightPidController);
 		
 		pids.setsrxs(leftTalonSRX, rightTalonSRX);
+	}
+
+	public void resetSquareSum () {
+
+		for (int i = 0; i < SQUARE_COUNTER; i++) {
+			squareSum[i] = 90;
+		}
+
+		turningRight = true;
+	}
+
+	private void addValueToSquareSum (double value) {
+		for (int i = 0; i < SQUARE_COUNTER - 1; i++) {
+			squareSum[i + 1] = i; 
+		}
+
+		squareSum[0] = value;
+	}
+
+	public double getAverageCamValue () {
+		double sum = 0;
+		for (double x : squareSum) {
+			sum += x;
+		}
+		return sum / SQUARE_COUNTER;
+	}
+
+	public boolean squareWithVisionTarget () {
+		addValueToSquareSum(Camera.getEntry("ty").getDouble(20));
+		
+		i++;
+		if (i % 20 != 0) {
+			return true;
+		}
+
+		if (getAverageCamValue() < minAngleFound) {
+			minAngleFound = getAverageCamValue();
+			if (turningRight) {
+				setSpeed (0.07, -0.07);
+			} else {
+				setSpeed (-0.07, 0.07);
+			}
+			return true;
+		}
+
+		if (turningRight) {
+			turningRight = false;
+			return true;
+		}
+
+		return false;
 	}
 
 	public void resetEncoders () {
@@ -220,33 +283,43 @@ public class DriveBase {
 		}
 	}
 
-	public void cameraDriveWithPID () {
+	public void initializeCameraDrive () {
+
+		
 		
 		double horizontalAngle = Camera.getEntry("tx").getDouble(0D);
 		double sign = FunctionsThatShouldBeInTheJDK.getSign(horizontalAngle);
 		double absoluteHorizontalAngle = sign * horizontalAngle;
 		double absCamAngleRadians = Math.toRadians (absoluteHorizontalAngle);
 
-		if (!(leftPidController.isEnabled() || rightPidController.isEnabled()))  {
+		turningRight = sign > 0D;
 
-			turningLeft = sign > 0D;
+		arcLength = ((Math.PI/2) - absCamAngleRadians) * LENGTH_BETWEEN_WHEELS;
+		distance = Camera.getDistance() - (LENGTH_BETWEEN_WHEELS* Math.sin(absCamAngleRadians));
 
-			arcLength = ((Math.PI/2) - absCamAngleRadians) * LENGTH_BETWEEN_WHEELS;
-			distance = Camera.getDistance() - (LENGTH_BETWEEN_WHEELS* Math.sin(absCamAngleRadians));
+		double driveDistance = distance + arcLength;
 
-			if (turningLeft)
-				rightPidController.enable();
-			else
-				leftPidController.enable();
-		}
+		pids.set(driveDistance, driveDistance);
 
-		if (turningLeft) {
-			if (rightTalonSRX.getCurrentPositionInches() > arcLength)
-				leftPidController.enable();
-		} else {
+		if (turningRight)
+			pids.enableSpecificPID(0);
+		else
+			pids.enableSpecificPID(1);
+	}
+
+	public void cameraDriveWithPID () {
+
+		if (turningRight) {
 			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
-				rightPidController.enable();
+				pids.enableSpecificPID(1);
+				//pids.drive();
+		} else {
+			if (rightTalonSRX.getCurrentPositionInches() > arcLength)
+				pids.enableSpecificPID(0);
+				//pids.drive();
 		}
+
+		System.out.println (rightTalonSRX.getCurrentPositionInches() > arcLength);
 		
 		followTalon();
 
@@ -304,6 +377,7 @@ public class DriveBase {
 	public double getDistanceInchesR() { return rightTalonSRX.getCurrentPositionInches();}
 	public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
 	public PIDLinked getPids () {return pids;}
+	public double getArcLength () {return arcLength;}
 	
 //myNemChef - Chris
 }

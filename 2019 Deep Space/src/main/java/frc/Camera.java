@@ -23,11 +23,12 @@ public class Camera {
 
     public  static boolean isDriver = true;
 
-    static double robotHeight = 0D;
-    static double visionTargetHeight = 1D;
+    static double robotHeight = 9D;
+    static double visionTargetHeight = 380D; // higher vision target
     static double cameraAngle = 0D;
-    static double maxAcceleration = 0.04;
-    static double maxSpeedDistance = 69; 
+    //static double maxAcceleration = 0.04;
+    static double maxSpeed = .3;
+    static double maxSpeedDistance = 100; 
     /***
      *  states for the camera image
      */
@@ -90,14 +91,23 @@ public class Camera {
 
 
         double[] driveValues = {0D, 0D};
-        //double maxNewSpeedLeft = currentSpeedLeft + maxAcceleration;
+       // double maxNewSpeedLeft = currentSpeedLeft + maxAcceleration;
         //double maxNewSpeedRight = currentSpeedRight + maxAcceleration;
 
-        driveValues[0] = (getDistance() / maxSpeedDistance) - (GetHorizontalAngle() / 27D);
-        driveValues[1] = (getDistance() / maxSpeedDistance) + (GetHorizontalAngle() / 27D);
+        driveValues[0] = (getDistance() / maxSpeedDistance) * maxSpeed;
+        driveValues[1] = (getDistance() / maxSpeedDistance) * maxSpeed;
 
-        driveValues[0] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[0], -1D, 1D);
-        driveValues[1] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[1], -1D, 1D);
+        driveValues[0] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[0], -maxSpeed, maxSpeed);
+        driveValues[1] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[1], -maxSpeed, maxSpeed);
+
+        driveValues[0] += (GetHorizontalAngle() / 27D) * maxSpeed;
+        driveValues[1] -= (GetHorizontalAngle() / 27D) * maxSpeed;
+
+        driveValues[0] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[0], -maxSpeed, maxSpeed);
+        driveValues[1] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[1], -maxSpeed, maxSpeed);
+
+       // driveValues[0] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[0], -maxSpeed, maxSpeed);
+        //driveValues[1] = FunctionsThatShouldBeInTheJDK.clamp(driveValues[1], -maxSpeed, maxSpeed);
 
         //driveValues[0] = (driveValues[0] > maxNewSpeedLeft) ? maxNewSpeedLeft : driveValues[0]; 
         //driveValues[1] = (driveValues[1] > maxNewSpeedRight) ? maxNewSpeedRight : driveValues[1];
@@ -105,6 +115,8 @@ public class Camera {
         return driveValues;
 
     }
+
+    
 
     //public static 
     

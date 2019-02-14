@@ -122,17 +122,33 @@ public class Robot extends IterativeRobot {
 
    //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
     
-    // if (cs.driver.buttonHeld(Controller.DOWN_A)) {
-    //   drive.stopDrivePID();  
-    //   drive.cameraDriveWithPID();
-    // } else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
+    if (cs.driver.buttonPressed(Controller.DOWN_A)) {
+      drive.initializeCameraDrive();
+      System.out.println (drive.getArcLength());
+    } else if (cs.driver.buttonPressed(Controller.UP_Y)) {
+      drive.resetSquareSum();
+    }
+
+    if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+
+      //double[] dd = Camera.getDriveDirections(drive.leftTalonSRX.get(), drive.rightTalonSRX.get());
+
+      drive.cameraDriveWithPID();
+      //drive.setSpeed(dd[0], dd[1]);
+     // System.out.println ("distance 0w0: " + Camera.getDistance());
+
+    } else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
       
-    //   drive.drivePID();
+      drive.drivePID();
       
-    // } else {
-    //   drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
-    //   drive.stopDrivePID();
-    // }
+    } else if (cs.driver.buttonHeld(Controller.UP_Y)) {
+      
+      drive.squareWithVisionTarget();
+      
+    } else {
+      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+      drive.stopDrivePID();
+    }
 
     SmartDashboard.updateValues();
   
