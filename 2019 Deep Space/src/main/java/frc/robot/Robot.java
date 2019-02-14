@@ -18,6 +18,8 @@ public class Robot extends IterativeRobot {
 
   DriveBase drive;
   ControllerSecretary cs;
+  Arm arm;
+  IntakeClimber climb;
   
   AnalogInput x;
 
@@ -120,14 +122,11 @@ public class Robot extends IterativeRobot {
       //drive.stopDrivePID();
     } else 
     */
-    if (cs.driver.buttonPressed(Controller.LEFT_X)) {
-      
-      drive.drivePID();
-      
-    } else {
-      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
-      drive.stopDrivePID();
-    }
+
+    driveControls();
+    ballControls();
+    hatchPanelControls();
+    climbControls();
 
     SmartDashboard.updateValues();
     
@@ -140,9 +139,79 @@ public class Robot extends IterativeRobot {
   @Override
   public void testPeriodic() {
 
-    
+
 
   }
+
+  private void driveControls() {
+
+    if (cs.driver.buttonPressed(Controller.LEFT_X))
+    {
+     
+     drive.drivePID();
+     
+   } else {
+     drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+     drive.stopDrivePID();
+   }
+
+  }
+
+  private void ballControls() { // fill in speed values
+
+    while (cs.driver.buttonPressed(Controller.LEFT_BUMPER))
+    {
+      if (cs.driver.buttonPressed(Controller.DOWN_A))
+      {
+        //arm.setElbowSpeed(speed);
+        //arm.setExtenderSpeed(speed);
+      }
+      else if (cs.driver.buttonPressed(Controller.RIGHT_B))
+      {
+        //arm.setElbowSpeed(speed);
+        //arm.setExtenderSpeed(speed);
+      }
+      else if (cs.driver.buttonPressed(Controller.UP_Y))
+      {
+        //arm.setElbowSpeed(speed);
+        //arm.setExtenderSpeedd(speed);
+      }
+    }
+  }
+
+  private void hatchPanelControls() { // fill in speedo values
+
+    while (cs.driver.buttonPressed(Controller.RIGHT_BUMPER))
+    {
+      if (cs.driver.buttonPressed(Controller.DOWN_A))
+      {
+        //arm.setElbowSpeed(speed);
+        //arm.setExtenderSpeed(speed);
+      }
+      else if (cs.driver.buttonPressed(Controller.RIGHT_B))
+      {
+        //arm.setElbowSpeed(speed);
+        //arm.setExtenderSpeed(speed);
+      }
+      else if (cs.driver.buttonPressed(Controller.UP_Y))
+      {
+        //arm.setElbowSpeed(speed);
+        //arm.setExtenderSpeedd(speed);
+      }
+    }
+  }
+
+  private void climbControls() { // does buttonPressed allow hold?
+    if (cs.driver.buttonPressed(Controller.LEFT_TRIGGER)) 
+    {
+      climb.setFlywheel(-0.5);
+    } 
+    else if (cs.driver.buttonPressed(Controller.RIGHT_TRIGGER)) 
+    {
+      climb.setFlywheel(0.5);
+    }
+  }
+
   @Override
   public void disabledPeriodic() {
 
