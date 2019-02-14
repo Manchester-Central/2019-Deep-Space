@@ -40,8 +40,16 @@ public class Controller {
         stick.getRawAxis(0);
     }
 
-    public boolean buttonPressed(int buttonNum) {
+    public boolean buttonHeld(int buttonNum) {
         return stick.getRawButton(buttonNum);
+    }
+
+    public boolean buttonPressed (int buttonNum) {
+        return stick.getRawButtonPressed(buttonNum);
+    }
+
+    public boolean buttonReleased (int buttonNum) {
+        return stick.getRawButtonReleased(buttonNum);
     }
 
     public double getLeftX() {

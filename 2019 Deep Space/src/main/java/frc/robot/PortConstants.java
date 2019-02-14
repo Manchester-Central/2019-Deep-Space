@@ -38,5 +38,8 @@ public class PortConstants {
 
 	public final static int FLYWHEEL = 0;
 
-	public final static int Potentiometer = 0;
+	public static final int Potentiometer = 0;
+
+	public static final int EXTENDER_ENCODER_A = 0;
+	public static final int EXTENDER_ENCODER_B = 0;
 }

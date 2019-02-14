@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
+import frc.ChaosSensors.TalonSRX_Encoder;
+import frc.robot.Controller.DPadDirection;
 
 /**
  * Calculates new speed
@@ -152,8 +155,16 @@ public class DriveBase {
 		//leftTalonSRX.set(ControlMode.PercentOutput, leftSpeed);
 		leftTalonSRX.set(leftSpeed);
 		rightTalonSRX.set(rightSpeed);
+		followTalon();
 		
 		//System.out.println(leftSpeed);
+
+	}
+
+	public void followTalon () {
+
+		double leftSpeed = leftTalonSRX.get();
+		double rightSpeed = rightTalonSRX.get();
 
 		leftBackVictor.set(leftSpeed);
 		leftMidVictor.set(leftSpeed);
@@ -171,6 +182,8 @@ public class DriveBase {
 
 	}
 
+
+
 	/***
 	 * drive based on the camera autonomously
 	 */
@@ -182,6 +195,29 @@ public class DriveBase {
 
 
 		
+	}
+
+	@Deprecated
+	public void testMotors (ControllerSecretary cs) {
+		if (cs.driver.getDPad()  == Controller.DPadDirection.UP) {
+			leftTalonSRX.set(1);
+		} else if (cs.driver.getDPad()  == Controller.DPadDirection.LEFT) {
+			leftBackVictor.set(1);
+		} else if (cs.driver.getDPad()  == Controller.DPadDirection.DOWN) {
+			leftMidVictor.set(1);
+		} else if (cs.driver.getDPad()  == Controller.DPadDirection.RIGHT) {
+			leftFrontVictor.set(1);
+		} else if (cs.driver.buttonHeld(Controller.UP_Y)) {
+			rightTalonSRX.set(1);
+		} else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
+			rightBackVictor.set(1);
+		} else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+			rightMidVictor.set(1);
+		} else if (cs.driver.buttonHeld(Controller.RIGHT_B)) {
+			rightFrontVictor.set(1);
+		} else {
+		  setSpeed(0.0, 0.0);
+		}
 	}
 
 	public void cameraDriveWithPID () {
@@ -211,12 +247,15 @@ public class DriveBase {
 			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
 				rightPidController.enable();
 		}
+		
+		followTalon();
 
 	}
 	
 	public void drivePID() {
 
 		pids.drive();
+		followTalon();
 		//leftPidController.enable();
 		//System.out.println (leftTalonSRX.getCurrentPositionInches());
 		//rightPidController.enable();

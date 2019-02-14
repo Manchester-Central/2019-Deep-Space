@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PIDController;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
 
 /**
  * Add your docs here.
@@ -19,7 +20,7 @@ public class PIDLinked {
     PIDController[] pids;
     ChaosBetterTalonSRX[] srxs;
 
-    public final double TURN_ERROR_CONSTANT = 6;
+    public final double TURN_GAINS = 24;
 
     public PIDController[] getPids () {return pids;}
 
@@ -86,7 +87,7 @@ public class PIDLinked {
             
             PIDController pid = pids[i];
 
-            srxs[i].setAdjustment(((pid.getError() / pid.getSetpoint()) - averageError) * TURN_ERROR_CONSTANT);
+            srxs[i].setAdjustment(((pid.getError() / pid.getSetpoint()) - averageError) * TURN_GAINS);
 
            // System.out.print ("adjustment " + i + ": " + ((pid.getError() / pid.getSetpoint()) - averageError) + ", ");
 

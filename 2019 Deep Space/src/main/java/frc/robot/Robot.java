@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
+import frc.Camera.camState;
 
 /**
  * 
@@ -20,6 +21,7 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
+  Grabber grab;
   
   AnalogInput x;
 
@@ -48,11 +50,19 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotPeriodic() {
 
+    Camera.changeCamMode(camState.image);
+
+    if (cs.driver.buttonPressed(Controller.UP_Y)) {
+  Camera.toggleCamState();
+
+    }
+
+    //  System.out.println (Camera.GetHorizontalAngle()); 
+
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
     SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
     SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
-
     
     SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
     SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
@@ -114,7 +124,6 @@ public class Robot extends IterativeRobot {
     //System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
 
    //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
-
     
     /*
     if (cs.driver.buttonPressed(Controller.DOWN_A)) {
@@ -124,13 +133,19 @@ public class Robot extends IterativeRobot {
     */
 
     driveControls();
-    ballControls();
-    hatchPanelControls();
+
+    if(cs.driver.buttonPressed(Controller.LEFT_BUMPER)) {
+      ballControls();
+    }
+    
+    else if (cs.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
+      hatchPanelControls();
+    }
+
     climbControls();
 
     SmartDashboard.updateValues();
-    
-
+  
   }
 
   /**
@@ -159,57 +174,53 @@ public class Robot extends IterativeRobot {
 
   private void ballControls() { // fill in speed values
 
-    while (cs.driver.buttonPressed(Controller.LEFT_BUMPER))
-    {
       if (cs.driver.buttonPressed(Controller.DOWN_A))
       {
-        //arm.setElbowSpeed(speed);
-        //arm.setExtenderSpeed(speed);
+        //arm.pidGoToAngle(speed);
       }
       else if (cs.driver.buttonPressed(Controller.RIGHT_B))
       {
-        //arm.setElbowSpeed(speed);
-        //arm.setExtenderSpeed(speed);
+        //arm.pidGoToAngle(speed);
       }
       else if (cs.driver.buttonPressed(Controller.UP_Y))
       {
-        //arm.setElbowSpeed(speed);
-        //arm.setExtenderSpeedd(speed);
+        //arm.pidGoToAngle(speed);
       }
     }
   }
 
   private void hatchPanelControls() { // fill in speedo values
 
-    while (cs.driver.buttonPressed(Controller.RIGHT_BUMPER))
-    {
       if (cs.driver.buttonPressed(Controller.DOWN_A))
       {
-        //arm.setElbowSpeed(speed);
-        //arm.setExtenderSpeed(speed);
+        //arm.pidGoToAngle(speed);
       }
       else if (cs.driver.buttonPressed(Controller.RIGHT_B))
       {
-        //arm.setElbowSpeed(speed);
-        //arm.setExtenderSpeed(speed);
+        //arm.pidGoToAngle(speed);
       }
       else if (cs.driver.buttonPressed(Controller.UP_Y))
       {
-        //arm.setElbowSpeed(speed);
-        //arm.setExtenderSpeedd(speed);
+        //arm.pidGoToAngle(speed);
       }
     }
   }
 
   private void climbControls() { // does buttonPressed allow hold?
-    if (cs.driver.buttonPressed(Controller.LEFT_TRIGGER)) 
+    if (cs.driver.buttonHeld(Controller.LEFT_TRIGGER)) 
     {
       climb.setFlywheel(-0.5);
     } 
-    else if (cs.driver.buttonPressed(Controller.RIGHT_TRIGGER)) 
+    else if (cs.driver.buttonHeld(Controller.RIGHT_TRIGGER)) 
     {
       climb.setFlywheel(0.5);
     }
+  }
+
+  private void intakeControls() {
+
+    // intake controls go here
+
   }
 
   @Override
@@ -228,7 +239,7 @@ public class Robot extends IterativeRobot {
 
      drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
   
-     if (cs.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
+     if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
        drive.resetEncoders();
      }
 
