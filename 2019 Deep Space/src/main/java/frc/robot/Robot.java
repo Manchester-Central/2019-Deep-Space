@@ -160,6 +160,14 @@ public class Robot extends IterativeRobot {
 
   private void driveControls() {
 
+    /**
+     * 
+     * Controls for driving:
+     * Joysticks: driving (tank drive)
+     * X button: PID drive to align w/ vision target
+     * 
+     */
+
     if (cs.driver.buttonPressed(Controller.LEFT_X))
     {
      
@@ -172,8 +180,15 @@ public class Robot extends IterativeRobot {
 
   }
 
-  private void ballControls() { // fill in speed values
+  private void ballControls() { // fill in speed values and add method for arm extend
 
+    /**
+     *
+     * Controls for ball control:
+     * While Left Bumper held,
+     * A = low, B = mid, Y = high
+     * 
+     *   */
       if (cs.driver.buttonPressed(Controller.DOWN_A))
       {
         //arm.pidGoToAngle(speed);
@@ -189,7 +204,15 @@ public class Robot extends IterativeRobot {
     }
   }
 
-  private void hatchPanelControls() { // fill in speedo values
+  private void hatchPanelControls() { // fill in speedo values and add method for arm extend
+
+    /**
+     * 
+     * Hatch Panel Controls:
+     * While Right Bumper is held:
+     * A = low, B = mid, Y = high
+     * 
+     */
 
       if (cs.driver.buttonPressed(Controller.DOWN_A))
       {
@@ -207,6 +230,14 @@ public class Robot extends IterativeRobot {
   }
 
   private void climbControls() { // does buttonPressed allow hold?
+
+    /**
+     * 
+     * Climb Controls:
+     * Left Trigger moves climb mech down
+     * Right Trigger moves climb mech up
+     */
+
     if (cs.driver.buttonHeld(Controller.LEFT_TRIGGER)) 
     {
       climb.setFlywheel(-0.5);
@@ -220,6 +251,16 @@ public class Robot extends IterativeRobot {
   private void intakeControls() {
 
     // intake controls go here
+    // left joystick
+    // Declare grab.(insert method here)(parameter);
+
+  }
+
+  private void manualArmControls() {
+
+    // manual arm controls go here
+    // right joystick
+    // arm.setArmDistance(parameter);
 
   }
 

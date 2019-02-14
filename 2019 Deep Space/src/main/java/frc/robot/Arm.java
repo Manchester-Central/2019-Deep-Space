@@ -72,6 +72,12 @@ public class Arm {
         armPID.enable();
     }
 
+    public void setArmDistance (double distance) {
+
+        // add code to control arm distance
+
+    }
+
     public double getCenterOfMass() {
 
         return (ARM_WEIGHT * ARM_DISTANCE + EXTENTION_WEIGHT * getExtenderPosition()) / TOTAL_WEIGHT;
