@@ -34,6 +34,7 @@ public class Arm {
     public static final double ARM_WEIGHT = 20.0;
     public static final double EXTENTION_WEIGHT = 20.0;
     public static final double TOTAL_WEIGHT = ARM_WEIGHT;
+    public static final double ARM_HEIGHT_INCHES = 42;
 
     public static final double GEAR_RATIO = 2.0;
     public static final double MOTOR_STALL_TORQUE = 0.71;
@@ -67,9 +68,16 @@ public class Arm {
 
     public void pidGoToAngle(double angle)  {
 
-        armPID.setSetpoint(angle);
-        armPID.setF(TOTAL_WEIGHT * getCenterOfMass() * Math.acos(getPotValue()) * GEAR_RATIO / MOTOR_STALL_TORQUE);
-        armPID.enable();
+        if (!willCrash(angle)) {
+            armPID.setSetpoint(angle);
+            armPID.setF(TOTAL_WEIGHT * getCenterOfMass() * Math.acos(getPotValue()) * GEAR_RATIO / MOTOR_STALL_TORQUE);
+            armPID.enable();
+        }
+        else {
+            double wantArmDistance = ((ARM_HEIGHT_INCHES / Math.acos(angle)) - 0.5);
+            setArmDistance(wantArmDistance);
+            
+        }
     }
 
     public void setArmDistance (double distance) {
@@ -92,6 +100,13 @@ public class Arm {
 
     public double getPotValue () {
         return chaosPot.get();
+    }
+
+    public boolean willCrash(double angle) {
+
+        // thinko mode
+        return (getExtenderPosition() * Math.acos(angle) > ARM_HEIGHT_INCHES);
+
     }
 
 }
