@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
-
 /**
  * 
  */
@@ -97,8 +96,9 @@ public class Robot extends IterativeRobot {
     // 0));
 
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-    drive.setTolerance();
-    drive.resetEncoders();
+     drive.setTolerance();
+     drive.resetEncoders();
+     drive.stopDrivePID();
   }
 
   /**
@@ -121,15 +121,11 @@ public class Robot extends IterativeRobot {
 
     driveControls();
 
-    if (cs.driver.buttonPressed(Controller.LEFT_BUMPER)) {
-      ballControls();
-    }
+    armControls();
 
-    else if (cs.driver.buttonPressed(Controller.RIGHT_BUMPER)) {
-      hatchPanelControls();
-    }
 
-    climbControls();
+
+    climbtakeControls();
 
     SmartDashboard.updateValues();
 
@@ -153,52 +149,79 @@ public class Robot extends IterativeRobot {
      */
 
     if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+      drive.startStraightCameraDriveWithPID();
+    }
 
-      drive.drivePID();
+    if (cs.driver.buttonHeld(Controller.LEFT_X))
+    {
+     
+     drive.straightCameraDriveWithPID();
+     
+   } else {
+     drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+     drive.stopDrivePID();
+   }
+
+  }
+
+  private void armControls() { 
+
+    if (cs.operator1.buttonHeld(Controller.DOWN_A)){
+
+      //pickup ball
+
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)){
+  
+      //high ball
+
+    } else if (cs.operator1.buttonHeld(Controller.UP_Y)){
+  
+      //mid ball
+
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)){
+  
+      //low ball
+
+    }  else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN){
+  
+      //pickup hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT){
+  
+      //high hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP){
+  
+      //mid hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT){
+  
+      //low hatchpanel
 
     } else {
-      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
-      drive.stopDrivePID();
+
+      //manual elbow and extender
+
+    }
+    
+    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)){
+  
+      
+    // make grabber open 
+
+    }
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)){
+  
+      
+    // make grabber output
+
     }
 
   }
 
-  private void ballControls() { // fill in speed values and add method for arm extend
-
-    /**
-     *
-     * Controls for ball control: While Left Bumper held, A = low, B = mid, Y = high
-     * 
-     */
-    if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      // arm.pidGoToAngle(speed);
-    } else if (cs.driver.buttonPressed(Controller.RIGHT_B)) {
-      // arm.pidGoToAngle(speed);
-    } else if (cs.driver.buttonPressed(Controller.UP_Y)) {
-      // arm.pidGoToAngle(speed);
-    }
-  }
+  private void climbtakeControls() { // does buttonPressed allow hold?
 
 
-  private void hatchPanelControls() { // fill in speedo values and add method for arm extend
-
-    /**
-     * 
-     * Hatch Panel Controls: While Right Bumper is held: A = low, B = mid, Y = high
-     * 
-     */
-
-    if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      // arm.pidGoToAngle(speed);
-    } else if (cs.driver.buttonPressed(Controller.RIGHT_B)) {
-      // arm.pidGoToAngle(speed);
-    } else if (cs.driver.buttonPressed(Controller.UP_Y)) {
-      // arm.pidGoToAngle(speed);
-    }
-  }
-
-
-  private void climbControls() { // does buttonPressed allow hold?
 
     /**
      * 
@@ -206,27 +229,13 @@ public class Robot extends IterativeRobot {
      * mech up
      */
 
-    if (cs.driver.buttonHeld(Controller.LEFT_TRIGGER)) {
-      climb.setFlywheel(-0.5);
-    } else if (cs.driver.buttonHeld(Controller.RIGHT_TRIGGER)) {
-      climb.setFlywheel(0.5);
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+      // set climb to climb position
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+      // set climb to intake
+    } else if (cs.operator1.buttonHeld(Controller.SELECT)) {
+      // set climb to retract
     }
-  }
-
-  private void intakeControls() {
-
-    // intake controls go here
-    // left joystick
-    // Declare grab.(insert method here)(parameter);
-
-  }
-
-  private void manualArmControls() {
-
-    // manual arm controls go here
-    // right joystick
-    // arm.setArmDistance(parameter);
-
   }
 
   @Override

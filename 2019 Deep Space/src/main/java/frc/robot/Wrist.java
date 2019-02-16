@@ -63,5 +63,9 @@ public class Wrist {
       pid.enable();
    }
 
+   public void stopWrist () {
+      pid.disable();
+   }
+
 
 }

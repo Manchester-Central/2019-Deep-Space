@@ -20,7 +20,7 @@ public class PIDLinked {
     PIDController[] pids;
     ChaosBetterTalonSRX[] srxs;
 
-    public final double TURN_GAINS = 24;
+    public final double TURN_GAINS = .1;
 
     public PIDController[] getPids () {return pids;}
 
@@ -47,6 +47,12 @@ public class PIDLinked {
 
     }
 
+    public void stop () {
+        for (PIDController pid : pids) {
+            pid.disable();
+        }
+    }
+
     /***
      * set setpoint for each pid
      * @param setPoints setpoits 
@@ -56,7 +62,7 @@ public class PIDLinked {
         int i = 0;
         for (double setPoint : setPoints) {
 
-            pids[i].setSetpoint(setPoint);
+            pids[i].setSetpoint(srxs[0].inchesToTicks(setPoint));
 
             i++;
 
@@ -94,6 +100,12 @@ public class PIDLinked {
             pid.enable();
 
         }
+
+    }
+
+    public void enableSpecificPID (int index){
+
+        pids[index].enable();
 
     }
 

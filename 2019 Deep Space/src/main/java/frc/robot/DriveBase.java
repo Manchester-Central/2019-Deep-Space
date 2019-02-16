@@ -47,22 +47,42 @@ public class DriveBase {
 	private double I = 0.4;
 	private double D = 0;
 	private double F = 0.5;
+	private double setPoint = 24.0;
+
+	private double minAngleFound;
+	private int i;
+	private double[] squareSum;
+
+	private double driveDistance;
+	private double turnAngle;
+
+	public static final int SQUARE_COUNTER = 10;
+	public static final double FIND_ANGLE_SPEED = 0.07;
+	public static final double SPIN_DISTANCE = 12;
 	
 	public static final double TOLERANCE = 2.5;
+	public static final double ANGLE_TOLERANCE = 1;
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
 	public static final double LENGTH_BETWEEN_WHEELS = 25.6;
 
 	// used for camera stuff
-	private boolean turningLeft;
+	private boolean turningRight;
 	private double distance;
 	private double arcLength;
 	// used for camera stuff 
 
     public DriveBase() {
 
-		turningLeft = false;
+		minAngleFound = 90D;
+		squareSum = new double[SQUARE_COUNTER];
+		i = 0;
+
+		driveDistance = 0;
+
+		turningRight = false;
+		turnAngle = 100000;
 
        // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
@@ -124,6 +144,60 @@ public class DriveBase {
 		pids = new PIDLinked(leftPidController, rightPidController);
 		
 		pids.setsrxs(leftTalonSRX, rightTalonSRX);
+	}
+
+	public void resetSquareSum () {
+
+		for (int i = 0; i < SQUARE_COUNTER; i++) {
+			squareSum[i] = 90;
+		}
+
+		turningRight = true;
+		minAngleFound = 90;
+	}
+
+	private void addValueToSquareSum (double value) {
+		for (int i = 0; i < SQUARE_COUNTER - 1; i++) {
+			squareSum[i + 1] = i; 
+		}
+
+		squareSum[0] = value;
+	}
+
+	public double getAverageCamValue () {
+		double sum = 0;
+		for (double x : squareSum) {
+			sum += x;
+		}
+		return sum / SQUARE_COUNTER;
+	}
+
+	public boolean squareWithVisionTarget () {
+		addValueToSquareSum(Camera.getEntry("ty").getDouble(20));
+		
+		i++;
+		if (i % SQUARE_COUNTER != 0) {
+			return true;
+		}
+
+		if (getAverageCamValue() < minAngleFound) {
+			minAngleFound = getAverageCamValue();
+			if (turningRight) {
+				setSpeed (FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
+			} else {
+				setSpeed (-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
+			}
+			return true;
+		}
+
+		if (turningRight) {
+			turningRight = false;
+			return true;
+		}
+
+		setSpeed(0.0, 0.0);
+
+		return false;
 	}
 
 	public void resetEncoders () {
@@ -212,33 +286,98 @@ public class DriveBase {
 		}
 	}
 
-	public void cameraDriveWithPID () {
+	public void initializeCameraDrive () {
+
+		
 		
 		double horizontalAngle = Camera.getEntry("tx").getDouble(0D);
 		double sign = FunctionsThatShouldBeInTheJDK.getSign(horizontalAngle);
 		double absoluteHorizontalAngle = sign * horizontalAngle;
 		double absCamAngleRadians = Math.toRadians (absoluteHorizontalAngle);
 
-		if (!(leftPidController.isEnabled() || rightPidController.isEnabled()))  {
+		turningRight = sign > 0D;
 
-			turningLeft = sign > 0D;
+		arcLength = ((Math.PI/2) - absCamAngleRadians) * LENGTH_BETWEEN_WHEELS;
+		distance = Camera.getDistance() - (LENGTH_BETWEEN_WHEELS* Math.sin(absCamAngleRadians));
 
-			arcLength = ((Math.PI/2) - absCamAngleRadians) * LENGTH_BETWEEN_WHEELS;
-			distance = Camera.getDistance() - (LENGTH_BETWEEN_WHEELS* Math.sin(absCamAngleRadians));
+		double driveDistance = distance + arcLength;
 
-			if (turningLeft)
-				rightPidController.enable();
-			else
-				leftPidController.enable();
-		}
+		pids.set(driveDistance, driveDistance);
 
-		if (turningLeft) {
-			if (rightTalonSRX.getCurrentPositionInches() > arcLength)
-				leftPidController.enable();
+		if (turningRight)
+			pids.enableSpecificPID(0);
+		else
+			pids.enableSpecificPID(1);
+	}
+
+	public void startStraightCameraDriveWithPID () {
+
+		turnAngle =  Math.toRadians(Camera.getEntry("tx").getDouble(0));
+		driveDistance = 100000;
+
+	} 
+
+	public void straightCameraDriveWithPID () {
+
+		double angle = Camera.getEntry("tx").getDouble(0);
+		if (leftTalonSRX.getCurrentPositionInches() < driveDistance
+		|| rightTalonSRX.getCurrentPositionInches() < driveDistance ){
+
+			if (Math.abs(angle) > ANGLE_TOLERANCE && !leftPidController.isEnabled() 
+			&& !rightPidController.isEnabled()) {
+				if (angle > 0) 
+					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
+				else
+					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
+			} else {
+				if (driveDistance == 100000) {
+					setSpeed(0, 0);
+					resetEncoders();
+					
+					//y/x = z/x, tan(theta) x = z
+					driveDistance = Camera.getDistance()
+					 - (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2);
+					 System.out.println(driveDistance);
+				}
+				pids.set(driveDistance, driveDistance);
+				pids.drive();
+			}
+
 		} else {
-			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
-				rightPidController.enable();
+
+			if (turnAngle > 0) {
+				if (rightTalonSRX.getCurrentPositionInches() < driveDistance
+				 + (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
+					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
+				else 
+					setSpeed(0, 0);
+			} else {
+				if (leftTalonSRX.getCurrentPositionInches() < driveDistance 
+				+ (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
+					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
+				else 
+					setSpeed(0, 0);
+			}
+
 		}
+
+		
+
+	}
+
+	public void cameraDriveWithPID () {
+
+		if (turningRight) {
+			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
+				pids.enableSpecificPID(1);
+				//pids.drive();
+		} else {
+			if (rightTalonSRX.getCurrentPositionInches() > arcLength)
+				pids.enableSpecificPID(0);
+				//pids.drive();
+		}
+
+		System.out.println (rightTalonSRX.getCurrentPositionInches() > arcLength);
 		
 		followTalon();
 
@@ -263,9 +402,11 @@ public class DriveBase {
 	}
 
 	public void stopDrivePID() {
-		leftPidController.disable();
-		rightPidController.disable();
-
+		//leftPidController.disable();
+		//rightPidController.disable();
+		pids.srxs[0].setAdjustment(0);
+		pids.srxs[1].setAdjustment(0);
+		pids.stop();
 	}
 
 	public void setTolerance() {
@@ -296,6 +437,7 @@ public class DriveBase {
 	public double getDistanceInchesR() { return rightTalonSRX.getCurrentPositionInches();}
 	public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
 	public PIDLinked getPids () {return pids;}
+	public double getArcLength () {return arcLength;}
 	
 //myNemChef - Chris
 }

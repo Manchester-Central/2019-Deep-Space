@@ -12,33 +12,72 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.PIDController;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
+import frc.ChaosSensors.TalonSRX_Encoder;
+
 /**
  * Add your docs here.
  */
 public class IntakeClimber {
 
-    TalonSRX intake0;
-    VictorSPX intake1;
+    ChaosBetterTalonSRX rotate0;
+    TalonSRX_Encoder enc;
+    VictorSPX rotate1;
     VictorSPX flywheel;
+    PIDController pid;
 
-    public final double ENCODER_TICKS_PER_REVOLUTION = 4100;
+    public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
+    public static final double ROTATE_SPEED = 0.1;
+    public static final double INTAKE_ANGLE = 2;
+    public static final double DOWN_ANGLE = 0;
+    public static final double OUT_ANGLE = Math.PI;
+    private static final double P = .0001;
+    private static final double I = 0;
+    private static final double D = 0;
+
     public final double RADIUS = 40;
     public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
+   // public final double RADIUS = 40;
+   // public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
+
+    //private double sign;
 
     public IntakeClimber () {
-        intake0 = new TalonSRX(PortConstants.INTAKE_0);
-        intake1 = new VictorSPX(PortConstants.INTAKE_1);
+        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0, 
+        2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
+        rotate1 = new VictorSPX(PortConstants.INTAKE_1);
         flywheel = new VictorSPX(PortConstants.FLYWHEEL);
+        enc = new TalonSRX_Encoder (rotate0);
+        pid = new PIDController(P, I, D, enc, rotate0);
     }
 
     public void setIntake (double speed) {
-        intake0.set(ControlMode.PercentOutput, speed);
-        intake1.set(ControlMode.PercentOutput, speed);
+        rotate0.set(ControlMode.PercentOutput, speed);
+        rotate1.set(ControlMode.PercentOutput, speed);
     
+    }
+
+    public void goToSetPoint () {
+        pid.enable();
+    }
+
+    public void stopRotate () {
+        pid.disable();
     }
 
     public void setFlywheel (double speed) {
         flywheel.set(ControlMode.PercentOutput, speed);
+    }
+
+    public double getAngleInRadians () {
+        return rotate0.getCurrentPositionInches();
+    }
+
+    public void setToPosition (double angleInRadians) {
+
+        pid.setSetpoint(angleInRadians);
+
     }
 
 }

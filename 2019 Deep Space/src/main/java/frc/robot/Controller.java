@@ -24,6 +24,11 @@ public class Controller {
     public static final int RIGHT_BUMPER = 6;
     public static final int LEFT_TRIGGER = 7;
     public static final int RIGHT_TRIGGER = 8;
+    
+    public static final int SELECT = 9;
+    public static final int START = 10;
+    public static final int LEFT_JOYSTICK = 11;
+    public static final int RIGHT_JOYSTICK = 12;
 
     public static enum DPadDirection {
 		LEFT, RIGHT, UP, DOWN, UP_RIGHT, DOWN_RIGHT, UP_LEFT, DOWN_LEFT, NONE
