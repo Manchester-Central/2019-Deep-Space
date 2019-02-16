@@ -14,7 +14,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Victor;
-import frc.ChaosSensors.ChaosBetterTalon;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 
@@ -47,8 +46,8 @@ public class Arm {
 
     public static final double ARM_DISTANCE = 20.0;
     public static final double ARM_WEIGHT = 20.0;
-    public static final double EXTENTION_WEIGHT = 20.0;
-    public static final double TOTAL_WEIGHT = ARM_WEIGHT;
+    public static final double EXTENSION_WEIGHT = 20.0;
+    public static final double TOTAL_WEIGHT = ARM_WEIGHT + EXTENSION_WEIGHT;
     public static final double ARM_HEIGHT_INCHES = 42;
 
     public static final double GEAR_RATIO = 2.0;
@@ -95,7 +94,7 @@ public class Arm {
         else if ((getElbowAngle() <= minElbowAngle) && (speed < 0)) {
             speed = 0;
         }
-        extender.set(speed);
+        elbow.set(speed);  
     }
 
     public void setFeedForward() {
@@ -125,18 +124,18 @@ public class Arm {
 
     public double getCenterOfMass() {
 
-        return (ARM_WEIGHT * ARM_DISTANCE + EXTENTION_WEIGHT * getExtenderPosition()) / TOTAL_WEIGHT;
+        return (ARM_WEIGHT * ARM_DISTANCE + EXTENSION_WEIGHT * getExtenderPosition()) / TOTAL_WEIGHT;
 
     }
 
     public double getExtenderPosition() {
 
-        return extenderPot.get ;
+        return extenderPot.getValue() ;
     
     }
 
     public double getElbowAngle () {
-        return elbowPot.getAngle();
+        return elbowPot.getValue();
     }
 
     public boolean willCrash(double angle) {

@@ -10,19 +10,21 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import frc.ChaosSensors.AnglePot;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
 
 /**
  * Add your docs here.
  */
 public class Wrist {
    
-   WPI_TalonSRX speedController;
-   AnglePot wristPot;
+   ChaosBetterTalonSRX speedController;
+
+   private static final double CIRCUMFERENCE = 1;
+   private static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
    
    public Wrist () {
      
-      speedController = new WPI_TalonSRX(PortConstants.WRIST);
+      speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION, false);
 
    }
 
@@ -32,12 +34,12 @@ public class Wrist {
 
    }
 
-   public double getRawPot() {
-      return wristPot.get();
+   public double getRawTicks() {
+      return speedController.getCurrentPositionTicks();
    }
 
    public double getAngle() {
-      return wristPot.getValue();
+      return speedController.getEncoderAngle();
    }
 
 
