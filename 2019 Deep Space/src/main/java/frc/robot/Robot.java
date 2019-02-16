@@ -3,9 +3,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.AnalogOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
@@ -105,6 +103,7 @@ public class Robot extends IterativeRobot {
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
      drive.setTolerance();
      drive.resetEncoders();
+     drive.stopDrivePID();
   }
 
 
@@ -123,17 +122,20 @@ public class Robot extends IterativeRobot {
    //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
     
     if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      drive.initializeCameraDrive();
-      System.out.println (drive.getArcLength());
+      //drive.initializeCameraDrive();
+      //System.out.println (drive.getArcLength());
+      drive.startStraightCameraDriveWithPID();
     } else if (cs.driver.buttonPressed(Controller.UP_Y)) {
       drive.resetSquareSum();
     }
 
     if (cs.driver.buttonHeld(Controller.DOWN_A)) {
 
-      //double[] dd = Camera.getDriveDirections(drive.leftTalonSRX.get(), drive.rightTalonSRX.get());
 
-      drive.cameraDriveWithPID();
+
+      //double[] dd = Camera.getDriveDirections(drive.leftTalonSRX.get(), drive.rightTalonSRX.get());
+      //drive.straightCameraDriveWithPID();
+      //drive.cameraDriveWithPID();
       //drive.setSpeed(dd[0], dd[1]);
      // System.out.println ("distance 0w0: " + Camera.getDistance());
 

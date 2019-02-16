@@ -60,10 +60,15 @@ public class DriveBase {
 	private int i;
 	private double[] squareSum;
 
-	public static final int SQUARE_COUNTER = 20;
+	private double driveDistance;
+	private double turnAngle;
+
+	public static final int SQUARE_COUNTER = 10;
+	public static final double FIND_ANGLE_SPEED = 0.07;
 	public static final double SPIN_DISTANCE = 12;
 	
 	public static final double TOLERANCE = 2.5;
+	public static final double ANGLE_TOLERANCE = 1;
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
@@ -81,8 +86,10 @@ public class DriveBase {
 		squareSum = new double[SQUARE_COUNTER];
 		i = 0;
 
+		driveDistance = 0;
 
 		turningRight = false;
+		turnAngle = 100000;
 
        // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
         //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
@@ -153,6 +160,7 @@ public class DriveBase {
 		}
 
 		turningRight = true;
+		minAngleFound = 90;
 	}
 
 	private void addValueToSquareSum (double value) {
@@ -175,16 +183,16 @@ public class DriveBase {
 		addValueToSquareSum(Camera.getEntry("ty").getDouble(20));
 		
 		i++;
-		if (i % 20 != 0) {
+		if (i % SQUARE_COUNTER != 0) {
 			return true;
 		}
 
 		if (getAverageCamValue() < minAngleFound) {
 			minAngleFound = getAverageCamValue();
 			if (turningRight) {
-				setSpeed (0.07, -0.07);
+				setSpeed (FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
 			} else {
-				setSpeed (-0.07, 0.07);
+				setSpeed (-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
 			}
 			return true;
 		}
@@ -193,6 +201,8 @@ public class DriveBase {
 			turningRight = false;
 			return true;
 		}
+
+		setSpeed(0.0, 0.0);
 
 		return false;
 	}
@@ -307,6 +317,61 @@ public class DriveBase {
 			pids.enableSpecificPID(1);
 	}
 
+	public void startStraightCameraDriveWithPID () {
+
+		turnAngle =  Math.toRadians(Camera.getEntry("tx").getDouble(0));
+		driveDistance = 100000;
+
+	} 
+
+	public void straightCameraDriveWithPID () {
+
+		double angle = Camera.getEntry("tx").getDouble(0);
+		if (leftTalonSRX.getCurrentPositionInches() < driveDistance
+		|| rightTalonSRX.getCurrentPositionInches() < driveDistance ){
+
+			if (Math.abs(angle) > ANGLE_TOLERANCE && !leftPidController.isEnabled() 
+			&& !rightPidController.isEnabled()) {
+				if (angle > 0) 
+					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
+				else
+					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
+			} else {
+				if (driveDistance == 100000) {
+					setSpeed(0, 0);
+					resetEncoders();
+					
+					//y/x = z/x, tan(theta) x = z
+					driveDistance = Camera.getDistance()
+					 - (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2);
+					 System.out.println(driveDistance);
+				}
+				pids.set(driveDistance, driveDistance);
+				pids.drive();
+			}
+
+		} else {
+
+			if (turnAngle > 0) {
+				if (rightTalonSRX.getCurrentPositionInches() < driveDistance
+				 + (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
+					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
+				else 
+					setSpeed(0, 0);
+			} else {
+				if (leftTalonSRX.getCurrentPositionInches() < driveDistance 
+				+ (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
+					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
+				else 
+					setSpeed(0, 0);
+			}
+
+		}
+
+		
+
+	}
+
 	public void cameraDriveWithPID () {
 
 		if (turningRight) {
@@ -344,9 +409,11 @@ public class DriveBase {
 	}
 
 	public void stopDrivePID() {
-		leftPidController.disable();
-		rightPidController.disable();
-
+		//leftPidController.disable();
+		//rightPidController.disable();
+		pids.srxs[0].setAdjustment(0);
+		pids.srxs[1].setAdjustment(0);
+		pids.stop();
 	}
 
 	public void setTolerance() {

@@ -20,7 +20,7 @@ public class PIDLinked {
     PIDController[] pids;
     ChaosBetterTalonSRX[] srxs;
 
-    public final double TURN_GAINS = 24;
+    public final double TURN_GAINS = 1;
 
     public PIDController[] getPids () {return pids;}
 
@@ -45,6 +45,12 @@ public class PIDLinked {
 
         }
 
+    }
+
+    public void stop () {
+        for (PIDController pid : pids) {
+            pid.disable();
+        }
     }
 
     /***
