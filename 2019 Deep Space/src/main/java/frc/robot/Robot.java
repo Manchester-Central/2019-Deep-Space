@@ -1,5 +1,4 @@
 
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -11,15 +10,13 @@ import frc.Camera.camState;
  * 
  */
 public class Robot extends IterativeRobot {
-  
-
 
   DriveBase drive;
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
   Grabber grab;
-  
+
   AnalogInput x;
 
   /**
@@ -29,7 +26,7 @@ public class Robot extends IterativeRobot {
   public void robotInit() {
 
     x = new AnalogInput(2);
-    
+
     drive = new DriveBase();
     cs = new ControllerSecretary();
     SmartDashboard.putNumber("p-value", 0);
@@ -38,7 +35,6 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putNumber("f-value", 0);
     SmartDashboard.putNumber("setpoint", 0);
 
-    
   }
 
   /**
@@ -50,17 +46,17 @@ public class Robot extends IterativeRobot {
     Camera.changeCamMode(camState.image);
 
     if (cs.driver.buttonPressed(Controller.UP_Y)) {
-  Camera.toggleCamState();
+      Camera.toggleCamState();
 
     }
 
-    //  System.out.println (Camera.GetHorizontalAngle()); 
+    // System.out.println (Camera.GetHorizontalAngle());
 
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
     SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
     SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
-    
+
     SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
     SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
 
@@ -81,8 +77,6 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousInit() {
 
-
-
   }
 
   /**
@@ -90,17 +84,16 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    
-
 
   }
 
-
   @Override
   public void teleopInit() {
-    
-    //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
-     //smartdashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
+
+    // drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5),
+    // SmartDashboard.getNumber("i-value", 0),
+    // smartdashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value",
+    // 0));
 
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
      drive.setTolerance();
@@ -108,39 +101,34 @@ public class Robot extends IterativeRobot {
      drive.stopDrivePID();
   }
 
-
-
   /**
    * 
    */
   @Override
   public void teleopPeriodic() {
 
-    //System.out.println ("Camera ty: " + Camera.getEntry("ty").getDouble(0D));
-    //System.out.println ("Camera tx: " + Camera.getEntry("tx").getDouble(0D));
-    //System.out.println ("Camera ta: " + Camera.getEntry("ta").getDouble(0D));
-    //System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
+    // System.out.println ("Camera ty: " + Camera.getEntry("ty").getDouble(0D));
+    // System.out.println ("Camera tx: " + Camera.getEntry("tx").getDouble(0D));
+    // System.out.println ("Camera ta: " + Camera.getEntry("ta").getDouble(0D));
+    // System.out.println ("Camera tv: " + Camera.getEntry("tv").getDouble(0D));
 
-   //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
-    
+    // System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
+
     /*
-    if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      //drive.cameraDrive();
-      //drive.stopDrivePID();
-    } else 
-    */
+     * if (cs.driver.buttonPressed(Controller.DOWN_A)) { //drive.cameraDrive();
+     * //drive.stopDrivePID(); } else
+     */
 
     driveControls();
 
     armControls();
-    intakeControls();
 
 
 
     climbtakeControls();
 
     SmartDashboard.updateValues();
-  
+
   }
 
   /**
@@ -149,17 +137,14 @@ public class Robot extends IterativeRobot {
   @Override
   public void testPeriodic() {
 
-
-
   }
 
   private void driveControls() {
 
     /**
      * 
-     * Controls for driving:
-     * Joysticks: driving (tank drive)
-     * X button: PID drive to align w/ vision target
+     * Controls for driving: Joysticks: driving (tank drive) X button: PID drive to
+     * align w/ vision target
      * 
      */
 
@@ -219,8 +204,18 @@ public class Robot extends IterativeRobot {
 
     }
     
+    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)){
+  
+      
     // make grabber open 
+
+    }
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)){
+  
+      
     // make grabber output
+
+    }
 
   }
 
@@ -230,48 +225,43 @@ public class Robot extends IterativeRobot {
 
     /**
      * 
-     * Climb Controls:
-     * Left Trigger moves climb mech down
-     * Right Trigger moves climb mech up
+     * Climb Controls: Left Trigger moves climb mech down Right Trigger moves climb
+     * mech up
      */
 
-    if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
-      
-    } 
-  }
-
-  private void intakeControls() {
-
-    // intake controls go here
-    // left joystick
-    // Declare grab.(insert method here)(parameter);
-
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+      // set climb to climb position
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+      // set climb to intake
+    } else if (cs.operator1.buttonHeld(Controller.SELECT)) {
+      // set climb to retract
+    }
   }
 
   @Override
   public void disabledPeriodic() {
 
-    //drive.resetEncoders();
-    //\drive.stopDrivePID();
+    // drive.resetEncoders();
+    // \drive.stopDrivePID();
 
     SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
     SmartDashboard.putNumber("analog out", x.getVoltage());
-    
-    //drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5), SmartDashboard.getNumber("i-value", 0),
-     // SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value", 0));
+
+    // drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5),
+    // SmartDashboard.getNumber("i-value", 0),
+    // SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value",
+    // 0));
 
     drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
 
-     drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-  
-     if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
-       drive.resetEncoders();
-     }
+    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+
+    if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+      drive.resetEncoders();
+    }
 
     SmartDashboard.updateValues();
 
-
   }
-
 
 }

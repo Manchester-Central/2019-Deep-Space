@@ -84,5 +84,9 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
         return currentSet;
     }
 
+    public double getEncoderAngle() {
+        return ((getCurrentPositionTicks() / ENCODER_TICKS_PER_REVOLUTION) *  360) % 360;
+    }
+
 
 }
