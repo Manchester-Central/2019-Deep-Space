@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
-
 /**
  * 
  */
@@ -133,10 +132,12 @@ public class Robot extends IterativeRobot {
 
     driveControls();
 
-    manipulatorControls();
     armControls();
+    intakeControls();
 
-    climbControls();
+
+
+    climbtakeControls();
 
     SmartDashboard.updateValues();
   
@@ -178,18 +179,54 @@ public class Robot extends IterativeRobot {
 
   }
 
-  private void manipulatorControls() { 
-
-    
-  }
-  
-
   private void armControls() { 
 
-  }
-  
+    if (cs.operator1.buttonHeld(Controller.DOWN_A)){
 
-  private void climbControls() { // does buttonPressed allow hold?
+      //pickup ball
+
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)){
+  
+      //high ball
+
+    } else if (cs.operator1.buttonHeld(Controller.UP_Y)){
+  
+      //mid ball
+
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)){
+  
+      //low ball
+
+    }  else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN){
+  
+      //pickup hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT){
+  
+      //high hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP){
+  
+      //mid hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT){
+  
+      //low hatchpanel
+
+    } else {
+
+      //manual elbow and extender
+
+    }
+    
+    // make grabber open 
+    // make grabber output
+
+  }
+
+  private void climbtakeControls() { // does buttonPressed allow hold?
+
+
 
     /**
      * 
@@ -198,14 +235,9 @@ public class Robot extends IterativeRobot {
      * Right Trigger moves climb mech up
      */
 
-    if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) 
-    {
-      climb.setFlywheel(-0.5);
+    if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+      
     } 
-    else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) 
-    {
-      climb.setFlywheel(0.5);
-    }
   }
 
   private void intakeControls() {
@@ -213,14 +245,6 @@ public class Robot extends IterativeRobot {
     // intake controls go here
     // left joystick
     // Declare grab.(insert method here)(parameter);
-
-  }
-
-  private void manualArmControls() {
-
-    // manual arm controls go here
-    // right joystick
-    // arm.setArmDistance(parameter);
 
   }
 
