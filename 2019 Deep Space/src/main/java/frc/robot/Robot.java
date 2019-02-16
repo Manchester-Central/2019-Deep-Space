@@ -17,6 +17,9 @@ public class Robot extends IterativeRobot {
 
   DriveBase drive;
   ControllerSecretary cs;
+  Arm arm;
+  IntakeClimber climb;
+  Grabber grab;
   
   AnalogInput x;
 
@@ -121,36 +124,19 @@ public class Robot extends IterativeRobot {
 
    //System.out.println ("Camera Distance: " + Camera.getDistance() + " feet");
     
+    /*
     if (cs.driver.buttonPressed(Controller.DOWN_A)) {
-      //drive.initializeCameraDrive();
-      //System.out.println (drive.getArcLength());
-      drive.startStraightCameraDriveWithPID();
-    } else if (cs.driver.buttonPressed(Controller.UP_Y)) {
-      drive.resetSquareSum();
-    }
+      //drive.cameraDrive();
+      //drive.stopDrivePID();
+    } else 
+    */
 
-    if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+    driveControls();
 
+    manipulatorControls();
+    armControls();
 
-
-      //double[] dd = Camera.getDriveDirections(drive.leftTalonSRX.get(), drive.rightTalonSRX.get());
-      //drive.straightCameraDriveWithPID();
-      //drive.cameraDriveWithPID();
-      //drive.setSpeed(dd[0], dd[1]);
-     // System.out.println ("distance 0w0: " + Camera.getDistance());
-
-    } else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
-      
-      drive.drivePID();
-      
-    } else if (cs.driver.buttonHeld(Controller.UP_Y)) {
-      
-      drive.squareWithVisionTarget();
-      
-    } else {
-      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
-      drive.stopDrivePID();
-    }
+    climbControls();
 
     SmartDashboard.updateValues();
   
@@ -162,9 +148,82 @@ public class Robot extends IterativeRobot {
   @Override
   public void testPeriodic() {
 
-    
+
 
   }
+
+  private void driveControls() {
+
+    /**
+     * 
+     * Controls for driving:
+     * Joysticks: driving (tank drive)
+     * X button: PID drive to align w/ vision target
+     * 
+     */
+
+    if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+      drive.startStraightCameraDriveWithPID();
+    }
+
+    if (cs.driver.buttonHeld(Controller.LEFT_X))
+    {
+     
+     drive.straightCameraDriveWithPID();
+     
+   } else {
+     drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+     drive.stopDrivePID();
+   }
+
+  }
+
+  private void manipulatorControls() { 
+
+    
+  }
+  
+
+  private void armControls() { 
+
+  }
+  
+
+  private void climbControls() { // does buttonPressed allow hold?
+
+    /**
+     * 
+     * Climb Controls:
+     * Left Trigger moves climb mech down
+     * Right Trigger moves climb mech up
+     */
+
+    if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) 
+    {
+      climb.setFlywheel(-0.5);
+    } 
+    else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) 
+    {
+      climb.setFlywheel(0.5);
+    }
+  }
+
+  private void intakeControls() {
+
+    // intake controls go here
+    // left joystick
+    // Declare grab.(insert method here)(parameter);
+
+  }
+
+  private void manualArmControls() {
+
+    // manual arm controls go here
+    // right joystick
+    // arm.setArmDistance(parameter);
+
+  }
+
   @Override
   public void disabledPeriodic() {
 

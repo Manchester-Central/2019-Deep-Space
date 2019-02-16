@@ -7,8 +7,28 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Spark;
+
 /**
  * Add your docs here.
  */
 public class Grabber {
+   
+   Spark spark;
+   DoubleSolenoid hatch;
+   
+   public Grabber () {
+     
+    spark = new Spark(PortConstants.GRABBER_SPARK);
+    hatch = new DoubleSolenoid(PortConstants.FORWARD_HATCH, PortConstants.REVERSE_HATCH);
+
+   }
+
+   public void setSpark(double speed) {
+
+    spark.set(speed);
+
+   }
+
 }
