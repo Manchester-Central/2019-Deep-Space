@@ -14,11 +14,7 @@ public class PortConstants {
 
 
     // test robot ports
-    public final static int LEFT_FRONT_SPARK = 3;
-	public final static int RIGHT_FRONT_SPARK = 4; 
-	public final static int GRABBER_SPARK = 0;
-	public final static int FORWARD_HATCH = 0;
-	public final static int REVERSE_HATCH = 0;
+
 
 	static int LEFT_BACK_TALON = 0;
 	static int LEFT_MID_TALON = 1;
@@ -33,8 +29,19 @@ public class PortConstants {
 	static int RIGHT_CAN_TALON = 3;
 
 	// real robot ports
+    public final static int LEFT_FRONT_SPARK = 3;
+	public final static int LEFT_BACK_SPARK = 0;
+	public final static int RIGHT_FRONT_SPARK = 4; 
+	public final static int RIGHT_BACK_SPARK = 0;
+
+	public final static int GRABBER_SPARK = 0;
+	public final static int FORWARD_HATCH = 0;
+	public final static int REVERSE_HATCH = 0;
+
 	public final static int ELBOW_JOINT = 0;
+	public final static int ELBOW_2 = 0;
 	public final static int EXTENDER = 0;
+	public final static int WRIST = 0;
 
 	public final static int INTAKE_0 = 0;
 	public final static int INTAKE_1 = 0;

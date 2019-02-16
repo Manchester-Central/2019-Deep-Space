@@ -7,31 +7,39 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import frc.ChaosSensors.AnglePot;
 
 /**
  * Add your docs here.
  */
-public class Grabber {
+public class Wrist {
    
-   Spark intake;
-   DoubleSolenoid hatch;
-
+   WPI_TalonSRX speedController;
+   AnglePot wristPot;
    
-   public Grabber () {
+   public Wrist () {
      
-    intake = new Spark(PortConstants.GRABBER_SPARK);
-    hatch = new DoubleSolenoid(PortConstants.FORWARD_HATCH, PortConstants.REVERSE_HATCH);
+      speedController = new WPI_TalonSRX(PortConstants.WRIST);
 
    }
 
-   public void setSpark(double speed) {
+   public void setSpeed(double speed) {
 
-    intake.set(speed);
+    speedController.set(speed);
 
    }
+
+   public double getRawPot() {
+      return wristPot.get();
+   }
+
+   public double getAngle() {
+      return wristPot.getValue();
+   }
+
+
 
 }
