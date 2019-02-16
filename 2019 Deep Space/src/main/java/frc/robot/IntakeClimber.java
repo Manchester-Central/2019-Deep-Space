@@ -24,7 +24,6 @@ public class IntakeClimber {
     public final double ENCODER_TICKS_PER_REVOLUTION = 4100;
     public final double RADIUS = 40;
     public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
-    private double sign;
 
     public IntakeClimber () {
         intake0 = new TalonSRX(PortConstants.INTAKE_0);

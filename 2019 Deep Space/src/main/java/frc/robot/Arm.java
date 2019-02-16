@@ -51,6 +51,10 @@ public class Arm {
         extenderPID.setInputRange(ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
     }
 
+    /***
+     * Controls speed of extender with restriction to game rules
+     * @param speed
+     */
     public void setExtenderSpeed(double speed) {
         if ((getExtenderPosition() >= ArmConstants.MAX_EXTENDER_LENGTH) && (speed > 0)) {
             speed = 0;
@@ -62,6 +66,10 @@ public class Arm {
         extender.set(speed);
     }
 
+    /***
+     * Controls speed of angle (elbow) with restriction to game rules
+     * @param speed
+     */
     public void setElbowSpeed(double speed) {
         double angle = getElbowAngle();
 
@@ -79,11 +87,18 @@ public class Arm {
         elbow.set(speed);
     }
 
+    /***
+     * Sets the speed of the arm to oppose gravity
+     */
     public void setFeedForward() {
         elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() * Math.acos(elbowPot.getValue())
                 * ArmConstants.GEAR_RATIO / ArmConstants.MOTOR_STALL_TORQUE);
     }
 
+    /***
+     * Set arm to angle with PID, will avoid going outside frame perimeter of colliding with robot
+     * @param angle - 0 is parallel to ground, positive = up, negative = down
+     */
     public void pidGoToAngle(double angle) {
 
         if (willCrash(angle)) {
@@ -136,15 +151,32 @@ public class Arm {
         return ArmConstants.ARM_DISTANCE + extenderLength;
     }
 
+    /***
+     * How far out the horizontal component of the arm extension
+     * @param extenderLength
+     * @param angle
+     * @return
+     */
     public double armDistanceX(double extenderLength, double angle) {
         // thinko mode
         return armLength(extenderLength) * Math.acos(angle);
     }
 
+    /***
+     * Most the extender can be extended legally at an angle
+     * @param angle
+     * @return
+     */
     public double maxExtenderLength(double angle) {
         return (ArmConstants.MAX_REACH_X / Math.acos(angle)) - ArmConstants.ARM_DISTANCE;
     }
 
+    /***
+     * True if arm will break rules
+     * @param extenderLength
+     * @param angle
+     * @return
+     */
     public boolean outsideReach(double extenderLength, double angle) {
         return (extenderLength > maxExtenderLength(angle));
     }

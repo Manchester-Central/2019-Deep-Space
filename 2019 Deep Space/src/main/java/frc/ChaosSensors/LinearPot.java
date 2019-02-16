@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.ChaosSensors;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -17,18 +16,13 @@ import edu.wpi.first.wpilibj.PIDSourceType;
  */
 public class LinearPot extends AnalogPotentiometer implements PIDSource {
 
-	private double maxVoltage, minVoltage;
-	private double minValue, maxValue;
+
 	private double slope, intercept;
 	private PIDSourceType type = PIDSourceType.kDisplacement;
 
     public LinearPot(int port, double minVoltage, double maxVoltage, double minValue, double maxValue) {
 
     	super(port);	
-		this.minVoltage = minVoltage;
-		this.maxVoltage = maxVoltage;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
 
 		slope = (maxValue - minValue) / (maxVoltage - minVoltage);
 		intercept = maxValue - slope * maxVoltage;

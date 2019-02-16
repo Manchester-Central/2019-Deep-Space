@@ -8,20 +8,13 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.TalonSRX_Encoder;
-import frc.robot.Controller.DPadDirection;
 
 /**
  * Calculates new speed
@@ -54,7 +47,6 @@ public class DriveBase {
 	private double I = 0.4;
 	private double D = 0;
 	private double F = 0.5;
-	private double setPoint = 24.0;
 	
 	public static final double TOLERANCE = 2.5;
 

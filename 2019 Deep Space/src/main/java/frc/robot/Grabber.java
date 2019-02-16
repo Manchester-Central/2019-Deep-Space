@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
 
@@ -29,9 +27,9 @@ public class Grabber {
    }
 
    public void setSpark(double speed) {
-
     intake.set(speed);
-
    }
+
+
 
 }
