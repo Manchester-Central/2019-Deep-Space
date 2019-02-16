@@ -7,28 +7,43 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import frc.ChaosSensors.ChaosBetterTalon;
+import frc.ChaosSensors.ChaosBetterTalonSRX;
+import frc.ChaosSensors.LinearPot;
 
 /**
  * Add your docs here.
  */
 public class Arm {
 
-    ChaosBetterTalon elbow;
-    Victor extender;
+    ChaosBetterTalonSRX elbow;
+    WPI_VictorSPX elbow2;
+    WPI_TalonSRX extender;
 
-    Encoder extenderEncoder;
-    AnalogPotentiometer chaosPot;
+    LinearPot elbowPot;
+    LinearPot extenderPot;
 
-    PIDController armPID;
+    PIDController elbowPID;
+    PIDController extenderPID;
  
     public static final double ELBOW_RADIUS = 4.0;
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
+    private double minElbowVoltage = 0;
+    private double maxElbowVoltage = 0;
+    private double minElbowAngle = 0;
+    private double maxElbowAngle = 0;
+    
+    private double minExtenderVoltage = 0;
+    private double maxExtenderVoltage = 0;
+    private double minExtenderLength = 0;
+    private double maxExtenderLength = 0;
 
     public static final double ARM_DISTANCE = 20.0;
     public static final double ARM_WEIGHT = 20.0;
@@ -41,48 +56,70 @@ public class Arm {
     
 
 
-    private double P = 0.25;
-	private double I = 0.4;
-	private double D = 0;
-	private double F = 0.5;
-	private double setPoint = 24.0;
+    private double elbowP = 0.001;
+	private double elbowI = 0.4;
+    private double elbowD = 0;
+    private double extenderP = 0.001;
+    private double extenderI = 0;
+    private double extenderD = 0;
 
     public Arm () {
         
-        elbow = new ChaosBetterTalon(PortConstants.ELBOW_JOINT);
-        extender = new Victor (PortConstants.EXTENDER);
+        elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
+        extender = new WPI_TalonSRX(PortConstants.EXTENDER);
 
-        extenderEncoder = new Encoder(PortConstants.EXTENDER_ENCODER_A , PortConstants.EXTENDER_ENCODER_B);
-        chaosPot = new AnalogPotentiometer(PortConstants.Potentiometer);
+        elbowPot = new LinearPot(PortConstants.Potentiometer, minElbowVoltage, maxElbowVoltage, minElbowAngle, maxElbowAngle);
+        extenderPot = new LinearPot(PortConstants.Potentiometer, minExtenderVoltage , maxExtenderVoltage, minExtenderLength, maxExtenderLength);
 
-        armPID = new PIDController(P, I, D, chaosPot, elbow);
+        elbowPID = new PIDController(elbowP, elbowI, elbowD, elbowPot, elbow);
+        extenderPID = new PIDController(extenderP, extenderI, extenderD, extenderPot, extender);
+        setFeedForward();
+        elbowPID.setInputRange(minElbowAngle, maxElbowAngle);
+        extenderPID.setInputRange(minExtenderLength, maxExtenderLength);
     }
 
     public void setExtenderSpeed (double speed) {
+        if ((getExtenderPosition() >= maxExtenderLength) && (speed > 0)) {
+            speed = 0;
+        }
+        else if ((getExtenderPosition() <= minExtenderLength) && (speed < 0)) {
+            speed = 0;
+        }
         extender.set(speed);
     }
 
     public void setElbowSpeed (double speed) {
+        if ((getElbowAngle() >= maxElbowAngle) && (speed > 0)) {
+            speed = 0;
+        }
+        else if ((getElbowAngle() <= minElbowAngle) && (speed < 0)) {
+            speed = 0;
+        }
         extender.set(speed);
+    }
+
+    public void setFeedForward() {
+        elbowPID.setF(TOTAL_WEIGHT * getCenterOfMass() * Math.acos(elbowPot.getValue()) * GEAR_RATIO / MOTOR_STALL_TORQUE);
     }
 
     public void pidGoToAngle(double angle)  {
 
         if (!willCrash(angle)) {
-            armPID.setSetpoint(angle);
-            armPID.setF(TOTAL_WEIGHT * getCenterOfMass() * Math.acos(getPotValue()) * GEAR_RATIO / MOTOR_STALL_TORQUE);
-            armPID.enable();
+            elbowPID.setSetpoint(angle);
+            setFeedForward();
+            elbowPID.enable();
         }
         else {
             double wantArmDistance = ((ARM_HEIGHT_INCHES / Math.acos(angle)) - 0.5);
             setArmDistance(wantArmDistance);
+            elbowPID.disable();
             
         }
     }
 
     public void setArmDistance (double distance) {
-
-        // add code to control arm distance
+        elbowPID.setSetpoint(distance);
+        
 
     }
 
@@ -94,12 +131,12 @@ public class Arm {
 
     public double getExtenderPosition() {
 
-        return (extenderEncoder.get()/ ENCODER_TICKS_PER_REVOLUTION) * (2 * Math.PI) * (ELBOW_RADIUS) ;
+        return extenderPot.get ;
     
     }
 
-    public double getPotValue () {
-        return chaosPot.get();
+    public double getElbowAngle () {
+        return elbowPot.getAngle();
     }
 
     public boolean willCrash(double angle) {
