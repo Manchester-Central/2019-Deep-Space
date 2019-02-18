@@ -280,11 +280,7 @@ public class Robot extends IterativeRobot {
      * Climb Controls: Left Trigger moves climb mech down Right Trigger moves climb
      * mech up
      */
-    if (armSet) {
-      climb.setToPosition(IntakeClimber.OUT_ANGLE);
-      climb.setFlywheel(0);
-      climb.goToSetPoint();
-    } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
       // set climb to climb "position"
       climb.stopPIDRotate();
       climb.setIntake(IntakeClimber.ROTATE_SPEED);
