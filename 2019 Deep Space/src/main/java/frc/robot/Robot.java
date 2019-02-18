@@ -299,6 +299,14 @@ public class Robot extends IterativeRobot {
     // \drive.stopDrivePID();
 
     SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
+    SmartDashboard.putNumber("Climber Pot (RAW)", climb.anglePot.get());
+    SmartDashboard.putNumber("Climber Pot (Angle)", climb.anglePot.getValue());
+    SmartDashboard.putNumber("Elbow Pot (RAW)", arm.elbowPot.get());
+    SmartDashboard.putNumber("Elbow Pot (Angle)", arm.getElbowAngle());
+    SmartDashboard.putNumber("Extender Pot (RAW)", arm.extenderPot.get());
+    SmartDashboard.putNumber("Extender Pot (Distance)", arm.getExtenderPosition());
+    SmartDashboard.putNumber("Wrist Pot (RAW)", arm.wrist.anglePot.get());
+    SmartDashboard.putNumber("Wrist Pot (Angle)", arm.wrist.anglePot.getValue());
 
     // drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5),
     // SmartDashboard.getNumber("i-value", 0),
