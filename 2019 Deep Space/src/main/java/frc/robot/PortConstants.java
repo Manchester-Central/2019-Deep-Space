@@ -43,12 +43,16 @@ public class PortConstants {
 	public final static int EXTENDER = 0;
 	public final static int WRIST = 0;
 
+
 	public final static int INTAKE_0 = 0;
 	public final static int INTAKE_1 = 0;
 
 	public final static int FLYWHEEL = 0;
 
-	public static final int Potentiometer = 0;
+	public final static int WRIST_POT = 3;
+	public final static int EXTENDER_POT = 2;
+	public final static int ELBOW_POT = 1;
+	public final static int CLIMBER_POT = 0;
 
 	public static final int EXTENDER_ENCODER_A = 0;
 	public static final int EXTENDER_ENCODER_B = 0;

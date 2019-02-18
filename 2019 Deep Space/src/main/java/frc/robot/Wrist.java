@@ -9,8 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.TalonSRX_Encoder;
-import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
+import frc.ChaosSensors.LinearPot;
 
 /**
  * Add your docs here.
@@ -18,15 +17,17 @@ import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 public class Wrist {
 
    ChaosBetterTalonSRX speedController;
-   TalonSRX_Encoder speedControllerEncoder;
    PIDController pid;
+   LinearPot anglePot;
 
    public static final double CIRCUMFERENCE = 2 * Math.PI;
    public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
-   public static final double MAX_ANGLE = 360.0;
-   public static final double MIN_ANGLE = 0.0;
    public static final double DEFAULT_ANGLE = 0.0;
    public static final double TUCKED_POSITION = 180.0;
+   public static final double MIN_ANGLE = 0.0;
+   public static final double MAX_ANGLE = 360.0;
+   public static final double MIN_VOLTAGE = 0;
+   public static final double MAX_VOLTAGE = 1;
 
 
    public static final double P = 0.001;
@@ -40,8 +41,9 @@ public class Wrist {
       speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION,
             false);
          
-      speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
-      pid = new PIDController(P, I, D, speedControllerEncoder, speedController);
+      // speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
+      anglePot = new LinearPot(PortConstants.WRIST_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
+      pid = new PIDController(P, I, D, anglePot, speedController);
    }
 
    public void setSpeed(double speed) {
@@ -58,7 +60,7 @@ public class Wrist {
    }
 
    public double getAngle() {
-      return speedController.getEncoderAngle();
+      return anglePot.getValue();
    }
 
    public void setSetPoint(double targetAngle) {

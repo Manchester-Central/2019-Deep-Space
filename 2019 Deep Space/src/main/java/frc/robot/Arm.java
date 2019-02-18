@@ -32,7 +32,7 @@ public class Arm {
 
     public Wrist wrist;
 
-    public enum WristMode {intake, tucked, output};
+    public enum WristMode {intake, tucked, output, straight};
 
     public Arm() {
 
@@ -40,9 +40,9 @@ public class Arm {
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         wrist = new Wrist();
 
-        elbowPot = new LinearPot(PortConstants.Potentiometer, ArmConstants.MIN_ELBOW_VOLTAGE,
+        elbowPot = new LinearPot(PortConstants.ELBOW_POT, ArmConstants.MIN_ELBOW_VOLTAGE,
                 ArmConstants.MAX_ELBOW_VOLTAGE, ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
-        extenderPot = new LinearPot(PortConstants.Potentiometer, ArmConstants.MIN_EXTENDER_VOLTAGE,
+        extenderPot = new LinearPot(PortConstants.EXTENDER_POT, ArmConstants.MIN_EXTENDER_VOLTAGE,
                 ArmConstants.MAX_EXTENDER_VOLTAGE, ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
 
         elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbow);
@@ -111,6 +111,10 @@ public class Arm {
     public void setFeedForward() {
         elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() * Math.acos(elbowPot.getValue())
                 * ArmConstants.GEAR_RATIO / ArmConstants.MOTOR_STALL_TORQUE);
+    }
+
+    public boolean elbowInPosition() {
+        return !elbowPID.isEnabled() || FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), 0.5);
     }
 
     /***
@@ -241,7 +245,9 @@ public class Arm {
                 wrist.setSetPoint(360 - currentElbowAngle);
             }
             break;
-
+        case straight:
+            wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
+            break;
         default:
             wrist.setSetPoint(wrist.getAngle());
         break;
@@ -256,10 +262,12 @@ public class Arm {
      */
     public void autoMoveWrist(WristMode targetMode) {
 
-        if (!FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), 0.5)) {
-            setWristToArmAngle(WristMode.tucked);
-        } else {
+        if (elbowInPosition()) {
             setWristToArmAngle(targetMode);
+        } else {
+            setWristToArmAngle(WristMode.tucked);
         }
+
+        wrist.goToSetPoint();
     }
 }
