@@ -40,9 +40,9 @@ public class Arm {
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         wrist = new Wrist();
 
-        elbowPot = new LinearPot(PortConstants.Potentiometer, ArmConstants.MIN_ELBOW_VOLTAGE,
+        elbowPot = new LinearPot(PortConstants.ELBOW_POT, ArmConstants.MIN_ELBOW_VOLTAGE,
                 ArmConstants.MAX_ELBOW_VOLTAGE, ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
-        extenderPot = new LinearPot(PortConstants.Potentiometer, ArmConstants.MIN_EXTENDER_VOLTAGE,
+        extenderPot = new LinearPot(PortConstants.EXTENDER_POT, ArmConstants.MIN_EXTENDER_VOLTAGE,
                 ArmConstants.MAX_EXTENDER_VOLTAGE, ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
 
         elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbow);
