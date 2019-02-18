@@ -24,8 +24,6 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotInit() {
 
-    armSet = true;
-
     drive = new DriveBase();
     cs = new ControllerSecretary();
     arm = new Arm();
