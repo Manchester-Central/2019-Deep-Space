@@ -57,6 +57,9 @@ public class Grabber {
       return switchRight.get();
    }
 
+   public boolean getBeamSensor () {
+      return beamSensor.get();
+   }
    
 
 }

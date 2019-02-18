@@ -14,8 +14,6 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
-import frc.ChaosSensors.TalonSRX_Encoder;
-import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 
 /**
  * Add your docs here.
@@ -58,7 +56,7 @@ public class IntakeClimber {
         pid = new PIDController(P, I, D, anglePot, rotate0);
     }
 
-    public void setIntake (double speed) {
+    public void setRotateSpeed (double speed) {
 
         if (getAngle() >= OUT_ANGLE && speed > 0)
             speed = 0;

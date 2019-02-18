@@ -55,23 +55,8 @@ public class Robot extends IterativeRobot {
 
     // System.out.println (Camera.GetHorizontalAngle());
 
-    SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
+    updateDashboard();
 
-    SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
-    SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
-
-    SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
-    SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
-
-
-    SmartDashboard.putNumber("Current p", drive.getP());
-    SmartDashboard.putNumber("Current i", drive.getI());
-    SmartDashboard.putNumber("Current d", drive.getD());
-    SmartDashboard.putNumber("Current f", drive.getF());
-
-    SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
-
-    SmartDashboard.updateValues();
   }
 
   /**
@@ -134,8 +119,6 @@ public class Robot extends IterativeRobot {
     armControls();
 
     climbtakeControls();
-
-    SmartDashboard.updateValues();
 
   }
 
@@ -257,6 +240,7 @@ public class Robot extends IterativeRobot {
       grab.setSpark(-Grabber.INTAKE_OUTPUT_SPEED);
     }
 
+    // TODO: Create manually way to extend hatch grabber
     if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
 
       grab.retractHatchGrabber();
@@ -271,7 +255,7 @@ public class Robot extends IterativeRobot {
 
   }
 
-  private void climbtakeControls() { // does buttonPressed allow hold?
+  private void climbtakeControls() {
 
     /**
      * 
@@ -281,7 +265,7 @@ public class Robot extends IterativeRobot {
     if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
       // set climb to climb "position"
       climb.stopPIDRotate();
-      climb.setIntake(IntakeClimber.ROTATE_SPEED);
+      climb.setRotateSpeed(IntakeClimber.ROTATE_SPEED);
       climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
       // set climb to intake
@@ -302,8 +286,37 @@ public class Robot extends IterativeRobot {
   @Override
   public void disabledPeriodic() {
 
-    // drive.resetEncoders();
-    // \drive.stopDrivePID();
+    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
+
+    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+
+    if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+      drive.resetEncoders();
+    }
+
+  }
+
+  public void updateDashboard() {
+
+    SmartDashboard.putBoolean("Beam Sensor", grab.getBeamSensor());
+    SmartDashboard.putBoolean("Bump Sensor (Left)", grab.getLimitSwitchLeft());
+    SmartDashboard.putBoolean("Bump Sensor (Right)", grab.getLimitSwitchRight());
+
+    SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
+
+    SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
+    SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
+
+    SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
+    SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
+
+
+    SmartDashboard.putNumber("Current p", drive.getP());
+    SmartDashboard.putNumber("Current i", drive.getI());
+    SmartDashboard.putNumber("Current d", drive.getD());
+    SmartDashboard.putNumber("Current f", drive.getF());
+
+    SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
 
     SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
     SmartDashboard.putNumber("Climber Pot (RAW)", climb.anglePot.get());
@@ -314,20 +327,6 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putNumber("Extender Pot (Distance)", arm.getExtenderPosition());
     SmartDashboard.putNumber("Wrist Pot (RAW)", arm.wrist.anglePot.get());
     SmartDashboard.putNumber("Wrist Pot (Angle)", arm.wrist.anglePot.getValue());
-
-    // drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5),
-    // SmartDashboard.getNumber("i-value", 0),
-    // SmartDashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value",
-    // 0));
-
-    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
-
-    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-
-    if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
-      drive.resetEncoders();
-    }
-
     SmartDashboard.updateValues();
 
   }
