@@ -311,8 +311,9 @@ public class DriveBase {
 			pids.enableSpecificPID(1);
 	}
 
-	public void startStraightCameraDriveWithPID () {
+	public void resetCameraDrivePID () {
 
+		resetEncoders();
 		turnAngle =  Math.toRadians(Camera.getEntry("tx").getDouble(0));
 		driveDistance = 100000;
 

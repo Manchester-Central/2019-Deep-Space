@@ -17,7 +17,6 @@ public class Robot extends IterativeRobot {
   Arm arm;
   IntakeClimber climb;
   Grabber grab;
-  boolean armSet;
 
   /**
    * 
@@ -32,6 +31,9 @@ public class Robot extends IterativeRobot {
     arm = new Arm();
     climb = new IntakeClimber();
     grab = new Grabber();
+
+    drive.setTolerance();
+
     SmartDashboard.putNumber("p-value", 0);
     SmartDashboard.putNumber("i-value", 0);
     SmartDashboard.putNumber("d-value", 0);
@@ -63,7 +65,6 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
     SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
 
-    SmartDashboard.updateValues();
 
     SmartDashboard.putNumber("Current p", drive.getP());
     SmartDashboard.putNumber("Current i", drive.getI());
@@ -72,6 +73,7 @@ public class Robot extends IterativeRobot {
 
     SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
 
+    SmartDashboard.updateValues();
   }
 
   /**
@@ -80,6 +82,8 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousInit() {
 
+    drive.resetEncoders();
+    drive.stopDrivePID();
   }
 
   /**
@@ -88,6 +92,11 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousPeriodic() {
 
+    driveControls();
+
+    armControls();
+
+    climbtakeControls();
   }
 
   @Override
@@ -99,7 +108,7 @@ public class Robot extends IterativeRobot {
     // 0));
 
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-    drive.setTolerance();
+
     drive.resetEncoders();
     drive.stopDrivePID();
   }
@@ -150,23 +159,28 @@ public class Robot extends IterativeRobot {
      */
 
     if (cs.driver.buttonPressed(Controller.LEFT_X)) {
-      drive.startStraightCameraDriveWithPID();
+      drive.resetCameraDrivePID();
     }
 
     if (cs.driver.buttonHeld(Controller.LEFT_X)) {
 
       drive.straightCameraDriveWithPID();
 
-    } else {
-      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+    } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+
       drive.stopDrivePID();
+      drive.setSpeed(-0.25, -0.25);
+
+    } else {
+     
+      drive.stopDrivePID();
+      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+
     }
 
   }
 
   private void armControls() {
-
-    armSet = true;
 
     WristMode targetWristMode = WristMode.output;
 
@@ -223,7 +237,6 @@ public class Robot extends IterativeRobot {
       // manual elbow and extender
       arm.setElbowSpeed(cs.operator1.getRightY());
       arm.setExtenderSpeed(cs.operator1.getLeftY());
-      armSet = false;
 
       if (cs.operator1.buttonPressed(Controller.START)) {
         targetWristMode = WristMode.straight;
