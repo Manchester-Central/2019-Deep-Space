@@ -22,6 +22,7 @@ public class Grabber {
 
    DigitalInput switchLeft;
    DigitalInput switchRight;
+   DigitalInput beamSensor;
 
    public static final double INTAKE_OUTPUT_SPEED = 0.7;
 
@@ -32,11 +33,12 @@ public class Grabber {
     hatch = new DoubleSolenoid(PortConstants.FORWARD_HATCH, PortConstants.REVERSE_HATCH);
     switchLeft = new DigitalInput(PortConstants.LIMIT_SWITCH_LEFT);
     switchRight = new DigitalInput(PortConstants.LIMIT_SWITCH_RIGHT);
+    beamSensor = new DigitalInput (PortConstants.BEAM_SENSOR);
 
    }
 
    public void setSpark(double speed) {
-    intake.set(speed);
+      intake.set(speed);
    }
 
    public void extendHatchGrabber () {
@@ -54,5 +56,7 @@ public class Grabber {
    public boolean getLimitSwitchRight () {
       return switchRight.get();
    }
+
+   
 
 }
