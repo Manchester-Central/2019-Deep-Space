@@ -170,36 +170,49 @@ public class Robot extends IterativeRobot {
     if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
 
       // pickup ball
+      arm.pidGoToAngle(ArmConstants.BALL_PICKUP_ANGLE);
+      arm.setArmDistance(0);
+      arm.enableExtenderPID();
 
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
 
       // high ball
+      arm.setArmToVerticalPosition(ArmConstants.BALL_HIGH);
 
     } else if (cs.operator1.buttonHeld(Controller.UP_Y)) {
 
       // mid ball
+      arm.setArmToVerticalPosition(ArmConstants.BALL_MID);
 
     } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
 
       // low ball
+      arm.setArmToVerticalPosition(ArmConstants.BALL_LOW);
 
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
 
-      // pickup hatchpanel
+      // cargo ball
+      arm.setArmToVerticalPosition(ArmConstants.CARGO_BALL);
 
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
 
       // high hatchpanel
+      arm.setArmToVerticalPosition(ArmConstants.HATCH_HIGH);
 
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
 
       // mid hatchpanel
+      arm.setArmToVerticalPosition(ArmConstants.HATCH_MID);
 
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
 
       // low hatchpanel
+      arm.setArmToVerticalPosition(ArmConstants.HATCH_LOW);
 
     } else {
+
+      arm.disableElbowPID();
+      arm.disableExtenderPID();
 
       // manual elbow and extender
       arm.setElbowSpeed(cs.operator1.getRightY());

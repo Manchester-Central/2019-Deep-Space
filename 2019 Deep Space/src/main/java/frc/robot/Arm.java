@@ -53,6 +53,22 @@ public class Arm {
         extenderPID.setInputRange(ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
     }
 
+    public void enableExtenderPID () {
+        extenderPID.enable();
+    }
+
+    public void enableElbowPID () {
+        elbowPID.enable();
+    }
+
+    public void disableExtenderPID () {
+        extenderPID.disable();
+    }
+
+    public void disableElbowPID () {
+        elbowPID.disable();
+    }
+
     /***
      * Controls speed of extender with restriction to game rules
      * @param speed
@@ -120,6 +136,25 @@ public class Arm {
             setFeedForward();
             elbowPID.enable();
         }
+    }
+
+    public void setArmToVerticalPosition (double positionInches) {
+
+        double theta = Math.atan2((positionInches - ArmConstants.ARM_HEIGHT_INCHES), ArmConstants.ARM_DISTANCE);
+        //z = x / cos
+        double minArmLength = ArmConstants.ARM_DISTANCE / Math.cos(theta);
+
+        pidGoToAngle(-180 - Math.toDegrees(theta));
+
+        if (Math.abs(Math.abs(elbow.getEncoderAngle()) - Math.abs(theta)) < ArmConstants.ACCEPTABLE_ANGLE) {
+            setArmDistance(Math.max(ArmConstants.ARM_DISTANCE, minArmLength));
+        } else {
+            setArmDistance(0);
+        }
+
+        elbowPID.enable();
+        extenderPID.enable();
+
     }
 
     public void setArmDistance(double distance) {
