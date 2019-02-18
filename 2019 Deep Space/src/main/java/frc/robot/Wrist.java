@@ -59,7 +59,7 @@ public class Wrist {
    public void setSetPoint(double targetAngle) {
       pid.setSetpoint(targetAngle);
    }
-
+   
    public void goToSetPoint() {
       pid.enable();
    }
@@ -67,6 +67,5 @@ public class Wrist {
    public void stopWristPID () {
       pid.disable();
    }
-
 
 }
