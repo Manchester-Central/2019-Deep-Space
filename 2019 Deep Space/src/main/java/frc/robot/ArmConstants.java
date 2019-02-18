@@ -56,4 +56,5 @@ public class ArmConstants {
     public static final double HATCH_MID = 47;
     public static final double HATCH_HIGH = 75;
     public static final double CARGO_BALL = 37;
+
 }

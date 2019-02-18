@@ -55,5 +55,6 @@ public class PortConstants {
 
 	public static final int LIMIT_SWITCH_LEFT = 0;
 	public static final int LIMIT_SWITCH_RIGHT = 0;
+	public static final int BEAM_SENSOR = 0;
 
 }
