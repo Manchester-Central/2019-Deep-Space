@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class TalonSRX_Encoder implements PIDSource {
 
     private ChaosBetterTalonSRX check;
-    private PIDSourceType type = PIDSourceType.kDisplacement;
+	private PIDSourceType type = PIDSourceType.kDisplacement;
+	
+	public enum ParamType {distance, angle};
+	private ParamType paramType;
 
-    public TalonSRX_Encoder(ChaosBetterTalonSRX check) {
+    public TalonSRX_Encoder(ChaosBetterTalonSRX check, ParamType paramType) {
 
-        this.check = check;
+		this.check = check;
+		this.paramType = paramType;
 
 
     }
@@ -37,7 +41,18 @@ public class TalonSRX_Encoder implements PIDSource {
 
 	@Override
 	public double pidGet() {
-		return check.getCurrentPositionTicks();
+		
+		switch (paramType) {
+
+			case distance:
+				return check.getCurrentPositionTicks();
+			case angle:
+				return check.getEncoderAngle();
+			default:
+				return 0;
+
+		}
+		
 	}
 
 

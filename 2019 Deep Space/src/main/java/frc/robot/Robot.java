@@ -1,7 +1,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
@@ -16,7 +15,6 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
-  Wrist wrist;
   Grabber grab;
   boolean armSet;
 
@@ -32,7 +30,6 @@ public class Robot extends IterativeRobot {
     cs = new ControllerSecretary();
     arm = new Arm();
     climb = new IntakeClimber();
-    wrist = new Wrist();
     grab = new Grabber();
     SmartDashboard.putNumber("p-value", 0);
     SmartDashboard.putNumber("i-value", 0);
@@ -206,14 +203,14 @@ public class Robot extends IterativeRobot {
 
       // manual elbow and extender
       arm.setElbowSpeed(cs.operator1.getRightY());
-      arm.setElbowSpeed(cs.operator1.getLeftY());
+      arm.setExtenderSpeed(cs.operator1.getLeftY());
       armSet = false;
 
       if (cs.operator1.buttonPressed(Controller.START)) {
-        wrist.setSetPoint(Math.toRadians(Wrist.DEFAULT_ANGLE));
-        wrist.goToSetPoint();
+        arm.wrist.setSetPoint(Math.toRadians(Wrist.DEFAULT_ANGLE));
+        arm.wrist.goToSetPoint();
       } else {
-        wrist.stopWristPID();
+
       }
 
     }
@@ -235,6 +232,8 @@ public class Robot extends IterativeRobot {
       grab.extendHatchGrabber();
 
     }
+
+
 
   }
 

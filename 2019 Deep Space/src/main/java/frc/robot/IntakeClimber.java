@@ -9,12 +9,12 @@ package frc.robot;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.TalonSRX_Encoder;
+import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 
 /**
  * Add your docs here.
@@ -49,7 +49,7 @@ public class IntakeClimber {
         2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
         rotate1 = new VictorSPX(PortConstants.INTAKE_1);
         flywheel = new VictorSPX(PortConstants.FLYWHEEL);
-        enc = new TalonSRX_Encoder (rotate0);
+        enc = new TalonSRX_Encoder (rotate0, ParamType.angle);
         pid = new PIDController(P, I, D, enc, rotate0);
     }
 

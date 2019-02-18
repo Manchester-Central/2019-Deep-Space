@@ -15,6 +15,7 @@ import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.TalonSRX_Encoder;
+import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 
 /**
  * Calculates new speed
@@ -131,8 +132,8 @@ public class DriveBase {
 		rightTalonSRX.configClosedloopRamp (1, 0);
 		leftTalonSRX.configClosedloopRamp (1, 0);
 
-		leftEncoder = new TalonSRX_Encoder(leftTalonSRX);
-		rightEncoder = new TalonSRX_Encoder(rightTalonSRX);
+		leftEncoder = new TalonSRX_Encoder(leftTalonSRX, ParamType.distance);
+		rightEncoder = new TalonSRX_Encoder(rightTalonSRX, ParamType.distance);
 		
 
 		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);

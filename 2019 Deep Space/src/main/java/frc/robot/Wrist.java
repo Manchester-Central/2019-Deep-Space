@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.TalonSRX_Encoder;
+import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 
 /**
  * Add your docs here.
@@ -22,12 +23,16 @@ public class Wrist {
 
    public static final double CIRCUMFERENCE = 2 * Math.PI;
    public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
-   public static final double MAX_ANGLE = 180;
-   public static final double MIN_ANGLE = 0;
-   public static final double DEFAULT_ANGLE = 0;
+   public static final double MAX_ANGLE = 360.0;
+   public static final double MIN_ANGLE = 0.0;
+   public static final double DEFAULT_ANGLE = 0.0;
+   public static final double TUCKED_POSITION = 180.0;
+
+
    public static final double P = 0.001;
    public static final double I = 0;
    public static final double D = 0;
+   
 
 
    public Wrist() {
@@ -35,7 +40,7 @@ public class Wrist {
       speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION,
             false);
          
-      speedControllerEncoder = new TalonSRX_Encoder(speedController);
+      speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
       pid = new PIDController(P, I, D, speedControllerEncoder, speedController);
    }
 

@@ -30,7 +30,9 @@ public class Arm {
     LinearPot elbowPot;
     LinearPot extenderPot;
 
-    Wrist wrist;
+    public Wrist wrist;
+
+    public enum WristMode {intake, tucked, output};
 
     public Arm() {
 
@@ -124,6 +126,7 @@ public class Arm {
         extenderPID.setSetpoint(distance);
 
     }
+    
 
     public double getCenterOfMass() {
 
@@ -182,11 +185,46 @@ public class Arm {
         return (extenderLength > maxExtenderLength(angle));
     }
     
+    public void setWristToArmAngle(WristMode mode) {
+
+        double currentElbowAngle = getElbowAngle();
+        switch(mode){
+
+        case intake:
+            wrist.setSetPoint(90 - currentElbowAngle);
+
+            break;
+
+        case tucked:
+            wrist.setSetPoint(Wrist.TUCKED_POSITION);
+        
+            break;
+        case output:
+            if (currentElbowAngle > 0) {
+                wrist.setSetPoint(270 - currentElbowAngle);
+            } else {
+                wrist.setSetPoint(360 - currentElbowAngle);
+            }
+            break;
+
+        default:
+            wrist.setSetPoint(wrist.getAngle());
+        break;
+        }
+    }
+
+
     /**
-     * Keeps the wrist at an angle from horizontal when the arm moves
-     * @param angle - the angle from horizontal, positive is up 
+     * 
+     * @param targetMode - The mode that the wrist will be set to once arm is in position,
+     * either intake or output
      */
-    public void keepWristAtAngle (double angle) {
-        wrist.setSetPoint(Math.abs(getElbowAngle()) + (angle * -FunctionsThatShouldBeInTheJDK.getSign(getElbowAngle())));
+    public void autoMoveWrist(WristMode targetMode) {
+
+        if (!FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), 0.5)) {
+            setWristToArmAngle(WristMode.tucked);
+        } else {
+            setWristToArmAngle(targetMode);
+        }
     }
 }

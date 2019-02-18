@@ -28,5 +28,11 @@ public class FunctionsThatShouldBeInTheJDK {
         return Math.abs(value) / value; 
     }
 
+    public static boolean withinPlusOrMinus(double currentValue, double targetValue, double deadBand) {
+
+        return Math.abs(currentValue - targetValue) < Math.abs(deadBand);
+
+    }
+
     
 }
