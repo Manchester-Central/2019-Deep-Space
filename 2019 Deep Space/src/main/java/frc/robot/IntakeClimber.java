@@ -29,6 +29,7 @@ public class IntakeClimber {
 
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
     public static final double ROTATE_SPEED = 0.1;
+    public static final double INTAKE_SPEED = 1;
     public static final double INTAKE_ANGLE = 2;
     public static final double DOWN_ANGLE = 0;
     public static final double OUT_ANGLE = Math.PI;
@@ -53,6 +54,12 @@ public class IntakeClimber {
     }
 
     public void setIntake (double speed) {
+
+        if (getAngleInRadians() >= OUT_ANGLE && speed > 0)
+            speed = 0;
+        else if (getAngleInRadians() <= DOWN_ANGLE && speed < 0)
+            speed = 0;
+
         rotate0.set(ControlMode.PercentOutput, speed);
         rotate1.set(ControlMode.PercentOutput, speed);
     
@@ -62,7 +69,7 @@ public class IntakeClimber {
         pid.enable();
     }
 
-    public void stopRotate () {
+    public void stopPIDRotate () {
         pid.disable();
     }
 

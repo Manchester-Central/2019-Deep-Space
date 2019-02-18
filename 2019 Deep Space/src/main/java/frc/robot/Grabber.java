@@ -7,8 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 /**
  * Add your docs here.
@@ -18,11 +20,18 @@ public class Grabber {
    Spark intake;
    DoubleSolenoid hatch;
 
+   DigitalInput switchLeft;
+   DigitalInput switchRight;
+
+   public static final double INTAKE_OUTPUT_SPEED = 0.7;
+
    
    public Grabber () {
      
     intake = new Spark(PortConstants.GRABBER_SPARK);
     hatch = new DoubleSolenoid(PortConstants.FORWARD_HATCH, PortConstants.REVERSE_HATCH);
+    switchLeft = new DigitalInput(PortConstants.LIMIT_SWITCH_LEFT);
+    switchRight = new DigitalInput(PortConstants.LIMIT_SWITCH_RIGHT);
 
    }
 
@@ -30,6 +39,20 @@ public class Grabber {
     intake.set(speed);
    }
 
+   public void extendHatchGrabber () {
+      hatch.set(Value.kForward);
+   }
 
+   public void retractHatchGrabber () {
+      hatch.set(Value.kReverse);
+   }
+
+   public boolean getLimitSwitchLeft () {
+      return switchLeft.get();
+   }
+
+   public boolean getLimitSwitchRight () {
+      return switchRight.get();
+   }
 
 }

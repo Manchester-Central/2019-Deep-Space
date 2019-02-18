@@ -20,13 +20,14 @@ public class Wrist {
    TalonSRX_Encoder speedControllerEncoder;
    PIDController pid;
 
-   private static final double CIRCUMFERENCE = 1;
-   private static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
-   private static final double maxAngle = 180;
-   private static final double minAngle = 0;
-   private static final double P = 0;
-   private static final double I = 0;
-   private static final double D = 0;
+   public static final double CIRCUMFERENCE = 2 * Math.PI;
+   public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
+   public static final double MAX_ANGLE = 180;
+   public static final double MIN_ANGLE = 0;
+   public static final double DEFAULT_ANGLE = 0;
+   public static final double P = 0.001;
+   public static final double I = 0;
+   public static final double D = 0;
 
 
    public Wrist() {
@@ -39,9 +40,9 @@ public class Wrist {
    }
 
    public void setSpeed(double speed) {
-      if ((getAngle() >= maxAngle) && (speed > 0)) {
+      if ((getAngle() >= MAX_ANGLE) && (speed > 0)) {
          speed = 0;
-      } else if ((getAngle() <= minAngle) && (speed < 0)) {
+      } else if ((getAngle() <= MIN_ANGLE) && (speed < 0)) {
          speed = 0;
       }
       speedController.set(speed);
@@ -63,7 +64,7 @@ public class Wrist {
       pid.enable();
    }
 
-   public void stopWrist () {
+   public void stopWristPID () {
       pid.disable();
    }
 

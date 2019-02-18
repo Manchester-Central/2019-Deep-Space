@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
+
 /**
  * 
  */
@@ -15,9 +16,9 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
+  Wrist wrist;
   Grabber grab;
-
-  AnalogInput x;
+  boolean armSet;
 
   /**
    * 
@@ -25,10 +26,14 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotInit() {
 
-    x = new AnalogInput(2);
+    armSet = true;
 
     drive = new DriveBase();
     cs = new ControllerSecretary();
+    arm = new Arm();
+    climb = new IntakeClimber();
+    wrist = new Wrist();
+    grab = new Grabber();
     SmartDashboard.putNumber("p-value", 0);
     SmartDashboard.putNumber("i-value", 0);
     SmartDashboard.putNumber("d-value", 0);
@@ -96,9 +101,9 @@ public class Robot extends IterativeRobot {
     // 0));
 
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-     drive.setTolerance();
-     drive.resetEncoders();
-     drive.stopDrivePID();
+    drive.setTolerance();
+    drive.resetEncoders();
+    drive.stopDrivePID();
   }
 
   /**
@@ -122,8 +127,6 @@ public class Robot extends IterativeRobot {
     driveControls();
 
     armControls();
-
-
 
     climbtakeControls();
 
@@ -152,68 +155,84 @@ public class Robot extends IterativeRobot {
       drive.startStraightCameraDriveWithPID();
     }
 
-    if (cs.driver.buttonHeld(Controller.LEFT_X))
-    {
-     
-     drive.straightCameraDriveWithPID();
-     
-   } else {
-     drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
-     drive.stopDrivePID();
-   }
+    if (cs.driver.buttonHeld(Controller.LEFT_X)) {
+
+      drive.straightCameraDriveWithPID();
+
+    } else {
+      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+      drive.stopDrivePID();
+    }
 
   }
 
-  private void armControls() { 
+  private void armControls() {
 
-    if (cs.operator1.buttonHeld(Controller.DOWN_A)){
+    armSet = true;
 
-      //pickup ball
+    if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
 
-    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)){
-  
-      //high ball
+      // pickup ball
 
-    } else if (cs.operator1.buttonHeld(Controller.UP_Y)){
-  
-      //mid ball
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
 
-    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)){
-  
-      //low ball
+      // high ball
 
-    }  else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN){
-  
-      //pickup hatchpanel
+    } else if (cs.operator1.buttonHeld(Controller.UP_Y)) {
 
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT){
-  
-      //high hatchpanel
+      // mid ball
 
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP){
-  
-      //mid hatchpanel
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
 
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT){
-  
-      //low hatchpanel
+      // low ball
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
+
+      // pickup hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
+
+      // high hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
+
+      // mid hatchpanel
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
+
+      // low hatchpanel
 
     } else {
 
-      //manual elbow and extender
+      // manual elbow and extender
+      arm.setElbowSpeed(cs.operator1.getRightY());
+      arm.setElbowSpeed(cs.operator1.getLeftY());
+      armSet = false;
+
+      if (cs.operator1.buttonPressed(Controller.START)) {
+        wrist.setSetPoint(Math.toRadians(Wrist.DEFAULT_ANGLE));
+        wrist.goToSetPoint();
+      } else {
+        wrist.stopWristPID();
+      }
 
     }
-    
-    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)){
-  
-      
-    // make grabber open 
 
+    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+
+      grab.setSpark(Grabber.INTAKE_OUTPUT_SPEED);
+
+    } else {
+      grab.setSpark(-Grabber.INTAKE_OUTPUT_SPEED);
     }
-    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)){
-  
-      
-    // make grabber output
+
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+
+      grab.retractHatchGrabber();
+
+    } else if (grab.getLimitSwitchLeft() && grab.getLimitSwitchRight()) {
+
+      grab.extendHatchGrabber();
 
     }
 
@@ -221,20 +240,33 @@ public class Robot extends IterativeRobot {
 
   private void climbtakeControls() { // does buttonPressed allow hold?
 
-
-
     /**
      * 
      * Climb Controls: Left Trigger moves climb mech down Right Trigger moves climb
      * mech up
      */
-
-    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
-      // set climb to climb position
+    if (armSet) {
+      climb.setToPosition(IntakeClimber.OUT_ANGLE);
+      climb.setFlywheel(0);
+      climb.goToSetPoint();
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+      // set climb to climb "position"
+      climb.stopPIDRotate();
+      climb.setIntake(IntakeClimber.ROTATE_SPEED);
+      climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
       // set climb to intake
+      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
+      climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
+      climb.goToSetPoint();
     } else if (cs.operator1.buttonHeld(Controller.SELECT)) {
       // set climb to retract
+      climb.setToPosition(IntakeClimber.DOWN_ANGLE);
+      climb.goToSetPoint();
+      climb.setFlywheel(0);
+    } else {
+      climb.setFlywheel(0);
+      climb.stopPIDRotate();
     }
   }
 
@@ -245,7 +277,6 @@ public class Robot extends IterativeRobot {
     // \drive.stopDrivePID();
 
     SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
-    SmartDashboard.putNumber("analog out", x.getVoltage());
 
     // drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5),
     // SmartDashboard.getNumber("i-value", 0),

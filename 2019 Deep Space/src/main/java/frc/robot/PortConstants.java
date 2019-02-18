@@ -52,4 +52,8 @@ public class PortConstants {
 
 	public static final int EXTENDER_ENCODER_A = 0;
 	public static final int EXTENDER_ENCODER_B = 0;
+
+	public static final int LIMIT_SWITCH_LEFT = 0;
+	public static final int LIMIT_SWITCH_RIGHT = 0;
+
 }

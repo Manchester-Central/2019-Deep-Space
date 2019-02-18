@@ -43,4 +43,8 @@ public class ArmConstants {
     public static final double EXTENDER_P = 0.001;
     public static final double EXTENDER_I = 0;
     public static final double EXTENDER_D = 0;
+
+    
+    public static final double BALL_PICKUP_ANGLE = -90;
+    
 }
