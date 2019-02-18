@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
+import frc.robot.Arm.WristMode;
 
 /**
  * 
@@ -167,12 +168,16 @@ public class Robot extends IterativeRobot {
 
     armSet = true;
 
+    WristMode targetWristMode = WristMode.output;
+
     if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
 
-      // pickup ball
+      // pickup position
       arm.pidGoToAngle(ArmConstants.BALL_PICKUP_ANGLE);
       arm.setArmDistance(0);
       arm.enableExtenderPID();
+
+      targetWristMode = WristMode.intake;
 
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
 
@@ -193,6 +198,7 @@ public class Robot extends IterativeRobot {
 
       // cargo ball
       arm.setArmToVerticalPosition(ArmConstants.CARGO_BALL);
+      
 
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
 
@@ -220,14 +226,18 @@ public class Robot extends IterativeRobot {
       armSet = false;
 
       if (cs.operator1.buttonPressed(Controller.START)) {
-        arm.wrist.setSetPoint(Math.toRadians(Wrist.DEFAULT_ANGLE));
-        arm.wrist.goToSetPoint();
+        targetWristMode = WristMode.straight;
+       
       } else {
-
+        targetWristMode = WristMode.tucked;
       }
+
+      
 
     }
 
+    arm.autoMoveWrist(targetWristMode);
+    
     if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
 
       grab.setSpark(Grabber.INTAKE_OUTPUT_SPEED);
