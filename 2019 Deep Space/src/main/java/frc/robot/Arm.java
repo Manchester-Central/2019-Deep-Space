@@ -110,7 +110,8 @@ public class Arm {
         } else if (outsideReach(extenderPot.getValue(), angle)) {
 
             setArmDistance(maxExtenderLength(angle) - 0.5);
-
+            elbowPID.disable();
+            
         } else {
 
             elbowPID.setSetpoint(angle);
@@ -179,5 +180,13 @@ public class Arm {
      */
     public boolean outsideReach(double extenderLength, double angle) {
         return (extenderLength > maxExtenderLength(angle));
+    }
+    
+    /**
+     * Keeps the wrist at an angle from horizontal when the arm moves
+     * @param angle - the angle from horizontal, positive is up 
+     */
+    public void keepWristAtAngle (double angle) {
+        wrist.setSetPoint(Math.abs(getElbowAngle()) + (angle * -FunctionsThatShouldBeInTheJDK.getSign(getElbowAngle())));
     }
 }
