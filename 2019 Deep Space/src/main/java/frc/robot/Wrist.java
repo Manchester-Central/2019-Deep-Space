@@ -56,8 +56,8 @@ public class Wrist {
       return speedController.getEncoderAngle();
    }
 
-   public void setSetPoint(double setPoint) {
-      pid.setSetpoint(setPoint);
+   public void setSetPoint(double targetAngle) {
+      pid.setSetpoint(targetAngle);
    }
 
    public void goToSetPoint() {
