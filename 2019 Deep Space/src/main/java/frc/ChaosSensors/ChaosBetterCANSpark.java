@@ -22,17 +22,18 @@ public class ChaosBetterCANSpark extends CANSparkMax{
 
     public ChaosBetterCANSpark(int port) {
         super(port, MotorType.kBrushless);
+
     }
 
     public void setAdjustment (double value) {
         value = FunctionsThatShouldBeInTheJDK.clamp(value, -ADJUSTMENT_MAX, ADJUSTMENT_MAX);
-        adjustment = 1D + value;
+        adjustment = value;
     }
 
 
     @Override
     public void pidWrite(double output) {
-        System.out.print(adjustment * output);
-        set(output * adjustment);
+        System.out.print(adjustment + output);
+        set(output + adjustment);
     }
 }

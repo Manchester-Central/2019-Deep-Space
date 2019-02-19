@@ -107,6 +107,7 @@ public class Arm {
 
     /***
      * Sets the speed of the arm to oppose gravity
+     * https://www.chiefdelphi.com/t/velocity-limiting-pid/164908/22
      */
     public void setFeedForward() {
         elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() * Math.acos(elbowPot.getValue())
@@ -123,37 +124,30 @@ public class Arm {
      */
     public void pidGoToAngle(double angle) {
 
-        if (willCrash(angle)) {
+        setArmDistance(0);
+        setFeedForward();
+        elbowPID.enable();
 
-            double wantArmDistance = ((ArmConstants.ARM_HEIGHT_INCHES / Math.acos(angle)) - 0.5);
-            setArmDistance(wantArmDistance);
-            elbowPID.disable();
+        if (willCrash(angle) || outsideReach(extenderPot.getValue(), angle)) {
 
-        } else if (outsideReach(extenderPot.getValue(), angle)) {
-
-            setArmDistance(maxExtenderLength(angle) - 0.5);
-            elbowPID.disable();
+            elbowPID.setSetpoint(getElbowAngle());
             
         } else {
 
             elbowPID.setSetpoint(angle);
-            setFeedForward();
-            elbowPID.enable();
         }
     }
 
     public void setArmToVerticalPosition (double positionInches) {
 
-        double theta = Math.atan2((positionInches - ArmConstants.ARM_HEIGHT_INCHES), ArmConstants.ARM_DISTANCE);
+        double theta = Math.atan2((positionInches - ArmConstants.ARM_HEIGHT_INCHES), ArmConstants.ARM_LENGTH);
         //z = x / cos
-        double minArmLength = ArmConstants.ARM_DISTANCE / Math.cos(theta);
+        double minArmLength = ArmConstants.ARM_LENGTH / Math.cos(theta);
 
         pidGoToAngle(-180 - Math.toDegrees(theta));
 
-        if (Math.abs(Math.abs(elbow.getEncoderAngle()) - Math.abs(theta)) < ArmConstants.ACCEPTABLE_ANGLE) {
-            setArmDistance(Math.max(ArmConstants.ARM_DISTANCE, minArmLength));
-        } else {
-            setArmDistance(0);
+        if (elbowInPosition()) {
+            setArmDistance(Math.max(ArmConstants.ARM_LENGTH, minArmLength));
         }
 
         elbowPID.enable();
@@ -169,8 +163,9 @@ public class Arm {
 
     public double getCenterOfMass() {
 
-        return (ArmConstants.ARM_WEIGHT * ArmConstants.ARM_DISTANCE
-                + ArmConstants.EXTENSION_WEIGHT * getExtenderPosition()) / ArmConstants.TOTAL_WEIGHT;
+        return ((ArmConstants.ARM_WEIGHT * ArmConstants.ARM_CENTER_OF_MASS
+            + ArmConstants.EXTENDER_ARM_WEIGHT * (ArmConstants.EXTENSION_TOTAL_CENTER_OF_MASS + getExtenderPosition())) 
+            / (ArmConstants.TOTAL_WEIGHT));
 
     }
 
@@ -186,24 +181,15 @@ public class Arm {
     public boolean willCrash(double angle) {
 
         // thinko mode
-        return (getExtenderPosition() * Math.acos(angle) > ArmConstants.ARM_HEIGHT_INCHES);
+        return getExtenderPosition() * Math.acos(angle) > ArmConstants.ARM_HEIGHT_INCHES;
 
     }
 
     public double armLength(double extenderLength) {
-        return ArmConstants.ARM_DISTANCE + extenderLength;
+        return ArmConstants.ARM_LENGTH + extenderLength;
     }
 
-    /***
-     * How far out the horizontal component of the arm extension
-     * @param extenderLength
-     * @param angle
-     * @return
-     */
-    public double armDistanceX(double extenderLength, double angle) {
-        // thinko mode
-        return armLength(extenderLength) * Math.acos(angle);
-    }
+    
 
     /***
      * Most the extender can be extended legally at an angle
@@ -211,7 +197,7 @@ public class Arm {
      * @return
      */
     public double maxExtenderLength(double angle) {
-        return (ArmConstants.MAX_REACH_X / Math.acos(angle)) - ArmConstants.ARM_DISTANCE;
+        return (ArmConstants.MAX_REACH_X / Math.acos(angle)) - ArmConstants.ARM_LENGTH;
     }
 
     /***
@@ -229,28 +215,28 @@ public class Arm {
         double currentElbowAngle = getElbowAngle();
         switch(mode){
 
-        case intake:
-            wrist.setSetPoint(90 - currentElbowAngle);
+            case intake:
+                wrist.setSetPoint(90 - currentElbowAngle);
 
-            break;
+                break;
 
-        case tucked:
-            wrist.setSetPoint(Wrist.TUCKED_POSITION);
-        
-            break;
-        case output:
-            if (currentElbowAngle > 0) {
-                wrist.setSetPoint(270 - currentElbowAngle);
-            } else {
-                wrist.setSetPoint(360 - currentElbowAngle);
-            }
-            break;
-        case straight:
-            wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
-            break;
-        default:
-            wrist.setSetPoint(wrist.getAngle());
-        break;
+            case tucked:
+                wrist.setSetPoint(Wrist.TUCKED_POSITION);
+            
+                break;
+            case output:
+                if (currentElbowAngle > 0) {
+                    wrist.setSetPoint(270 - currentElbowAngle);
+                } else {
+                    wrist.setSetPoint(360 - currentElbowAngle);
+                }
+                break;
+            case straight:
+                wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
+                break;
+            default:
+                wrist.setSetPoint(wrist.getAngle());
+                break;
         }
     }
 

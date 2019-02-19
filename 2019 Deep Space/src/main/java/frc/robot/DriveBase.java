@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Victor;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
+import frc.ChaosSensors.CanSparkEncoder;
+import frc.ChaosSensors.ChaosBetterCANSpark;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.TalonSRX_Encoder;
 import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
@@ -22,26 +24,34 @@ import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
  */
 public class DriveBase {
 
-    //public CANSparkMax leftFront;
-    //public CANSparkMax rightFront;
+    public ChaosBetterCANSpark leftFront;
+	public ChaosBetterCANSpark rightFront;
+	public ChaosBetterCANSpark leftBack;
+	public ChaosBetterCANSpark rightBack;
+	
+	public CanSparkEncoder leftEncoder;
+	public CanSparkEncoder rightEncoder;
 
     private PIDLinked pids;
 
-    Victor leftBackVictor;
-	Victor leftMidVictor;
-	Victor leftFrontVictor;
-	Victor rightBackVictor;
-	Victor rightMidVictor;
-	Victor rightFrontVictor;
+	// This is raft code
+    // Victor leftBackVictor;
+	// Victor leftMidVictor;
+	// Victor leftFrontVictor;
+	// Victor rightBackVictor;
+	// Victor rightMidVictor;
+	// Victor rightFrontVictor;
+
+	// ChaosBetterTalonSRX rightTalonSRX;
+	// ChaosBetterTalonSRX leftTalonSRX;
 	
-	ChaosBetterTalonSRX rightTalonSRX;
-	ChaosBetterTalonSRX leftTalonSRX;
+	// TalonSRX_Encoder leftEncoder;
+	// TalonSRX_Encoder rightEncoder;
+	
 
 	PIDController leftPidController;
 	PIDController rightPidController;
 
-	TalonSRX_Encoder leftEncoder;
-	TalonSRX_Encoder rightEncoder;
 	
 	
 	private double P = 0.25;
@@ -85,66 +95,71 @@ public class DriveBase {
 		turningRight = false;
 		turnAngle = 100000;
 
-       // leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless );
-        //rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
-       
+    	leftFront = new ChaosBetterCANSpark(PortConstants.LEFT_FRONT_SPARK);
+		rightFront = new ChaosBetterCANSpark(PortConstants.RIGHT_FRONT_SPARK);
+		leftBack = new ChaosBetterCANSpark(PortConstants.LEFT_BACK_SPARK);
+		rightBack = new ChaosBetterCANSpark(PortConstants.RIGHT_BACK_SPARK);
+
+		leftEncoder = new CanSparkEncoder(leftFront.getEncoder(), WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
+		rightEncoder = new CanSparkEncoder(rightFront.getEncoder(), WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
 		
+		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftFront);
 		
-        
+		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightFront);
 
         // above is real code, below is raft, comment/uncomment to make work
 		
-		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
-		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
+		// rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
+		//  WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
 		
-		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON,
-		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
+		// leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON,
+		//  WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
 
-		leftTalonSRX.set(ControlMode.PercentOutput, 0);
+		// leftTalonSRX.set(ControlMode.PercentOutput, 0);
 
-		leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
-		leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
-		leftFrontVictor = new Victor(PortConstants.LEFT_FRONT_TALON);
+		// leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
+		// leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
+		// leftFrontVictor = new Victor(PortConstants.LEFT_FRONT_TALON);
 		
-		rightBackVictor = new Victor(PortConstants.RIGHT_BACK_TALON);
-		rightMidVictor = new Victor(PortConstants.RIGHT_MID_TALON);
-		rightFrontVictor = new Victor(PortConstants.RIGHT_FRONT_TALON);
+		// rightBackVictor = new Victor(PortConstants.RIGHT_BACK_TALON);
+		// rightMidVictor = new Victor(PortConstants.RIGHT_MID_TALON);
+		// rightFrontVictor = new Victor(PortConstants.RIGHT_FRONT_TALON);
 		
-		rightBackVictor.setInverted(true);
-		rightMidVictor.setInverted(true);
-		rightFrontVictor.setInverted(true);
+		// rightBackVictor.setInverted(true);
+		// rightMidVictor.setInverted(true);
+		// rightFrontVictor.setInverted(true);
 		
-		leftTalonSRX.setInverted(false);
-		rightTalonSRX.setInverted(true);
+		// leftTalonSRX.setInverted(false);
+		// rightTalonSRX.setInverted(true);
 		
-		leftTalonSRX.enableCurrentLimit(true);
-		rightTalonSRX.enableCurrentLimit(true);
+		// leftTalonSRX.enableCurrentLimit(true);
+		// rightTalonSRX.enableCurrentLimit(true);
 		
-		leftTalonSRX.configContinuousCurrentLimit(30, 0);
-		rightTalonSRX.configContinuousCurrentLimit(30, 0);
+		// leftTalonSRX.configContinuousCurrentLimit(30, 0);
+		// rightTalonSRX.configContinuousCurrentLimit(30, 0);
 		
-		leftTalonSRX.configPeakCurrentDuration(50, 0);
-		rightTalonSRX.configPeakCurrentDuration(50, 0);
+		// leftTalonSRX.configPeakCurrentDuration(50, 0);
+		// rightTalonSRX.configPeakCurrentDuration(50, 0);
 
-		rightTalonSRX.configPeakCurrentLimit(30, 0);
-		leftTalonSRX.configPeakCurrentLimit(30, 0);
+		// rightTalonSRX.configPeakCurrentLimit(30, 0);
+		// leftTalonSRX.configPeakCurrentLimit(30, 0);
 		
-		rightTalonSRX.configClosedloopRamp (1, 0);
-		leftTalonSRX.configClosedloopRamp (1, 0);
+		// rightTalonSRX.configClosedloopRamp (1, 0);
+		// leftTalonSRX.configClosedloopRamp (1, 0);
 
-		leftEncoder = new TalonSRX_Encoder(leftTalonSRX, ParamType.distance);
-		rightEncoder = new TalonSRX_Encoder(rightTalonSRX, ParamType.distance);
+		// leftEncoder = new TalonSRX_Encoder(leftTalonSRX, ParamType.distance);
+		// rightEncoder = new TalonSRX_Encoder(rightTalonSRX, ParamType.distance);
 		
 
-		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
-		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
+		// leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
+		// rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
 
 		setTolerance();
 
 		
 		pids = new PIDLinked(leftPidController, rightPidController);
 		
-		pids.setsrxs(leftTalonSRX, rightTalonSRX);
+		pids.setSparks(leftFront, rightFront);
 	}
 
 	public void resetSquareSum () {
@@ -202,8 +217,8 @@ public class DriveBase {
 	}
 
 	public void resetEncoders () {
-		rightTalonSRX.resetEncoder();
-		leftTalonSRX.resetEncoder();
+		rightEncoder.reset();
+		leftEncoder.reset();
 		
 	}
 	
@@ -220,32 +235,34 @@ public class DriveBase {
 
 		
 		//leftTalonSRX.set(ControlMode.PercentOutput, leftSpeed);
-		leftTalonSRX.set(leftSpeed);
-		rightTalonSRX.set(rightSpeed);
-		followTalon();
+		leftFront.set(leftSpeed);
+		leftBack.set (leftSpeed);
+		rightFront.set(rightSpeed);
+		rightBack.set(rightSpeed);
+		//followTalon();
 		
 		//System.out.println(leftSpeed);
 
 	}
 
-	public void followTalon () {
+	// public void followTalon () {
 
-		double leftSpeed = leftTalonSRX.get();
-		double rightSpeed = rightTalonSRX.get();
+	// 	double leftSpeed = leftFront.get();
+	// 	double rightSpeed = rightFront.get();
 
-		leftBackVictor.set(leftSpeed);
-		leftMidVictor.set(leftSpeed);
-		leftFrontVictor.set(leftSpeed);
+	// 	leftBackVictor.set(leftSpeed);
+	// 	leftMidVictor.set(leftSpeed);
+	// 	leftFrontVictor.set(leftSpeed);
 
-		rightBackVictor.set(rightSpeed);
-		rightMidVictor.set(rightSpeed);
-		rightFrontVictor.set(rightSpeed);
+	// 	rightBackVictor.set(rightSpeed);
+	// 	rightMidVictor.set(rightSpeed);
+	// 	rightFrontVictor.set(rightSpeed);
 		
-	}
+	// }
 	
 	public String getDriveSpeeds() {
 
-		return "Left speed = " + leftTalonSRX.get() + ", Right speed = " + rightTalonSRX.get();
+		return "Left speed = " + leftFront.get() + ", Right speed = " + rightFront.get();
 
 	}
 
@@ -257,35 +274,35 @@ public class DriveBase {
 	@Deprecated
     public void cameraDrive() {
 
-        double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
+        double[] speedValues = Camera.getDriveDirections(leftFront.get(), rightFront.get());
         setSpeed(speedValues[0] * .1D, speedValues[1] * .1D);
 
 
 		
 	}
 
-	@Deprecated
-	public void testMotors (ControllerSecretary cs) {
-		if (cs.driver.getDPad()  == Controller.DPadDirection.UP) {
-			leftTalonSRX.set(1);
-		} else if (cs.driver.getDPad()  == Controller.DPadDirection.LEFT) {
-			leftBackVictor.set(1);
-		} else if (cs.driver.getDPad()  == Controller.DPadDirection.DOWN) {
-			leftMidVictor.set(1);
-		} else if (cs.driver.getDPad()  == Controller.DPadDirection.RIGHT) {
-			leftFrontVictor.set(1);
-		} else if (cs.driver.buttonHeld(Controller.UP_Y)) {
-			rightTalonSRX.set(1);
-		} else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
-			rightBackVictor.set(1);
-		} else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
-			rightMidVictor.set(1);
-		} else if (cs.driver.buttonHeld(Controller.RIGHT_B)) {
-			rightFrontVictor.set(1);
-		} else {
-		  setSpeed(0.0, 0.0);
-		}
-	}
+	// @Deprecated
+	// public void testMotors (ControllerSecretary cs) {
+	// 	if (cs.driver.getDPad()  == Controller.DPadDirection.UP) {
+	// 		leftTalonSRX.set(1);
+	// 	} else if (cs.driver.getDPad()  == Controller.DPadDirection.LEFT) {
+	// 		leftBackVictor.set(1);
+	// 	} else if (cs.driver.getDPad()  == Controller.DPadDirection.DOWN) {
+	// 		leftMidVictor.set(1);
+	// 	} else if (cs.driver.getDPad()  == Controller.DPadDirection.RIGHT) {
+	// 		leftFrontVictor.set(1);
+	// 	} else if (cs.driver.buttonHeld(Controller.UP_Y)) {
+	// 		rightTalonSRX.set(1);
+	// 	} else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
+	// 		rightBackVictor.set(1);
+	// 	} else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+	// 		rightMidVictor.set(1);
+	// 	} else if (cs.driver.buttonHeld(Controller.RIGHT_B)) {
+	// 		rightFrontVictor.set(1);
+	// 	} else {
+	// 	  setSpeed(0.0, 0.0);
+	// 	}
+	// }
 
 	public void initializeCameraDrive () {
 
@@ -322,8 +339,8 @@ public class DriveBase {
 	public void straightCameraDriveWithPID () {
 
 		double angle = Camera.getEntry("tx").getDouble(0);
-		if (leftTalonSRX.getCurrentPositionInches() < driveDistance
-		|| rightTalonSRX.getCurrentPositionInches() < driveDistance ){
+		if (leftEncoder.pidGet() < driveDistance
+		|| rightEncoder.pidGet() < driveDistance ){
 
 			if (Math.abs(angle) > ANGLE_TOLERANCE && !leftPidController.isEnabled() 
 			&& !rightPidController.isEnabled()) {
@@ -348,13 +365,13 @@ public class DriveBase {
 		} else {
 
 			if (turnAngle > 0) {
-				if (rightTalonSRX.getCurrentPositionInches() < driveDistance
+				if (rightEncoder.pidGet() < driveDistance
 				 + (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
 					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
 				else 
 					setSpeed(0, 0);
 			} else {
-				if (leftTalonSRX.getCurrentPositionInches() < driveDistance 
+				if (leftEncoder.pidGet() < driveDistance 
 				+ (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
 					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
 				else 
@@ -370,25 +387,25 @@ public class DriveBase {
 	public void cameraDriveWithPID () {
 
 		if (turningRight) {
-			if (leftTalonSRX.getCurrentPositionInches() > arcLength)
+			if (leftEncoder.pidGet() > arcLength)
 				pids.enableSpecificPID(1);
 				//pids.drive();
 		} else {
-			if (rightTalonSRX.getCurrentPositionInches() > arcLength)
+			if (rightEncoder.pidGet() > arcLength)
 				pids.enableSpecificPID(0);
 				//pids.drive();
 		}
 
-		System.out.println (rightTalonSRX.getCurrentPositionInches() > arcLength);
+		System.out.println (rightEncoder.pidGet() > arcLength);
 		
-		followTalon();
+		//followTalon();
 
 	}
 	
 	public void drivePID() {
 
 		pids.drive();
-		followTalon();
+		//followTalon();
 		//leftPidController.enable();
 		//System.out.println (leftTalonSRX.getCurrentPositionInches());
 		//rightPidController.enable();
@@ -406,8 +423,8 @@ public class DriveBase {
 	public void stopDrivePID() {
 		//leftPidController.disable();
 		//rightPidController.disable();
-		pids.srxs[0].setAdjustment(0);
-		pids.srxs[1].setAdjustment(0);
+		pids.sparks[0].setAdjustment(0);
+		pids.sparks[1].setAdjustment(0);
 		pids.stop();
 	}
 
@@ -422,7 +439,7 @@ public class DriveBase {
 	}
 
 	public void setDriveDistance(double setPoint) {
-		pids.set(leftTalonSRX.inchesToTicks(setPoint), leftTalonSRX.inchesToTicks(setPoint));
+		pids.set(setPoint, setPoint);
 		//leftPidController.setSetpoint(leftTalonSRX.inchesToTicks(setPoint));
 		//rightPidController.setSetpoint(rightTalonSRX.inchesToTicks(setPoint));
 	}
@@ -434,12 +451,12 @@ public class DriveBase {
 	public double getF () {return leftPidController.getF();}
 	public double getSetPoint () {return leftPidController.getSetpoint();}
 	public double getError () {return leftPidController.getError();}
-	public double getDistanceInchesL() { return leftTalonSRX.getCurrentPositionInches();}
-	public double getDistanceTicksL() { return leftTalonSRX.getCurrentPositionTicks();}
-	public double getDistanceInchesR() { return rightTalonSRX.getCurrentPositionInches();}
-	public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
+	public double getDistanceInchesL() { return leftEncoder.pidGet();}
+	//public double getDistanceTicksL() { return leftTalonSRX.getCurrentPositionTicks();}
+	public double getDistanceInchesR() { return rightEncoder.pidGet();}
+	//public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
 	public PIDLinked getPids () {return pids;}
 	public double getArcLength () {return arcLength;}
 	
-//myNemChef - Chris
+//myNemChef - Chris - Eason
 }

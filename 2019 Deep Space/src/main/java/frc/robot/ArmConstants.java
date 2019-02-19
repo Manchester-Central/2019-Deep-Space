@@ -26,10 +26,23 @@ public class ArmConstants {
     public static final double MIN_EXTENDER_LENGTH = 0;
     public static final double MAX_EXTENDER_LENGTH = 0;
 
-    public static final double ARM_DISTANCE = 22.794;
+    public static final double ARM_LENGTH = 24.5;
     public static final double ARM_WEIGHT = 20.0;
-    public static final double EXTENSION_WEIGHT = 20.0;
-    public static final double TOTAL_WEIGHT = ARM_WEIGHT + EXTENSION_WEIGHT;
+    public static final double ARM_CENTER_OF_MASS = 8.604;
+    
+    public static final double EXTENDER_ARM_WEIGHT = 20.0;
+    public static final double EXTENDER_ARM_CENTER_OF_MASS = 0;
+    
+    public static final double GRABBER_WEIGHT = 20.0;
+    public static final double GRABBER_CENTER_OF_MASS = 20.0;
+    
+    public static final double DISTANCE_FROM_AXIS_ROTATION_TO_RETRACTED_EXTENDER = 20.0;
+    
+    public static final double EXTENSION_TOTAL_CENTER_OF_MASS = 
+    (((GRABBER_CENTER_OF_MASS*GRABBER_WEIGHT) + (EXTENDER_ARM_CENTER_OF_MASS*EXTENDER_ARM_WEIGHT) / 
+    (EXTENDER_ARM_WEIGHT + GRABBER_WEIGHT)) + DISTANCE_FROM_AXIS_ROTATION_TO_RETRACTED_EXTENDER);
+
+    public static final double TOTAL_WEIGHT = ARM_WEIGHT + EXTENDER_ARM_WEIGHT + GRABBER_WEIGHT;
     public static final double ARM_HEIGHT_INCHES = 46.063;
     public static final double ARM_DISTANCE_X_FROM_FRAME = 5;
     public static final double MAX_REACH_X_BEYOND_FRAME = 30;

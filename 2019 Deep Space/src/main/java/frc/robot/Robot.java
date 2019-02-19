@@ -169,8 +169,6 @@ public class Robot extends IterativeRobot {
 
       // pickup position
       arm.pidGoToAngle(ArmConstants.BALL_PICKUP_ANGLE);
-      arm.setArmDistance(0);
-      arm.enableExtenderPID();
 
       targetWristMode = WristMode.intake;
 
@@ -305,10 +303,10 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
     SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
-    SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
+    //SmartDashboard.putNumber("Current Encoder Count Left", drive.getDistanceTicksL());
 
     SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
-    SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
+   // SmartDashboard.putNumber("Current Encoder Count Right", drive.getDistanceTicksR());
 
 
     SmartDashboard.putNumber("Current p", drive.getP());

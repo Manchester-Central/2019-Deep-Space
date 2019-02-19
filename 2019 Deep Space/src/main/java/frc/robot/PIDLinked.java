@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PIDController;
+import frc.ChaosSensors.CanSparkEncoder;
+import frc.ChaosSensors.ChaosBetterCANSpark;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 
 /**
@@ -18,7 +20,7 @@ public class PIDLinked {
     //KYSPID[] pids;
     
     PIDController[] pids;
-    ChaosBetterTalonSRX[] srxs;
+    ChaosBetterCANSpark[] sparks;
 
     public final double TURN_GAINS = .1;
 
@@ -27,13 +29,12 @@ public class PIDLinked {
     public PIDLinked (PIDController ... pids) {
 
         this.pids = pids;
-        //pids[0].setSetpoint(0D);
-
+        
     }
 
-    public void setsrxs (ChaosBetterTalonSRX ... srxs) {
+    public void setSparks (ChaosBetterCANSpark ... sparks) {
 
-        this.srxs = srxs;
+        this.sparks = sparks;
 
     }
 
@@ -62,7 +63,7 @@ public class PIDLinked {
         int i = 0;
         for (double setPoint : setPoints) {
 
-            pids[i].setSetpoint(srxs[0].inchesToTicks(setPoint));
+            pids[i].setSetpoint(setPoint);
 
             i++;
 
@@ -93,7 +94,7 @@ public class PIDLinked {
             
             PIDController pid = pids[i];
 
-            srxs[i].setAdjustment(((pid.getError() / pid.getSetpoint()) - averageError) * TURN_GAINS);
+            sparks[i].setAdjustment(((pid.getError() / pid.getSetpoint()) - averageError) * TURN_GAINS);
 
            // System.out.print ("adjustment " + i + ": " + ((pid.getError() / pid.getSetpoint()) - averageError) + ", ");
 
