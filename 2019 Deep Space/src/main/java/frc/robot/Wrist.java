@@ -26,8 +26,8 @@ public class Wrist {
    public static final double TUCKED_POSITION = 180.0;
    public static final double MIN_ANGLE = 0.0;
    public static final double MAX_ANGLE = 360.0;
-   public static final double MIN_VOLTAGE = 0;
-   public static final double MAX_VOLTAGE = 1;
+   public static final double MIN_VOLTAGE = 0.17;
+   public static final double MAX_VOLTAGE = 0.469;
 
 
    public static final double P = 0.001;

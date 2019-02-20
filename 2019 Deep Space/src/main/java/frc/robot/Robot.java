@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
 import frc.robot.Arm.WristMode;
+import frc.robot.Controller.DPadDirection;
 
 /**
  * 
@@ -94,6 +95,9 @@ public class Robot extends IterativeRobot {
 
     drive.resetEncoders();
     drive.stopDrivePID();
+
+    //arm.set
+
   }
 
   /**
@@ -114,12 +118,13 @@ public class Robot extends IterativeRobot {
      * //drive.stopDrivePID(); } else
      */
 
-    driveControls();
+    // driveControls();
 
-    armControls();
+    // armControls();
 
-    climbtakeControls();
+    // climbtakeControls();
 
+    testControls();
   }
 
   /**
@@ -250,6 +255,33 @@ public class Robot extends IterativeRobot {
     }
 
 
+
+  }
+
+  private void testControls() {
+
+
+    drive.setSpeed(cs.driver.getLeftY()* 0.25, cs.driver.getRightY()* 0.25);
+
+    arm.setElbowSpeed(cs.operator1.getLeftY() * 0.25);
+    arm.setExtenderSpeed(cs.operator1.getRightY()* 0.25);
+
+    arm.pidGoToAngle(0.0);
+    
+    arm.wrist.setSpeed(cs.operator2.getLeftY()* 0.25);
+    climb.setRotateSpeed(cs.operator2.getRightY()* 0.25);
+
+    if (cs.operator1.buttonPressed(Controller.UP_Y)) {
+      grab.extendHatchGrabber();
+    } else if (cs.operator1.buttonPressed(Controller.DOWN_A)) {
+      grab.retractHatchGrabber();
+    }
+
+    // if (cs.operator2.getDPad().equals(DPadDirection.UP)) {
+    //   arm.wrist.setSpeed(0.1);
+    // } else if (cs.operator2.getDPad().equals(DPadDirection.DOWN)) {
+    //   arm.wrist.setSpeed(-0.1);
+    // }
 
   }
 

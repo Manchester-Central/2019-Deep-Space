@@ -76,7 +76,7 @@ public class DriveBase {
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
-	public static final double LENGTH_BETWEEN_WHEELS = 25.6;
+	public static final double LENGTH_BETWEEN_WHEELS = 28.0;
 
 	// used for camera stuff
 	private boolean turningRight;

@@ -37,8 +37,8 @@ public class IntakeClimber {
     private static final double D = 0;
     public static final double MIN_ANGLE = 0.0;
     public static final double MAX_ANGLE = 205.0;
-    public static final double MIN_VOLTAGE = 0;
-    public static final double MAX_VOLTAGE = 1;
+    public static final double MIN_VOLTAGE = 0.075;
+    public static final double MAX_VOLTAGE = 0.676;
 
     public final double RADIUS = 40;
     public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
