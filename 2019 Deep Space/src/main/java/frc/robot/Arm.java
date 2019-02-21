@@ -20,17 +20,17 @@ import frc.ChaosSensors.LinearPot;
  */
 public class Arm {
 
-    ChaosBetterTalonSRX elbow;
-    WPI_VictorSPX elbow2;
-    WPI_TalonSRX extender;
+    private ChaosBetterTalonSRX elbow;
+    private WPI_VictorSPX elbow2;
+    private WPI_TalonSRX extender;
 
-    PIDController elbowPID;
-    PIDController extenderPID;
+    private PIDController elbowPID;
+    private PIDController extenderPID;
 
-    LinearPot elbowPot;
-    LinearPot extenderPot;
+    private LinearPot elbowPot;
+    private LinearPot extenderPot;
 
-    public Wrist wrist;
+    private Wrist wrist;
 
     public enum WristMode {intake, tucked, output, straight};
 
@@ -148,7 +148,7 @@ public class Arm {
     public void setArmToVerticalPosition (double positionInches) {
 
         double theta = Math.atan2((positionInches - ArmConstants.ARM_HEIGHT_INCHES), ArmConstants.ARM_LENGTH);
-        //z = x / cos
+        
         double minArmLength = ArmConstants.ARM_LENGTH / Math.cos(theta);
 
         pidGoToAngle(Math.toDegrees(theta));
@@ -181,8 +181,16 @@ public class Arm {
 
     }
 
+    public double getRawExtender () {
+        return extenderPot.get();
+    }
+
     public double getElbowAngle() {
         return elbowPot.getValue();
+    }
+
+    public double getRawElbow () {
+        return elbowPot.get();
     }
 
     public boolean willCrash(double angle) {
@@ -216,6 +224,10 @@ public class Arm {
     public boolean outsideReach(double extenderLength, double angle) {
         return (extenderLength > maxExtenderLength(angle));
     }
+
+    public void setWristSpeed (double speed) {
+        wrist.setSpeed(speed);
+    }    
     
     public void setWristToArmAngle(WristMode mode) {
 
@@ -262,5 +274,13 @@ public class Arm {
         }
 
         wrist.goToSetPoint();
+    }
+
+    public double getWristAngle () {
+        return wrist.getAngle();
+    }
+
+    public double getWirstPotRaw () {
+        return wrist.getRawTicks();
     }
 }
