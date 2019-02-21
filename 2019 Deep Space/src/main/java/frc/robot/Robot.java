@@ -17,7 +17,6 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
-  Grabber grab;
 
   /**
    * 
@@ -29,7 +28,6 @@ public class Robot extends IterativeRobot {
     cs = new ControllerSecretary();
     arm = new Arm();
     climb = new IntakeClimber();
-    grab = new Grabber();
 
     drive.setTolerance();
 
@@ -237,20 +235,19 @@ public class Robot extends IterativeRobot {
     
     if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
 
-      grab.setSpark(Grabber.INTAKE_OUTPUT_SPEED);
+      arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
 
     } else {
-      grab.setSpark(-Grabber.INTAKE_OUTPUT_SPEED);
+      arm.setGrabberSparkSpeed(-Grabber.INTAKE_OUTPUT_SPEED);
     }
 
-    // TODO: Create manually way to extend hatch grabber
     if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
 
-      grab.retractHatchGrabber();
+      arm.retractHatchGrabber();
 
-    } else if (grab.getLimitSwitchLeft() && grab.getLimitSwitchRight()) {
+    } else if (arm.getGrabberLimitSwitchLeft() && arm.getGrabberLimitSwitchRight()) {
 
-      grab.extendHatchGrabber();
+      arm.extendHatchGrabber();
 
     }
 
@@ -272,9 +269,9 @@ public class Robot extends IterativeRobot {
     climb.setRotateSpeed(cs.operator2.getRightY()* 0.25);
 
     if (cs.operator1.buttonPressed(Controller.UP_Y)) {
-      grab.extendHatchGrabber();
+      arm.extendHatchGrabber();
     } else if (cs.operator1.buttonPressed(Controller.DOWN_A)) {
-      grab.retractHatchGrabber();
+      arm.retractHatchGrabber();
     }
 
     // if (cs.operator2.getDPad().equals(DPadDirection.UP)) {
@@ -328,9 +325,9 @@ public class Robot extends IterativeRobot {
 
   public void updateDashboard() {
 
-    SmartDashboard.putBoolean("Beam Sensor", grab.getBeamSensor());
-    SmartDashboard.putBoolean("Bump Sensor (Left)", grab.getLimitSwitchLeft());
-    SmartDashboard.putBoolean("Bump Sensor (Right)", grab.getLimitSwitchRight());
+    SmartDashboard.putBoolean("Beam Sensor", arm.getGrabberBeamSensor());
+    SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
+    SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
 
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
