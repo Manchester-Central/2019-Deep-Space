@@ -31,11 +31,13 @@ public class Arm {
     private LinearPot extenderPot;
 
     private Wrist wrist;
+    private Grabber grab;
 
     public enum WristMode {intake, tucked, output, straight};
 
     public Arm() {
 
+        grab = new Grabber ();
         elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
@@ -225,6 +227,8 @@ public class Arm {
         return (extenderLength > maxExtenderLength(angle));
     }
 
+    //------------- wrist functions
+    
     public void setWristSpeed (double speed) {
         wrist.setSpeed(speed);
     }    
@@ -283,4 +287,30 @@ public class Arm {
     public double getWirstPotRaw () {
         return wrist.getRawTicks();
     }
+    
+    //-------------grabber functions
+    public void setGrabberSparkSpeed (double speed) {
+         grab.setSpark (speed);
+    }
+
+   public void extendHatchGrabber () {
+      grab.extendHatchGrabber();
+   }
+
+   public void retractHatchGrabber () {
+      grab.retractHatchGrabber();
+   }
+
+   public boolean getGrabberLimitSwitchLeft () {
+      return grab.getLimitSwitchLeft();
+   }
+
+   public boolean getGrabberLimitSwitchRight () {
+      return grab.getLimitSwitchRight();
+   }
+
+   public boolean getGrabberBeamSensor () {
+      return grab.getBeamSensor();
+   }
+    
 }
