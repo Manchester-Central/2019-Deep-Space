@@ -188,7 +188,7 @@ public class Robot extends IterativeRobot {
      * //drive.stopDrivePID(); } else
      */
 
-     //driveControls();
+    // driveControls();
 
      armControls();
 
@@ -238,7 +238,7 @@ public class Robot extends IterativeRobot {
 
   private void armControls() {
 
-    //WristMode targetWristMode = WristMode.nothing;
+    WristMode targetWristMode = WristMode.output;
     // if(cs.operator1.buttonHeld(Controller.UP_Y)) {
     //   targetWristMode = WristMode.straight;
     // } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
@@ -251,7 +251,7 @@ public class Robot extends IterativeRobot {
     // } else {
     //   arm.autoMoveWrist(targetWristMode);
     // }
-    arm.autoMoveWrist(WristMode.tucked);
+    
 
     //
 
@@ -260,7 +260,7 @@ public class Robot extends IterativeRobot {
       // pickup position
       arm.pidGoToAngle(ArmConstants.BALL_PICKUP_ANGLE);
 
-      //targetWristMode = WristMode.intake;
+      targetWristMode = WristMode.intake;
 
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
 
@@ -308,17 +308,17 @@ public class Robot extends IterativeRobot {
       arm.setExtenderSpeed(cs.operator1.getLeftY()*0.25);
 
       if (cs.operator1.buttonTapped(Controller.START)) {
-        //targetWristMode = WristMode.straight;
+        targetWristMode = WristMode.straight;
        
       } else {
-        //targetWristMode = WristMode.tucked;
+        targetWristMode = WristMode.nothing;
       }
 
       
 
     }
 
-    
+    arm.autoMoveWrist(targetWristMode);
     
     // if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
 
@@ -340,6 +340,18 @@ public class Robot extends IterativeRobot {
 
 
 
+  }
+
+  private void extenderCotroler() {
+
+
+    if (cs.operator1.buttonHeld(Controller.UP_Y)) {
+      arm.setArmDistance(ArmConstants.MAX_EXTENDER_LENGTH);
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
+      arm.setArmDistance(ArmConstants.MAX_EXTENDER_LENGTH/2);
+    } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
+      arm.setArmDistance(0);
+    }
   }
 
   private void testControls() {

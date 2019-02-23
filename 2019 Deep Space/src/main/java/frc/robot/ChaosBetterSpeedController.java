@@ -24,9 +24,18 @@ public class ChaosBetterSpeedController extends SpeedControllerGroup {
         this.maxAcceleration = maxAcceleration;
     }
 
+    public ChaosBetterSpeedController (SpeedController arg0, SpeedController arg1) {
+        super(arg0, arg1);
+        currentSet = 0;
+        maxAcceleration = 1.0;
+    }
+
     @Override
     public void pidWrite (double speed) {
-        speed = (currentSet + maxAcceleration < speed) ? currentSet + maxAcceleration : speed;
+        if (speed > 0)
+            speed = (currentSet + maxAcceleration < speed) ? currentSet + maxAcceleration : speed;
+        else
+            speed = (currentSet - maxAcceleration > speed) ? currentSet - maxAcceleration : speed;
         set(speed);
         currentSet = speed;
     }
