@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
@@ -22,7 +23,11 @@ public class Arm {
 
     private ChaosBetterTalonSRX elbow;
     private WPI_VictorSPX elbow2;
+    private ChaosBetterSpeedController elbowGroup;
     private WPI_TalonSRX extender;
+
+    private double angleOffset = 0;
+    private static final double ELBOW_SAFE_ANGLE = 15;
 
     private PIDController elbowPID;
     private PIDController extenderPID;
@@ -39,8 +44,9 @@ public class Arm {
 
         grab = new Grabber ();
         elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
-        extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
+        elbowGroup = new ChaosBetterSpeedController(elbow, elbow2);
+        extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         wrist = new Wrist();
 
         elbowPot = new LinearPot(PortConstants.ELBOW_POT, ArmConstants.MIN_ELBOW_VOLTAGE,
@@ -48,7 +54,7 @@ public class Arm {
         extenderPot = new LinearPot(PortConstants.EXTENDER_POT, ArmConstants.MIN_EXTENDER_VOLTAGE,
                 ArmConstants.MAX_EXTENDER_VOLTAGE, ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
 
-        elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbow);
+        elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbowGroup);
         extenderPID = new PIDController(ArmConstants.EXTENDER_P, ArmConstants.EXTENDER_I, ArmConstants.EXTENDER_D,
                 extenderPot, extender);
         setFeedForward();
@@ -133,12 +139,16 @@ public class Arm {
      * https://www.chiefdelphi.com/t/velocity-limiting-pid/164908/22
      */
     public void setFeedForward() {
-        elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() * Math.cos(elbowPot.getValue())
-                * ArmConstants.GEAR_RATIO / ArmConstants.MOTOR_STALL_TORQUE);
+        elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() *Math.cos(Math.toRadians(elbowPot.getValue()) /(ArmConstants.NUMBER_OF_MOTORS
+                * ArmConstants.GEAR_RATIO * ArmConstants.MOTOR_STALL_TORQUE)));
     }
 
     public boolean elbowInPosition() {
         return !elbowPID.isEnabled() || FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), 0.5);
+    }
+
+    public boolean elbowIsSafe() {
+        return !elbowPID.isEnabled() || FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), ELBOW_SAFE_ANGLE);
     }
 
     /***
@@ -258,8 +268,8 @@ public class Arm {
         switch(mode){
 
             case intake:
-                wrist.setSetPoint(90 - currentElbowAngle);
-
+                // wrist.setSetPoint(90 - currentElbowAngle);
+                wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
                 break;
 
             case tucked:
@@ -267,14 +277,17 @@ public class Arm {
             
                 break;
             case output:
-                if (currentElbowAngle > 0) {
-                    wrist.setSetPoint(270 - currentElbowAngle);
-                } else {
-                    wrist.setSetPoint(360 - currentElbowAngle);
-                }
+                // if (currentElbowAngle > 0) {
+                //     wrist.setSetPoint(270 - currentElbowAngle);
+                // } else {
+                //     wrist.setSetPoint(360 - currentElbowAngle);
+                // }
+                    wrist.setSetPoint(-currentElbowAngle + angleOffset);
+
                 break;
             case straight:
-                wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
+                // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
+                wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
             default:
                 wrist.setSetPoint(wrist.getAngle());
@@ -290,7 +303,7 @@ public class Arm {
      */
     public void autoMoveWrist(WristMode targetMode) {
 
-        if (elbowInPosition()) {
+         if (elbowIsSafe()) {
             setWristToArmAngle(targetMode);
         } else {
             setWristToArmAngle(WristMode.tucked);

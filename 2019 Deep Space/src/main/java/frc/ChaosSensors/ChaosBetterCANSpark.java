@@ -19,6 +19,7 @@ public class ChaosBetterCANSpark extends CANSparkMax{
     private double sign;
     private double adjustment;
     public final double ADJUSTMENT_MAX = 1;
+    private double currentSet = 0;
 
     public ChaosBetterCANSpark(int port) {
         super(port, MotorType.kBrushless);
@@ -30,10 +31,19 @@ public class ChaosBetterCANSpark extends CANSparkMax{
         adjustment = value;
     }
 
+    public double getAdjustment () {
+        return adjustment;
+    }
+
 
     @Override
     public void pidWrite(double output) {
         //System.out.print(adjustment + output);
-        set(output + adjustment);
+        //set(output + adjustment);
+        currentSet = output;
+    }
+
+    public double getPIDWrite() {
+        return currentSet;
     }
 }

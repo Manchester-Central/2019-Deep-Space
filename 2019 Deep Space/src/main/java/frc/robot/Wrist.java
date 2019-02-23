@@ -26,11 +26,11 @@ public class Wrist {
    public static final double TUCKED_POSITION = 180.0;
    public static final double MIN_ANGLE = 0.0;
    public static final double MAX_ANGLE = 360.0;
-   public static final double MIN_VOLTAGE = 0.17;
-   public static final double MAX_VOLTAGE = 0.469;
+   public static final double MIN_ANGLE_VOLTAGE = 0.469;
+   public static final double MAX_ANGLE_VOLTAGE = 0.17;
 
 
-   public static final double P = 0.001;
+   public static final double P = 0.01;
    public static final double I = 0;
    public static final double D = 0;
    
@@ -40,15 +40,16 @@ public class Wrist {
 
       speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION,
             false);
+      speedController.setInverted(true);
          
       // speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
-      anglePot = new LinearPot(PortConstants.WRIST_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
+      anglePot = new LinearPot(PortConstants.WRIST_POT, MIN_ANGLE_VOLTAGE, MAX_ANGLE_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
       pid = new PIDController(P, I, D, anglePot, speedController);
-      Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.get());
+      Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
    }
 
    public void describeWristPID () {
-      Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.get());
+      Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
    }
 
    public void setSpeed(double speed) {

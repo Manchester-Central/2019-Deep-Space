@@ -160,6 +160,19 @@ public class DriveBase {
 		pids = new PIDLinked(leftPidController, rightPidController);
 		
 		pids.setSparks(leftFront, rightFront);
+
+		Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
+
+		Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
+	}
+
+	public void describeSelf () {
+		Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
+		System.out.println ("leftAdjustment: " + leftFront.getAdjustment() + "\t");
+
+		Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
+		System.out.println ("rightAdjustment: " + rightFront.getAdjustment() + "\t");
+
 	}
 
 	public void resetSquareSum () {

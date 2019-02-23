@@ -30,7 +30,7 @@ public class Grabber {
    public Grabber () {
      
     intake = new Spark(PortConstants.GRABBER_SPARK);
-    hatch = new DoubleSolenoid(PortConstants.FORWARD_HATCH, PortConstants.REVERSE_HATCH);
+    hatch = new DoubleSolenoid(PortConstants.REVERSE_HATCH, PortConstants.FORWARD_HATCH);
     switchLeft = new DigitalInput(PortConstants.LIMIT_SWITCH_LEFT);
     switchRight = new DigitalInput(PortConstants.LIMIT_SWITCH_RIGHT);
     beamSensor = new DigitalInput (PortConstants.BEAM_SENSOR);
