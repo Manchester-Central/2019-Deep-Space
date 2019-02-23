@@ -116,8 +116,8 @@ public class Arm {
      * https://www.chiefdelphi.com/t/velocity-limiting-pid/164908/22
      */
     public void setFeedForward() {
-        elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() * Math.cos(elbowPot.getValue())
-                * ArmConstants.GEAR_RATIO / ArmConstants.MOTOR_STALL_TORQUE);
+        elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() / (Math.cos(Math.toRadians(elbowPot.getValue())
+                * ArmConstants.GEAR_RATIO * ArmConstants.MOTOR_STALL_TORQUE)));
     }
 
     public boolean elbowInPosition() {
