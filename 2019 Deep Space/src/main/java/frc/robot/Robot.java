@@ -17,7 +17,6 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
-  Grabber grab;
 
   /**
    * 
@@ -29,7 +28,6 @@ public class Robot extends IterativeRobot {
     cs = new ControllerSecretary();
     arm = new Arm();
     climb = new IntakeClimber();
-    grab = new Grabber();
 
     drive.setTolerance();
 
@@ -237,20 +235,19 @@ public class Robot extends IterativeRobot {
     
     if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
 
-      grab.setSpark(Grabber.INTAKE_OUTPUT_SPEED);
+      arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
 
     } else {
-      grab.setSpark(-Grabber.INTAKE_OUTPUT_SPEED);
+      arm.setGrabberSparkSpeed(-Grabber.INTAKE_OUTPUT_SPEED);
     }
 
-    // TODO: Create manually way to extend hatch grabber
     if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
 
-      grab.retractHatchGrabber();
+      arm.retractHatchGrabber();
 
-    } else if (grab.getLimitSwitchLeft() && grab.getLimitSwitchRight()) {
+    } else if (arm.getGrabberLimitSwitchLeft() && arm.getGrabberLimitSwitchRight()) {
 
-      grab.extendHatchGrabber();
+      arm.extendHatchGrabber();
 
     }
 
@@ -268,19 +265,19 @@ public class Robot extends IterativeRobot {
 
     arm.pidGoToAngle(0.0);
     
-    arm.wrist.setSpeed(cs.operator2.getLeftY()* 0.25);
+    arm.setWristSpeed(cs.operator2.getLeftY()* 0.25);
     climb.setRotateSpeed(cs.operator2.getRightY()* 0.25);
 
     if (cs.operator1.buttonPressed(Controller.UP_Y)) {
-      grab.extendHatchGrabber();
+      arm.extendHatchGrabber();
     } else if (cs.operator1.buttonPressed(Controller.DOWN_A)) {
-      grab.retractHatchGrabber();
+      arm.retractHatchGrabber();
     }
 
     // if (cs.operator2.getDPad().equals(DPadDirection.UP)) {
-    //   arm.wrist.setSpeed(0.1);
+    //   arm.setWristSpeed(0.1);
     // } else if (cs.operator2.getDPad().equals(DPadDirection.DOWN)) {
-    //   arm.wrist.setSpeed(-0.1);
+    //   arm.setWristSpeed(-0.1);
     // }
 
   }
@@ -328,9 +325,9 @@ public class Robot extends IterativeRobot {
 
   public void updateDashboard() {
 
-    SmartDashboard.putBoolean("Beam Sensor", grab.getBeamSensor());
-    SmartDashboard.putBoolean("Bump Sensor (Left)", grab.getLimitSwitchLeft());
-    SmartDashboard.putBoolean("Bump Sensor (Right)", grab.getLimitSwitchRight());
+    SmartDashboard.putBoolean("Beam Sensor", arm.getGrabberBeamSensor());
+    SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
+    SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
 
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
@@ -351,12 +348,12 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
     SmartDashboard.putNumber("Climber Pot (RAW)", climb.anglePot.get());
     SmartDashboard.putNumber("Climber Pot (Angle)", climb.anglePot.getValue());
-    SmartDashboard.putNumber("Elbow Pot (RAW)", arm.elbowPot.get());
+    SmartDashboard.putNumber("Elbow Pot (RAW)", arm.getRawElbow());
     SmartDashboard.putNumber("Elbow Pot (Angle)", arm.getElbowAngle());
-    SmartDashboard.putNumber("Extender Pot (RAW)", arm.extenderPot.get());
+    SmartDashboard.putNumber("Extender Pot (RAW)", arm.getRawExtender());
     SmartDashboard.putNumber("Extender Pot (Distance)", arm.getExtenderPosition());
-    SmartDashboard.putNumber("Wrist Pot (RAW)", arm.wrist.anglePot.get());
-    SmartDashboard.putNumber("Wrist Pot (Angle)", arm.wrist.anglePot.getValue());
+    SmartDashboard.putNumber("Wrist Pot (RAW)", arm.getWirstPotRaw());
+    SmartDashboard.putNumber("Wrist Pot (Angle)", arm.getWristAngle());
     SmartDashboard.updateValues();
 
   }

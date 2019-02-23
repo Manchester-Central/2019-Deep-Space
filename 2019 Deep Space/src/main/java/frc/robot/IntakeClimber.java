@@ -29,9 +29,9 @@ public class IntakeClimber {
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
     public static final double ROTATE_SPEED = 0.1;
     public static final double INTAKE_SPEED = 1;
-    public static final double INTAKE_ANGLE = 2;
-    public static final double DOWN_ANGLE = 0;
-    public static final double OUT_ANGLE = 205.0;
+    public static final double INTAKE_ANGLE = 60.0;
+    public static final double DOWN_ANGLE = 180.0;
+    public static final double OUT_ANGLE = -35.0;
     private static final double P = .0001;
     private static final double I = 0;
     private static final double D = 0;

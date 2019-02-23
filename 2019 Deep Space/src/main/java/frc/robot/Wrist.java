@@ -56,7 +56,7 @@ public class Wrist {
    }
 
    public double getRawTicks() {
-      return speedController.getCurrentPositionTicks();
+      return anglePot.get();
    }
 
    public double getAngle() {
