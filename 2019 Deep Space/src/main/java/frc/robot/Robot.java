@@ -1,7 +1,11 @@
 
 package frc.robot;
 
+import java.io.Console;
+import java.text.DecimalFormat;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
@@ -18,6 +22,8 @@ public class Robot extends IterativeRobot {
   Arm arm;
   IntakeClimber climb;
 
+  boolean[] galaxyBrain = {false, false, false, false};
+
   /**
    * 
    */
@@ -31,12 +37,46 @@ public class Robot extends IterativeRobot {
 
     drive.setTolerance();
 
+    drive.stopDrivePID();
+    arm.disableElbowPID();
+    arm.disableExtenderPID();
+    climb.stopPIDRotate();
+    arm.stopWristPID();
+
     SmartDashboard.putNumber("p-value", 0);
     SmartDashboard.putNumber("i-value", 0);
     SmartDashboard.putNumber("d-value", 0);
     SmartDashboard.putNumber("f-value", 0);
     SmartDashboard.putNumber("setpoint", 0);
 
+
+
+  }
+
+  public static void describePID (PIDController pid, String pidName, double input, double output) {
+
+    DecimalFormat x = new DecimalFormat("#.0000");
+
+    System.out.print (pidName + ":\t");
+    System.out.print ("P:" + pid.getP() + "\t");
+    SmartDashboard.putNumber("P-" + pidName, pid.getP());
+    System.out.print ("I:" + pid.getI() + "\t");
+    SmartDashboard.putNumber("I-" + pidName, pid.getI());
+    System.out.print ("D:" + pid.getD() + "\t");
+    SmartDashboard.putNumber("D-" + pidName, pid.getD());
+    System.out.print ("F:" + pid.getF() + "\t");
+    SmartDashboard.putNumber("F-" + pidName, pid.getF());
+    System.out.print ("input:" + x.format(input) + "\t");
+    SmartDashboard.putNumber("Input-" + pidName, input);
+    System.out.print ("output:" + output + "\t");
+    SmartDashboard.putNumber("Output-" + pidName, output);
+    System.out.print ("Target:" + pid.getSetpoint() + "\t");
+    SmartDashboard.putNumber("Target-" + pidName, pid.getSetpoint());
+    System.out.print ("Error:" + pid.getError() + "\t");
+    SmartDashboard.putNumber("Error-" + pidName, pid.getError());
+    
+    System.out.print ("Enabled:" + pid.isEnabled() + "\t");
+    SmartDashboard.putBoolean("Enabled-" + pidName, pid.isEnabled());
   }
 
   /**
@@ -45,9 +85,34 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotPeriodic() {
 
+    if (cs.driver.buttonTapped(Controller.DOWN_A)) {
+      galaxyBrain[0] = !galaxyBrain[0];
+    } else if (cs.driver.buttonTapped(Controller.LEFT_X)) {
+      galaxyBrain[1] = !galaxyBrain[1];
+    } else if (cs.driver.buttonTapped(Controller.UP_Y)) {
+      galaxyBrain[2] = !galaxyBrain[2];
+    } else if (cs.driver.buttonTapped(Controller.RIGHT_B)) {
+      galaxyBrain[3] = !galaxyBrain[3];
+    }
+
+    if (galaxyBrain[0]) {
+      arm.describeElbowPID();
+    }
+     if (galaxyBrain[1]) {
+      arm.describeExtenderPID();
+    }
+    if (galaxyBrain[2]) {
+      arm.describeWristPID();
+    }
+    if (galaxyBrain[3]) {
+      climb.describeClimberPID();
+    }
+
+    System.out.println ();
+
     Camera.changeCamMode(camState.image);
 
-    if (cs.driver.buttonPressed(Controller.UP_Y)) {
+    if (cs.driver.buttonTapped(Controller.UP_Y)) {
       Camera.toggleCamState();
 
     }
@@ -95,8 +160,10 @@ public class Robot extends IterativeRobot {
     drive.stopDrivePID();
 
     //arm.set
+    
 
   }
+
 
   /**
    * 
@@ -120,9 +187,9 @@ public class Robot extends IterativeRobot {
 
     // armControls();
 
-    // climbtakeControls();
+    climbtakeControls();
 
-    testControls();
+    //testControls();
   }
 
   /**
@@ -142,7 +209,7 @@ public class Robot extends IterativeRobot {
      * 
      */
 
-    if (cs.driver.buttonPressed(Controller.LEFT_X)) {
+    if (cs.driver.buttonTapped(Controller.LEFT_X)) {
       drive.resetCameraDrivePID();
     }
 
@@ -220,7 +287,7 @@ public class Robot extends IterativeRobot {
       arm.setElbowSpeed(cs.operator1.getRightY());
       arm.setExtenderSpeed(cs.operator1.getLeftY());
 
-      if (cs.operator1.buttonPressed(Controller.START)) {
+      if (cs.operator1.buttonTapped(Controller.START)) {
         targetWristMode = WristMode.straight;
        
       } else {
@@ -268,9 +335,9 @@ public class Robot extends IterativeRobot {
     arm.setWristSpeed(cs.operator2.getLeftY()* 0.25);
     climb.setRotateSpeed(cs.operator2.getRightY()* 0.25);
 
-    if (cs.operator1.buttonPressed(Controller.UP_Y)) {
+    if (cs.operator1.buttonTapped(Controller.UP_Y)) {
       arm.extendHatchGrabber();
-    } else if (cs.operator1.buttonPressed(Controller.DOWN_A)) {
+    } else if (cs.operator1.buttonTapped(Controller.DOWN_A)) {
       arm.retractHatchGrabber();
     }
 
@@ -278,7 +345,7 @@ public class Robot extends IterativeRobot {
     //   arm.setWristSpeed(0.1);
     // } else if (cs.operator2.getDPad().equals(DPadDirection.DOWN)) {
     //   arm.setWristSpeed(-0.1);
-    // }
+    // } 
 
   }
 

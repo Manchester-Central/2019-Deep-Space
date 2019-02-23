@@ -55,7 +55,22 @@ public class Arm {
         elbowPID.setInputRange(ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
         extenderPID.setInputRange(ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
 
+        Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbow.get());
+        Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
+
         extender.setInverted(true);
+    }
+
+    public void describeElbowPID () {
+        Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbow.get());
+    }
+
+    public void describeExtenderPID () {
+        Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
+    }
+
+    public void describeWristPID () {
+        wrist.describeWristPID();
     }
 
     public void enableExtenderPID () {
@@ -143,7 +158,7 @@ public class Arm {
 
             elbowPID.setSetpoint(angle);
         // }
-        System.out.print (", " + elbowPID.getF() + "\n");
+        //System.out.print (", " + elbowPID.getF() + "\n");
         elbowPID.enable();
     }
 
@@ -232,6 +247,10 @@ public class Arm {
     public void setWristSpeed (double speed) {
         wrist.setSpeed(speed);
     }    
+
+    public void stopWristPID () {
+        wrist.stopWristPID();
+    }
     
     public void setWristToArmAngle(WristMode mode) {
 
@@ -278,6 +297,7 @@ public class Arm {
         }
 
         wrist.goToSetPoint();
+
     }
 
     public double getWristAngle () {

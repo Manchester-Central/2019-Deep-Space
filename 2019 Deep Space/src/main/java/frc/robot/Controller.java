@@ -49,7 +49,7 @@ public class Controller {
         return stick.getRawButton(buttonNum);
     }
 
-    public boolean buttonPressed (int buttonNum) {
+    public boolean buttonTapped (int buttonNum) {
         return stick.getRawButtonPressed(buttonNum);
     }
 

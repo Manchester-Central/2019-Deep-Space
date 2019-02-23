@@ -33,7 +33,7 @@ public class ChaosBetterCANSpark extends CANSparkMax{
 
     @Override
     public void pidWrite(double output) {
-        System.out.print(adjustment + output);
+        //System.out.print(adjustment + output);
         set(output + adjustment);
     }
 }

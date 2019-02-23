@@ -356,7 +356,7 @@ public class DriveBase {
 					//y/x = z/x, tan(theta) x = z
 					driveDistance = Camera.getDistance()
 					 - (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2);
-					 System.out.println(driveDistance);
+					 //System.out.println(driveDistance);
 				}
 				pids.set(driveDistance, driveDistance);
 				pids.drive();
@@ -396,7 +396,7 @@ public class DriveBase {
 				//pids.drive();
 		}
 
-		System.out.println (rightEncoder.pidGet() > arcLength);
+		//System.out.println (rightEncoder.pidGet() > arcLength);
 		
 		//followTalon();
 

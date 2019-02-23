@@ -30,9 +30,9 @@ public class IntakeClimber {
     public static final double ROTATE_SPEED = 0.1;
     public static final double INTAKE_SPEED = 1;
     public static final double INTAKE_ANGLE = 60.0;
-    public static final double DOWN_ANGLE = 180.0;
-    public static final double OUT_ANGLE = -35.0;
-    private static final double P = .0001;
+    public static final double DOWN_ANGLE = 205.0;
+    public static final double OUT_ANGLE = 0.0;
+    private static final double P = .07;
     private static final double I = 0;
     private static final double D = 0;
     public static final double MIN_ANGLE = 0.0;
@@ -54,17 +54,22 @@ public class IntakeClimber {
         flywheel = new VictorSPX(PortConstants.FLYWHEEL);
         anglePot = new LinearPot(PortConstants.CLIMBER_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
         pid = new PIDController(P, I, D, anglePot, rotate0);
+        Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.get());
+    }
+
+    public void describeClimberPID () {
+        Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.getPIDWrite());
     }
 
     public void setRotateSpeed (double speed) {
 
-        if (getAngle() >= OUT_ANGLE && speed > 0)
+        if (getAngle() <= OUT_ANGLE && speed > 0)
             speed = 0;
-        else if (getAngle() <= DOWN_ANGLE && speed < 0)
+        else if (getAngle() >= DOWN_ANGLE && speed < 0)
             speed = 0;
 
-        rotate0.set(ControlMode.PercentOutput, speed);
-        rotate1.set(ControlMode.PercentOutput, speed);
+        rotate0.set(ControlMode.PercentOutput, -speed);
+        rotate1.set(ControlMode.PercentOutput, -speed);
     
     }
 
@@ -78,15 +83,16 @@ public class IntakeClimber {
 
     public void setFlywheel (double speed) {
         flywheel.set(ControlMode.PercentOutput, speed);
+        
     }
 
     public double getAngle () {
         return anglePot.getValue();
     }
 
-    public void setToPosition (double angleInRadians) {
+    public void setToPosition (double angle) {
 
-        pid.setSetpoint(angleInRadians);
+        pid.setSetpoint(angle);
 
     }
 

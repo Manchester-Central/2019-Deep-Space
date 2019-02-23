@@ -140,14 +140,14 @@ public class Camera {
 
     public static void toggleCamState () {
         
-        System.out.println(getEntry("camMode").getDouble(0) == 1);
+        //System.out.println(getEntry("camMode").getDouble(0) == 1);
        // if (getEntry("camMode").getDouble(0) == 1) {
          //   getEntry("camMode").setDouble(1);
         //} else {
          //   getEntry("camMode").setDouble(1);
         //}
         getEntry("camMode").setDouble(1);
-        System.out.println(getEntry("camState").getDouble(0));
+        //System.out.println(getEntry("camState").getDouble(0));
     }
 
     public static camState getCameraState () {
