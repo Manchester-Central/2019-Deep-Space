@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
@@ -28,6 +29,7 @@ public class Arm {
 
     private double angleOffset = 0;
     private static final double ELBOW_SAFE_ANGLE = 15;
+    private static final double ARM_HOLD_POWER = 0.19;
 
     private PIDController elbowPID;
     private PIDController extenderPID;
@@ -38,14 +40,14 @@ public class Arm {
     private Wrist wrist;
     private Grabber grab;
 
-    public enum WristMode {intake, tucked, output, straight};
+    public enum WristMode {intake, tucked, output, straight, nothing};
 
     public Arm() {
 
         grab = new Grabber ();
         elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
         elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
-        elbowGroup = new ChaosBetterSpeedController(elbow, elbow2);
+        elbowGroup = new ChaosBetterSpeedController(elbow, elbow2, .07);
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         wrist = new Wrist();
 
@@ -65,10 +67,12 @@ public class Arm {
         Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
 
         extender.setInverted(true);
+
+        
     }
 
     public void describeElbowPID () {
-        Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbow.get());
+        Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbowGroup.getPIDWrite());
     }
 
     public void describeExtenderPID () {
@@ -139,8 +143,10 @@ public class Arm {
      * https://www.chiefdelphi.com/t/velocity-limiting-pid/164908/22
      */
     public void setFeedForward() {
-        elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() *Math.cos(Math.toRadians(elbowPot.getValue()) /(ArmConstants.NUMBER_OF_MOTORS
-                * ArmConstants.GEAR_RATIO * ArmConstants.MOTOR_STALL_TORQUE)));
+        // elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() *Math.cos(Math.toRadians(elbowPot.getValue()) /(ArmConstants.NUMBER_OF_MOTORS
+        //         * ArmConstants.GEAR_RATIO * ArmConstants.MOTOR_STALL_TORQUE)));
+
+        elbowPID.setF(Math.cos(Math.toRadians(elbowPot.get())) * ARM_HOLD_POWER );
     }
 
     public boolean elbowInPosition() {
@@ -185,7 +191,7 @@ public class Arm {
         }
 
         elbowPID.enable();
-        extenderPID.enable();
+        //extenderPID.enable();
 
     }
 
@@ -289,6 +295,7 @@ public class Arm {
                 // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
                 wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
+
             default:
                 wrist.setSetPoint(wrist.getAngle());
                 break;
@@ -303,11 +310,11 @@ public class Arm {
      */
     public void autoMoveWrist(WristMode targetMode) {
 
-         if (elbowIsSafe()) {
+        //  if (elbowIsSafe()) {
             setWristToArmAngle(targetMode);
-        } else {
-            setWristToArmAngle(WristMode.tucked);
-        }
+        // } else {
+        //     setWristToArmAngle(WristMode.tucked);
+        // }
 
         wrist.goToSetPoint();
 

@@ -188,13 +188,13 @@ public class Robot extends IterativeRobot {
      * //drive.stopDrivePID(); } else
      */
 
-    // driveControls();
+     //driveControls();
 
-    // armControls();
+     armControls();
 
     //climbtakeControls();
 
-    testControls();
+    //testControls();
   }
 
   /**
@@ -238,15 +238,22 @@ public class Robot extends IterativeRobot {
 
   private void armControls() {
 
-    // WristMode targetWristMode = WristMode.tucked;
+    //WristMode targetWristMode = WristMode.nothing;
     // if(cs.operator1.buttonHeld(Controller.UP_Y)) {
     //   targetWristMode = WristMode.straight;
     // } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
     //   targetWristMode = WristMode.tucked;
     // }
-    
 
-    //arm.setWristSpeed(cs.operator1.getLeftY());
+    // if (targetWristMode == WristMode.nothing) {
+    //   arm.stopWristPID();
+    //   arm.setWristSpeed(cs.operator2.getLeftY() * 0.25);
+    // } else {
+    //   arm.autoMoveWrist(targetWristMode);
+    // }
+    arm.autoMoveWrist(WristMode.tucked);
+
+    //
 
     if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
 
@@ -291,14 +298,14 @@ public class Robot extends IterativeRobot {
       // low hatchpanel
       arm.setArmToVerticalPosition(ArmConstants.HATCH_LOW);
 
-    } else {
+     } else {
 
       arm.disableElbowPID();
       arm.disableExtenderPID();
 
       // manual elbow and extender
-      arm.setElbowSpeed(cs.operator1.getRightY());
-      arm.setExtenderSpeed(cs.operator1.getLeftY());
+      arm.setElbowSpeed(cs.operator1.getRightY()*0.3);
+      arm.setExtenderSpeed(cs.operator1.getLeftY()*0.25);
 
       if (cs.operator1.buttonTapped(Controller.START)) {
         //targetWristMode = WristMode.straight;
@@ -311,7 +318,7 @@ public class Robot extends IterativeRobot {
 
     }
 
-    // arm.autoMoveWrist(targetWristMode);
+    
     
     // if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
 

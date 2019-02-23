@@ -40,7 +40,7 @@ public class Wrist {
 
       speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION,
             false);
-      speedController.setInverted(true);
+      speedController.setInverted(false);
          
       // speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
       anglePot = new LinearPot(PortConstants.WRIST_POT, MIN_ANGLE_VOLTAGE, MAX_ANGLE_VOLTAGE, MIN_ANGLE, MAX_ANGLE);

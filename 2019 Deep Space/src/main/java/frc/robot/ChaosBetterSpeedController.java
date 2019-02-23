@@ -16,19 +16,22 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 public class ChaosBetterSpeedController extends SpeedControllerGroup {
 
     double currentSet;
+    double maxAcceleration;
 
-    public ChaosBetterSpeedController (SpeedController arg0, SpeedController arg1) {
+    public ChaosBetterSpeedController (SpeedController arg0, SpeedController arg1, double maxAcceleration) {
         super(arg0, arg1);
         currentSet = 0;
+        this.maxAcceleration = maxAcceleration;
     }
 
     @Override
     public void pidWrite (double speed) {
-        //set(speed);
+        speed = (currentSet + maxAcceleration < speed) ? currentSet + maxAcceleration : speed;
+        set(speed);
         currentSet = speed;
     }
 
-    public double GetPIDWrite () {
+    public double getPIDWrite () {
         return currentSet;
     }
 

@@ -53,10 +53,11 @@ public class ArmConstants {
     public static final double NUMBER_OF_MOTORS = 2.0 ;
     public static final double MOTOR_STALL_TORQUE = 0.43;
 
-    public static final double ELBOW_P = 0.001;
+    public static final double ELBOW_P = 0.01;
 	public static final double ELBOW_I = 0;
     public static final double ELBOW_D = 0;
-    public static final double EXTENDER_P = 0.001;
+
+    public static final double EXTENDER_P = 0.07;
     public static final double EXTENDER_I = 0;
     public static final double EXTENDER_D = 0;
 
