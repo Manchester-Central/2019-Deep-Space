@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
@@ -22,6 +23,7 @@ public class Arm {
 
     private ChaosBetterTalonSRX elbow;
     private WPI_VictorSPX elbow2;
+    private SpeedControllerGroup elbowGroup;
     private WPI_TalonSRX extender;
 
     private PIDController elbowPID;
@@ -39,8 +41,9 @@ public class Arm {
 
         grab = new Grabber ();
         elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
-        extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
+        elbowGroup = new SpeedControllerGroup(elbow, elbow2);
+        extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         wrist = new Wrist();
 
         elbowPot = new LinearPot(PortConstants.ELBOW_POT, ArmConstants.MIN_ELBOW_VOLTAGE,
@@ -48,7 +51,7 @@ public class Arm {
         extenderPot = new LinearPot(PortConstants.EXTENDER_POT, ArmConstants.MIN_EXTENDER_VOLTAGE,
                 ArmConstants.MAX_EXTENDER_VOLTAGE, ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
 
-        elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbow);
+        elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbowGroup);
         extenderPID = new PIDController(ArmConstants.EXTENDER_P, ArmConstants.EXTENDER_I, ArmConstants.EXTENDER_D,
                 extenderPot, extender);
         setFeedForward();

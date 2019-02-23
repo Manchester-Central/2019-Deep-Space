@@ -10,8 +10,10 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 
@@ -21,8 +23,8 @@ import frc.ChaosSensors.LinearPot;
 public class IntakeClimber {
 
     ChaosBetterTalonSRX rotate0;
-    VictorSPX rotate1;
-    VictorSPX flywheel;
+    WPI_VictorSPX rotate1;
+    WPI_VictorSPX flywheel;
     PIDController pid;
     LinearPot anglePot;
 
@@ -50,10 +52,11 @@ public class IntakeClimber {
     public IntakeClimber () {
         rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0, 
         2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
-        rotate1 = new VictorSPX(PortConstants.INTAKE_1);
-        flywheel = new VictorSPX(PortConstants.FLYWHEEL);
+        rotate1 = new WPI_VictorSPX(PortConstants.INTAKE_1);
+        flywheel = new WPI_VictorSPX(PortConstants.FLYWHEEL);
         anglePot = new LinearPot(PortConstants.CLIMBER_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
-        pid = new PIDController(P, I, D, anglePot, rotate0);
+        SpeedControllerGroup rotateGroup = new SpeedControllerGroup(rotate0, rotate1);
+        pid = new PIDController(P, I, D, anglePot, rotateGroup);
     }
 
     public void setRotateSpeed (double speed) {
