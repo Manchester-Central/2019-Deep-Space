@@ -52,6 +52,10 @@ public class Wrist {
       Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
    }
 
+   public double getWristTargetAngle() {
+      return pid.getSetpoint();
+  }
+
    public void setSpeed(double speed) {
       if ((getAngle() >= MAX_ANGLE) && (speed > 0)) {
          speed = 0;

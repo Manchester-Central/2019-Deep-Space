@@ -31,6 +31,7 @@ public class IntakeClimber {
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
     public static final double ROTATE_SPEED = 0.1;
     public static final double INTAKE_SPEED = 1;
+    public static final double VERTICAL_POSITION = 90.0;
     public static final double INTAKE_ANGLE = 60.0;
     public static final double IN_ANGLE = 205.0;
     public static final double OUT_ANGLE = 0.0;
@@ -41,6 +42,9 @@ public class IntakeClimber {
     public static final double MAX_ANGLE = 204.0;
     public static final double MIN_VOLTAGE = 0.075;
     public static final double MAX_VOLTAGE = 0.676;
+
+    public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
+    public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
 
     public final double RADIUS = 40;
     public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
@@ -97,6 +101,18 @@ public class IntakeClimber {
 
         pid.setSetpoint(angle);
 
+    }
+
+    public boolean isClimbtakeUnsafe() {
+        boolean belowSafety = (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE) && (getTargetAngle() > CLIMBTAKE_MAX_SAFE_ANGLE);
+        boolean aboveSafety = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) && (getTargetAngle() < CLIMBTAKE_MIN_SAFE_ANGLE);
+        boolean inDangerZone = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) && (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE);
+
+        return (belowSafety) ||  (aboveSafety) ||  (inDangerZone);
+    }
+
+    public double getTargetAngle() {
+        return pid.getSetpoint();
     }
 
 }

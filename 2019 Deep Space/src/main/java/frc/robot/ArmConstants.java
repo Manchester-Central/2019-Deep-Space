@@ -23,8 +23,8 @@ public class ArmConstants {
     
     public static final double MIN_EXTENDER_VOLTAGE = 0.0715;
     public static final double MAX_EXTENDER_VOLTAGE = 2.46599357;
-    public static final double MIN_EXTENDER_LENGTH = 0;
-    public static final double MAX_EXTENDER_LENGTH = 0;
+    public static final double MIN_EXTENDER_LENGTH = 0.0;
+    public static final double MAX_EXTENDER_LENGTH = 14.0;
 
     public static final double ARM_LENGTH = 24.5;
     public static final double ARM_WEIGHT = 1.0;
@@ -71,5 +71,10 @@ public class ArmConstants {
     public static final double HATCH_MID = 47;
     public static final double HATCH_HIGH = 75;
     public static final double CARGO_BALL = 37;
+
+    public static final double ELBOW_CLEARANCE_POSITION = -80;
+    public static final double ELBOW_MIN_SAFE_ANGLE = ELBOW_CLEARANCE_POSITION - 5;
+    public static final double WIRST_SAFE_ANGLE = 15;
+    public static final double EXTENDO_SAFE_ANGLE = 10;
 
 }

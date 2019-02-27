@@ -28,7 +28,7 @@ public class Arm {
     private WPI_TalonSRX extender;
 
     private double angleOffset = 0;
-    private static final double ELBOW_SAFE_ANGLE = 15;
+    public static final double ELBOW_SAFE_ANGLE = 15;
     private static final double ARM_HOLD_POWER = 0.19;
 
     private PIDController elbowPID;
@@ -157,6 +157,14 @@ public class Arm {
         return !elbowPID.isEnabled() || FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), ELBOW_SAFE_ANGLE);
     }
 
+    public void setExtenderTarget(double target) {
+        extenderPID.setSetpoint(target);
+    }
+
+    public void setElbowTarget(double target) {
+        elbowPID.setSetpoint(target);
+    }
+
     /***
      * Set arm to angle with PID, will avoid going outside frame perimeter of colliding with robot
      * @param angle - 0 is parallel to ground, positive = up, negative = down
@@ -165,15 +173,10 @@ public class Arm {
         // REMEMBER @TODO
         //setArmDistance(0);
         setFeedForward();
+        
 
-        // if (willCrash(angle) || outsideReach(extenderPot.getValue(), angle)) {
-
-        //     elbowPID.setSetpoint(getElbowAngle());
-            
-        // } else {
-
-            elbowPID.setSetpoint(angle);
-        // }
+        elbowPID.setSetpoint(angle);
+        
         //System.out.print (", " + elbowPID.getF() + "\n");
         elbowPID.enable();
     }
@@ -187,7 +190,7 @@ public class Arm {
         pidGoToAngle(Math.toDegrees(theta));
 
         if (elbowInPosition()) {
-            setArmDistance(Math.max(ArmConstants.ARM_LENGTH, minArmLength));
+            setExtenderTarget(Math.max(ArmConstants.ARM_LENGTH, minArmLength));
         }
 
         elbowPID.enable();
@@ -195,10 +198,6 @@ public class Arm {
 
     }
 
-    public void setArmDistance(double distance) {
-        extenderPID.setSetpoint(distance);
-
-    }
     
 
     public double getCenterOfMass() {
@@ -225,6 +224,20 @@ public class Arm {
     public double getRawElbow () {
         return elbowPot.get();
     }
+
+    public double getElbowTargetAngle() {
+        return elbowPID.getSetpoint();
+    }
+
+    public double getExtenderTargetAngle() {
+        return extenderPID.getSetpoint();
+    }
+
+    public double getWristTargetAngle() {
+        return wrist.getWristTargetAngle();
+    }
+
+    
 
     public boolean willCrash(double angle) {
 
