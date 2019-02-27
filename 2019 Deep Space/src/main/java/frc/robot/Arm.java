@@ -178,7 +178,7 @@ public class Arm {
         elbowPID.setSetpoint(angle);
         
         //System.out.print (", " + elbowPID.getF() + "\n");
-        elbowPID.enable();
+        //elbowPID.enable();
     }
 
     public void setArmToVerticalPosition (double positionInches) {
@@ -193,7 +193,7 @@ public class Arm {
             setExtenderTarget(Math.max(ArmConstants.ARM_LENGTH, minArmLength));
         }
 
-        elbowPID.enable();
+        //elbowPID.enable();
         //extenderPID.enable();
 
     }

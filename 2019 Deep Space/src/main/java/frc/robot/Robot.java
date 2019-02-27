@@ -190,22 +190,26 @@ public class Robot extends IterativeRobot {
 
     //armControls();
 
-      if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
-        arm.setExtenderTarget(3);
-        arm.enableExtenderPID();
-      } else if (cs.operator1.buttonHeld(Controller.UP_Y)) {
-        arm.setExtenderTarget(10);
-        arm.enableExtenderPID();
-      } else {
-        arm.disableExtenderPID();
-        arm.setExtenderSpeed(cs.operator1.getLeftY() * .5);
-      }
+      // if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
+      //   arm.setExtenderTarget(3);
+      //   arm.enableExtenderPID();
+      // } else if (cs.operator1.buttonHeld(Controller.UP_Y)) {
+      //   arm.setExtenderTarget(10);
+      //   arm.enableExtenderPID();
+      // } else {
+      //   arm.disableExtenderPID();
+      //   arm.setExtenderSpeed(cs.operator1.getLeftY() * .5);
+      // }
 
-      arm.setElbowSpeed(cs.operator1.getRightY() * .25);
+      // arm.setElbowSpeed(cs.operator1.getRightY() * .25);
 
     //climbtakeControls();
 
+    automatedControls();
+
     //robotSafety();
+
+    
 
     // testControls();
 
@@ -218,6 +222,42 @@ public class Robot extends IterativeRobot {
    */
   @Override
   public void testPeriodic() {
+
+  }
+
+  private void automatedControls () {
+
+    //Arm
+
+    if (cs.operator1.buttonHeld(Controller.UP_Y)) {
+      arm.pidGoToAngle(70);
+      arm.setExtenderTarget(11.7);
+      arm.enableElbowPID();
+    arm.enableExtenderPID();
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
+      arm.pidGoToAngle(15.3);
+      arm.setExtenderTarget(0);
+      arm.enableElbowPID();
+    arm.enableExtenderPID();
+    } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
+      arm.pidGoToAngle(-79.5);
+      arm.setExtenderTarget(.7);
+      arm.enableElbowPID();
+      arm.enableExtenderPID();
+    } else {
+      arm.disableElbowPID();
+      arm.disableExtenderPID();
+      arm.setElbowSpeed(cs.operator1.getLeftY() * .5);
+      arm.setExtenderSpeed(cs.operator1.getRightY() * .5);
+    }
+
+    arm.autoMoveWrist(WristMode.output);
+    
+    
+
+    // climbtake
+
+    // grabber
 
   }
 
