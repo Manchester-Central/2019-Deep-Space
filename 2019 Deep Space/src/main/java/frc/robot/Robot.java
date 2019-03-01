@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot {
 
   boolean isAutomated;
 
-  boolean[] galaxyBrain = { false, false, false, false, false };
+  boolean[] galaxyBrain = { true, true, true, true, true };
 
   boolean elbowSetToPoint;
   boolean extenderSetToPoint;
@@ -69,23 +69,23 @@ public class Robot extends IterativeRobot {
 
     DecimalFormat x = new DecimalFormat("#.0000");
 
-    System.out.print(pidName + ":\t");
-    System.out.print("P:" + pid.getP() + "\t");
-    SmartDashboard.putNumber("P-" + pidName, pid.getP());
-    System.out.print("I:" + pid.getI() + "\t");
-    SmartDashboard.putNumber("I-" + pidName, pid.getI());
-    System.out.print("D:" + pid.getD() + "\t");
-    SmartDashboard.putNumber("D-" + pidName, pid.getD());
-    System.out.print("F:" + pid.getF() + "\t");
-    SmartDashboard.putNumber("F-" + pidName, pid.getF());
+    // System.out.print(pidName + ":\t");
+    // System.out.print("P:" + pid.getP() + "\t");
+    // SmartDashboard.putNumber("P-" + pidName, pid.getP());
+    // System.out.print("I:" + pid.getI() + "\t");
+    // SmartDashboard.putNumber("I-" + pidName, pid.getI());
+    // System.out.print("D:" + pid.getD() + "\t");
+    // SmartDashboard.putNumber("D-" + pidName, pid.getD());
+    // System.out.print("F:" + pid.getF() + "\t");
+    // SmartDashboard.putNumber("F-" + pidName, pid.getF());
     System.out.print("input:" + x.format(input) + "\t");
     SmartDashboard.putNumber("Input-" + pidName, input);
-    System.out.print("output:" + output + "\t");
-    SmartDashboard.putNumber("Output-" + pidName, output);
-    System.out.print("Target:" + pid.getSetpoint() + "\t");
-    SmartDashboard.putNumber("Target-" + pidName, pid.getSetpoint());
-    System.out.print("Error:" + pid.getError() + "\t");
-    SmartDashboard.putNumber("Error-" + pidName, pid.getError());
+    // System.out.print("output:" + output + "\t");
+    // SmartDashboard.putNumber("Output-" + pidName, output);
+    // System.out.print("Target:" + pid.getSetpoint() + "\t");
+    // SmartDashboard.putNumber("Target-" + pidName, pid.getSetpoint());
+    // System.out.print("Error:" + pid.getError() + "\t");
+    // SmartDashboard.putNumber("Error-" + pidName, pid.getError());
 
     System.out.print("Enabled:" + pid.isEnabled() + "\t");
     SmartDashboard.putBoolean("Enabled-" + pidName, pid.isEnabled());
@@ -127,12 +127,12 @@ public class Robot extends IterativeRobot {
 
     System.out.println();
 
-    Camera.changeCamMode(camState.image);
+    Camera.changeCamMode(camState.driver);
 
-    if (cs.driver.buttonTapped(Controller.UP_Y)) {
-      Camera.toggleCamState();
+    // if (cs.driver.buttonTapped(Controller.UP_Y)) {
+    //   Camera.toggleCamState();
 
-    }
+    // }
 
     // System.out.println (Camera.GetHorizontalAngle());
 
@@ -297,7 +297,7 @@ public class Robot extends IterativeRobot {
       //arm.setExtenderTarget(.7);
       // HATCH INTAKE arm.pidGoToAngle(-131.0);
       // HATCK INTAKE arm.setArmPose(WristMode.intake, 3);
-      arm.pidGoToAngle(-150.0);
+      arm.pidGoToAngle(-138.0);
       arm.setArmPose(WristMode.intake, 10);    
 //      arm.autoSetWrist(WristMode.intake);
       elbowSetToPoint = true;
