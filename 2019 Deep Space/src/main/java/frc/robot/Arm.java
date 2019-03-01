@@ -273,6 +273,10 @@ public class Arm {
 
     //------------- wrist functions
     
+    public void enableWristPID () {
+        wrist.goToSetPoint();
+    }
+
     public void setWristSpeed (double speed) {
         wrist.setSpeed(speed);
     }    
@@ -321,15 +325,15 @@ public class Arm {
      * @param targetMode - The mode that the wrist will be set to once arm is in position,
      * either intake or output
      */
-    public void autoMoveWrist(WristMode targetMode) {
+    public void autoSetWrist(WristMode targetMode) {
 
-        //  if (elbowIsSafe()) {
+         if (elbowIsSafe()) {
             setWristToArmAngle(targetMode);
-        // } else {
-        //     setWristToArmAngle(WristMode.tucked);
-        // }
+        } else {
+            setWristToArmAngle(WristMode.tucked);
+        }
 
-        wrist.goToSetPoint();
+        //wrist.goToSetPoint();
 
     }
 
@@ -346,11 +350,11 @@ public class Arm {
          grab.setSpark (speed);
     }
 
-   public void extendHatchGrabber () {
+   public void openHatchGrabber () {
       grab.extendHatchGrabber();
    }
 
-   public void retractHatchGrabber () {
+   public void closeHatchGrabber () {
       grab.retractHatchGrabber();
    }
 
@@ -362,7 +366,11 @@ public class Arm {
       return grab.getLimitSwitchRight();
    }
 
-   public boolean getGrabberBeamSensor () {
+   public boolean grabberHasHatch () {
+      return getGrabberLimitSwitchLeft() && getGrabberLimitSwitchRight();
+   }
+
+   public boolean grabberHasBall () {
       return grab.getBeamSensor();
    }
     

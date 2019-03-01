@@ -22,7 +22,14 @@ public class Robot extends IterativeRobot {
   Arm arm;
   IntakeClimber climb;
 
+  boolean isAutomated;
+
   boolean[] galaxyBrain = { false, false, false, false, false };
+
+  boolean elbowSetToPoint;
+  boolean extenderSetToPoint;
+  boolean wristSetToPoint;
+  boolean climbSetToPoint;
 
   /**
    * 
@@ -34,6 +41,13 @@ public class Robot extends IterativeRobot {
     cs = new ControllerSecretary();
     arm = new Arm();
     climb = new IntakeClimber();
+
+    elbowSetToPoint = false;
+    extenderSetToPoint = false;
+    wristSetToPoint = false;
+    climbSetToPoint = false;
+
+    isAutomated = true;
 
     drive.setTolerance();
 
@@ -205,9 +219,25 @@ public class Robot extends IterativeRobot {
 
     //climbtakeControls();
 
-    automatedControls();
+   // automatedControls();
 
-    //robotSafety();
+    if (cs.operator1.buttonHeld(Controller.SELECT)) {
+      isAutomated = true;
+    } else if (cs.operator1.buttonHeld(Controller.START)) {
+      isAutomated = false;
+    }
+
+    if (isAutomated) {
+      automatedControls();
+      robotSafety();
+      enablePids();
+    } else {
+      manualControls();
+    }
+    grabberControls();
+    driveControls();
+
+    
 
     
 
@@ -225,39 +255,124 @@ public class Robot extends IterativeRobot {
 
   }
 
+  private void enablePids () {
+    if (elbowSetToPoint) 
+      arm.enableElbowPID();
+    else 
+      arm.disableElbowPID();
+
+    if (extenderSetToPoint)
+      arm.enableExtenderPID();
+    else 
+      arm.disableExtenderPID();
+
+    if (wristSetToPoint)
+      arm.enableWristPID();
+    else 
+      arm.stopWristPID();
+
+    if (climbSetToPoint) 
+      climb.goToSetPoint();
+    else
+      climb.stopPIDRotate();
+   
+   
+  }
+
+  private void disablePids () {
+    arm.disableElbowPID();
+    arm.disableExtenderPID();
+    arm.stopWristPID();
+    climb.stopPIDRotate();
+  }
+
   private void automatedControls () {
 
     //Arm
 
     if (cs.operator1.buttonHeld(Controller.UP_Y)) {
+      // high score
       arm.pidGoToAngle(70);
       arm.setExtenderTarget(11.7);
-      arm.enableElbowPID();
-    arm.enableExtenderPID();
-    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
+      arm.autoSetWrist(WristMode.output);
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
+      // mid score
       arm.pidGoToAngle(15.3);
       arm.setExtenderTarget(0);
-      arm.enableElbowPID();
-    arm.enableExtenderPID();
+      arm.autoSetWrist(WristMode.output);
     } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
+      // low score
       arm.pidGoToAngle(-79.5);
       arm.setExtenderTarget(.7);
-      arm.enableElbowPID();
-      arm.enableExtenderPID();
+      arm.autoSetWrist(WristMode.output);
+
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
+      // intake - need to config
+      //arm.pidGoToAngle(-79.5);
+      //arm.setExtenderTarget(.7);
+      arm.autoSetWrist(WristMode.intake);
     } else {
-      arm.disableElbowPID();
-      arm.disableExtenderPID();
-      arm.setElbowSpeed(cs.operator1.getLeftY() * .5);
-      arm.setExtenderSpeed(cs.operator1.getRightY() * .5);
+      
+
+
     }
 
-    arm.autoMoveWrist(WristMode.output);
     
+
     
+
 
     // climbtake
 
-    // grabber
+    if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
+      climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
+      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
+      climb.setToPosition(IntakeClimber.IN_ANGLE);
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
+      climb.setToPosition(IntakeClimber.OUT_ANGLE);
+    } else {
+      
+    }
+
+  }
+
+  private void manualControls () {
+
+    if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
+      climb.setRotateSpeed(IntakeClimber.ROTATE_SPEED);
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
+      climb.setRotateSpeed(IntakeClimber.ROTATE_SPEED);
+    } else {
+      climb.setRotateSpeed(0);
+    }
+
+    if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+      arm.setExtenderSpeed(ArmConstants.EXTENDER_SPEED);
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) {
+      arm.setExtenderSpeed(-ArmConstants.EXTENDER_SPEED);
+    } else {
+      arm.setExtenderSpeed(0);
+    }
+
+    arm.setWristSpeed(cs.operator1.getLeftY());
+    arm.setElbowSpeed(cs.operator1.getRightY());
+
+  }
+
+  private void grabberControls () {
+
+    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+      arm.closeHatchGrabber();
+      arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+      arm.openHatchGrabber();
+      arm.setGrabberSparkSpeed(0);
+    } else if (arm.grabberHasHatch()) {
+      arm.openHatchGrabber();
+      arm.setGrabberSparkSpeed(-Grabber.INTAKE_OUTPUT_SPEED);
+    }
 
   }
 
@@ -339,7 +454,7 @@ public class Robot extends IterativeRobot {
     // } else {
     // arm.autoMoveWrist(targetWristMode);
     // }
-    arm.autoMoveWrist(WristMode.tucked);
+    arm.autoSetWrist(WristMode.tucked);
 
     //
 
@@ -491,7 +606,7 @@ public class Robot extends IterativeRobot {
 
   public void updateDashboard() {
 
-    SmartDashboard.putBoolean("Beam Sensor", arm.getGrabberBeamSensor());
+    SmartDashboard.putBoolean("Beam Sensor", arm.grabberHasBall());
     SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
     SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
 

@@ -25,6 +25,7 @@ public class ArmConstants {
     public static final double MAX_EXTENDER_VOLTAGE = .505;
     public static final double MIN_EXTENDER_LENGTH = 0.0;
     public static final double MAX_EXTENDER_LENGTH = 14.0;
+    public static final double EXTENDER_SPEED = 0.3;
 
     public static final double ARM_LENGTH = 24.5;
     public static final double ARM_WEIGHT = 1.0;
