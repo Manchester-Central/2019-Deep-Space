@@ -38,7 +38,7 @@ public class PortConstants {
 	public final static int FORWARD_HATCH = 0;
 	public final static int REVERSE_HATCH = 1;
 
-	//TODO fix all except Elbow2
+	
 	public final static int ELBOW_JOINT = 3;
 	public final static int ELBOW_2 = 7;
 	public final static int EXTENDER = 4;

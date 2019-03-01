@@ -114,7 +114,7 @@ public class Arm {
         //     speed = 0;
         // }
         // extender.set(speed - (1.0/6.0));
-    
+        extenderPID.disable();
         double adjustedSpeed = (FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(speed, 0, 0.1)) ? speed -/*- Math.sin(getElbowAngle()*/ (0.18) : speed;
         extender.set(adjustedSpeed);
     }
@@ -321,6 +321,45 @@ public class Arm {
         }
     }
 
+    /**
+     * 
+     */
+    public void setArmPose(WristMode mode, double extenderDistance) {
+
+        double currentElbowAngle = getElbowAngle();
+        autoSetExtender(extenderDistance);
+        
+        switch(mode){
+
+            case intake:
+                // wrist.setSetPoint(90 - currentElbowAngle);
+                wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
+                break;
+
+            case tucked:
+                wrist.setSetPoint(Wrist.TUCKED_POSITION);
+            
+                break;
+            case output:
+                // if (currentElbowAngle > 0) {
+                //     wrist.setSetPoint(270 - currentElbowAngle);
+                // } else {
+                //     wrist.setSetPoint(360 - currentElbowAngle);
+                // }
+                    wrist.setSetPoint(-currentElbowAngle + angleOffset);
+
+                break;
+            case straight:
+                // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
+                wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
+                break;
+
+            default:
+                wrist.setSetPoint(wrist.getAngle());
+                break;
+        }
+    }
+
 
     /**
      * 
@@ -329,11 +368,7 @@ public class Arm {
      */
     public void autoSetWrist(WristMode targetMode) {
 
-<<<<<<< HEAD
          if (elbowIsSafe()) {
-=======
-        if (elbowIsSafe()) {
->>>>>>> 9c83819fb7929a54d040f5f126ebe3a53978d673
             setWristToArmAngle(targetMode);
         } else {
             setWristToArmAngle(WristMode.tucked);
@@ -342,6 +377,18 @@ public class Arm {
         //wrist.goToSetPoint();
 
     }
+
+    public void autoSetExtender(double extenderDistance) {
+
+        if (elbowIsSafe()) {
+           extenderPID.setSetpoint(extenderDistance);;
+       } else {
+           extenderPID.setSetpoint(0.0);;
+       }
+
+       //wrist.goToSetPoint();
+
+   }
 
     public double getWristAngle () {
         return wrist.getAngle();

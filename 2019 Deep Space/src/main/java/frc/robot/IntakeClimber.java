@@ -29,10 +29,10 @@ public class IntakeClimber {
     LinearPot anglePot;
 
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
-    public static final double ROTATE_SPEED = 0.1;
-    public static final double INTAKE_SPEED = 1;
-    public static final double VERTICAL_POSITION = 90.0;
-    public static final double INTAKE_ANGLE = 60.0;
+    public static final double ROTATE_SPEED = 1.0;
+    public static final double INTAKE_SPEED = -1;
+    public static final double VERTICAL_POSITION = 115.0;
+    public static final double INTAKE_ANGLE = 55.0;
     public static final double IN_ANGLE = 205.0;
     public static final double OUT_ANGLE = 0.0;
     private static final double P = .07;

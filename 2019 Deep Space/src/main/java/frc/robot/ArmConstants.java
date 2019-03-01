@@ -21,18 +21,11 @@ public class ArmConstants {
     public static final double MIN_ELBOW_ANGLE = -180.0;
     public static final double MAX_ELBOW_ANGLE = 90;
     
-<<<<<<< HEAD
     public static final double MIN_EXTENDER_VOLTAGE = 0.0795;
     public static final double MAX_EXTENDER_VOLTAGE = .505;
     public static final double MIN_EXTENDER_LENGTH = 0.0;
     public static final double MAX_EXTENDER_LENGTH = 14.0;
     public static final double EXTENDER_SPEED = 0.3;
-=======
-    public static final double MIN_EXTENDER_VOLTAGE = 0.0715;
-    public static final double MAX_EXTENDER_VOLTAGE = 2.46599357;
-    public static final double MIN_EXTENDER_LENGTH = 0;
-    public static final double MAX_EXTENDER_LENGTH = 10;
->>>>>>> 9c83819fb7929a54d040f5f126ebe3a53978d673
 
     public static final double ARM_LENGTH = 24.5;
     public static final double ARM_WEIGHT = 1.0;
