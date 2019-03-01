@@ -213,11 +213,12 @@ public class Robot extends IterativeRobot {
        //disablePids();
     // }
     //manualControls();
-    
+
     //TODO Connect autosetextender to automated controls
-    
-    grabberControls();
-    driveControls();
+    automatedControls();
+    //grabberControls();
+    //driveControls();
+    climbtakeControls();
       
     
 
@@ -272,24 +273,27 @@ public class Robot extends IterativeRobot {
     if (cs.operator1.buttonHeld(Controller.UP_Y)) {
       // high score
       arm.pidGoToAngle(70);
-      arm.setExtenderTarget(11.7);
-      arm.autoSetWrist(WristMode.output);
+      arm.setArmPose(WristMode.output, 11.7);
+      //arm.setExtenderTarget(11.7);
+      //arm.autoSetWrist(WristMode.output);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
       // mid score
       arm.pidGoToAngle(15.3);
-      arm.setExtenderTarget(0);
-      arm.autoSetWrist(WristMode.output);
+      arm.setArmPose(WristMode.output, 0);
+//      arm.setExtenderTarget(0);
+//     arm.autoSetWrist(WristMode.output);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
       // low score
       arm.pidGoToAngle(-79.5);
-      arm.setExtenderTarget(.7);
-      arm.autoSetWrist(WristMode.output);
+//      arm.setExtenderTarget(.7);
+      arm.setArmPose(WristMode.output, 0.7);
+//      arm.autoSetWrist(WristMode.output);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
@@ -297,7 +301,9 @@ public class Robot extends IterativeRobot {
       // intake - need to config
       //arm.pidGoToAngle(-79.5);
       //arm.setExtenderTarget(.7);
-      arm.autoSetWrist(WristMode.intake);
+      arm.pidGoToAngle(-15.0);
+      arm.setArmPose(WristMode.intake, 0);
+//      arm.autoSetWrist(WristMode.intake);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
@@ -308,14 +314,10 @@ public class Robot extends IterativeRobot {
       wristSetToPoint = false;
 
     }
-
-    
-
-    
-
+    enablePids();
 
     // climbtake
-
+/*
     if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
       climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
       climbSetToPoint = true;
@@ -331,7 +333,7 @@ public class Robot extends IterativeRobot {
     } else {
       climbSetToPoint = false;
     }
-
+*/
   }
 
   private void manualControls () {
