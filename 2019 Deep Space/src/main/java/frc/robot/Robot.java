@@ -162,16 +162,10 @@ public class Robot extends IterativeRobot {
       isAutomated = false;
     }
     
-    // if (isAutomated) {
-    //   automatedControls();
-    //   robotSafety();
-    //   enablePids();
-    // } else {
-      manualControls();
-      //disablePids();
-    // }
+    automatedControls();
     grabberControls();
     driveControls();
+    climbtakeControls();
   }
 
   @Override
@@ -217,7 +211,7 @@ public class Robot extends IterativeRobot {
     //TODO Connect autosetextender to automated controls
     automatedControls();
     grabberControls();
-    //driveControls();
+    driveControls();
     climbtakeControls();
       
     
