@@ -54,7 +54,9 @@ public class ArmConstants {
     public static final double NUMBER_OF_MOTORS = 2.0 ;
     public static final double MOTOR_STALL_TORQUE = 0.43;
 
-    public static final double ELBOW_P = 0.01;
+    public static final double MAX_ELBOW_ACCELERATION = 0.0131*7;
+
+    public static final double ELBOW_P = 0.028;
 	public static final double ELBOW_I = 0;
     public static final double ELBOW_D = 0;
 

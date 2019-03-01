@@ -483,7 +483,7 @@ public class Robot extends IterativeRobot {
     if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
       // set climb to climb "position"
       climb.setToPosition(IntakeClimber.OUT_ANGLE);
-      climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
+      //climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
       climb.goToSetPoint();
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
       climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
@@ -495,11 +495,19 @@ public class Robot extends IterativeRobot {
     else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
       // set climb to intake
       climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
-      climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
+      //climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
       climb.goToSetPoint();
     }  else {
       climb.setFlywheel(0);
       climb.stopPIDRotate();
+    }
+
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
+      climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+      climb.setFlywheel(-IntakeClimber.INTAKE_SPEED);
+    } else {
+      climb.setFlywheel(0);
     }
   }
 

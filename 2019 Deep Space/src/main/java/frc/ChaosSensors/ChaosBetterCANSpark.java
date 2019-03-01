@@ -23,6 +23,7 @@ public class ChaosBetterCANSpark extends CANSparkMax{
 
     public ChaosBetterCANSpark(int port) {
         super(port, MotorType.kBrushless);
+        setSmartCurrentLimit(50);
 
     }
 
