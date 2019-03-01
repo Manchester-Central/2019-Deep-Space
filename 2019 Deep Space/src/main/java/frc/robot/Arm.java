@@ -333,11 +333,13 @@ public class Arm {
 
             case intake:
                 // wrist.setSetPoint(90 - currentElbowAngle);
-                wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
+                //wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
+                autoSetWrist(WristMode.intake);
                 break;
 
             case tucked:
-                wrist.setSetPoint(Wrist.TUCKED_POSITION);
+                //wrist.setSetPoint(Wrist.TUCKED_POSITION);
+                autoSetWrist(WristMode.tucked);
             
                 break;
             case output:
@@ -346,7 +348,8 @@ public class Arm {
                 // } else {
                 //     wrist.setSetPoint(360 - currentElbowAngle);
                 // }
-                    wrist.setSetPoint(-currentElbowAngle + angleOffset);
+                autoSetWrist(WristMode.output);
+                //wrist.setSetPoint(-currentElbowAngle + angleOffset);
 
                 break;
             case straight:
