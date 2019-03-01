@@ -294,7 +294,9 @@ public class Arm {
 
             case intake:
                 // wrist.setSetPoint(90 - currentElbowAngle);
-                wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
+                //elbow:-131,  wrist = 314
+                //wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
+                wrist.setSetPoint(315);
                 break;
 
             case tucked:
