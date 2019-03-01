@@ -31,6 +31,8 @@ public class Arm {
     public static final double ELBOW_SAFE_ANGLE = 15;
     private static final double ARM_HOLD_POWER = 0.19;
 
+    private static final double MAX_ELBOW_ACCELERATION = 0.0131*2;
+
     private PIDController elbowPID;
     private PIDController extenderPID;
 
@@ -47,7 +49,7 @@ public class Arm {
         grab = new Grabber ();
         elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
         elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
-        elbowGroup = new ChaosBetterSpeedController(elbow, elbow2, .07);
+        elbowGroup = new ChaosBetterSpeedController(elbow, elbow2, MAX_ELBOW_ACCELERATION);
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
         wrist = new Wrist();
 
@@ -327,7 +329,11 @@ public class Arm {
      */
     public void autoSetWrist(WristMode targetMode) {
 
+<<<<<<< HEAD
          if (elbowIsSafe()) {
+=======
+        if (elbowIsSafe()) {
+>>>>>>> 9c83819fb7929a54d040f5f126ebe3a53978d673
             setWristToArmAngle(targetMode);
         } else {
             setWristToArmAngle(WristMode.tucked);

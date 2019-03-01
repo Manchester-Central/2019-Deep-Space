@@ -100,6 +100,9 @@ public class DriveBase {
 		leftBack = new ChaosBetterCANSpark(PortConstants.LEFT_BACK_SPARK);
 		rightBack = new ChaosBetterCANSpark(PortConstants.RIGHT_BACK_SPARK);
 
+		rightFront.setInverted(true);
+		rightBack.setInverted(true);
+
 		leftEncoder = new CanSparkEncoder(leftFront.getEncoder(), WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
 		rightEncoder = new CanSparkEncoder(rightFront.getEncoder(), WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
 		
