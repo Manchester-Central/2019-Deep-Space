@@ -372,7 +372,7 @@ public class Robot extends IterativeRobot {
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
       arm.closeHatchGrabber();
       arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
-    } else if (arm.grabberHasHatch()) {
+    } else if (!arm.grabberHasHatch()) {
       arm.openHatchGrabber();
       arm.setGrabberSparkSpeed(0);
       System.out.println("has hatch");
@@ -545,15 +545,6 @@ public class Robot extends IterativeRobot {
 
     SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
 
-    SmartDashboard.putNumber("Camera tangent distance", Camera.getDistance());
-    SmartDashboard.putNumber("Climber Pot (RAW)", climb.anglePot.get());
-    SmartDashboard.putNumber("Climber Pot (Angle)", climb.anglePot.getValue());
-    SmartDashboard.putNumber("Elbow Pot (RAW)", arm.getRawElbow());
-    SmartDashboard.putNumber("Elbow Pot (Angle)", arm.getElbowAngle());
-    SmartDashboard.putNumber("Extender Pot (RAW)", arm.getRawExtender());
-    SmartDashboard.putNumber("Extender Pot (Distance)", arm.getExtenderPosition());
-    SmartDashboard.putNumber("Wrist Pot (RAW)", arm.getWirstPotRaw());
-    SmartDashboard.putNumber("Wrist Pot (Angle)", arm.getWristAngle());
     SmartDashboard.updateValues();
 
   }
