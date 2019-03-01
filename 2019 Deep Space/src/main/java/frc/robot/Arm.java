@@ -417,11 +417,11 @@ public class Arm {
    }
 
    public boolean getGrabberLimitSwitchLeft () {
-      return grab.getLimitSwitchLeft();
+      return !grab.getLimitSwitchLeft();
    }
 
    public boolean getGrabberLimitSwitchRight () {
-      return grab.getLimitSwitchRight();
+      return !grab.getLimitSwitchRight();
    }
 
    public boolean grabberHasHatch () {

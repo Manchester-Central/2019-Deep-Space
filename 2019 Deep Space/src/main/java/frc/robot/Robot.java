@@ -372,7 +372,7 @@ public class Robot extends IterativeRobot {
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
       arm.closeHatchGrabber();
       arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
-    } else if (!arm.grabberHasHatch()) {
+    } else if (arm.grabberHasHatch()) {
       arm.openHatchGrabber();
       arm.setGrabberSparkSpeed(0);
       System.out.println("has hatch");
@@ -544,6 +544,10 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putNumber("Current f", drive.getF());
 
     SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
+    SmartDashboard.putBoolean("L", arm.getGrabberLimitSwitchLeft());
+    SmartDashboard.putBoolean("R", arm.getGrabberLimitSwitchRight());
+
+    
 
     SmartDashboard.updateValues();
 
