@@ -301,8 +301,10 @@ public class Robot extends IterativeRobot {
       // intake - need to config
       //arm.pidGoToAngle(-79.5);
       //arm.setExtenderTarget(.7);
-      arm.pidGoToAngle(-131.0);
-      arm.setArmPose(WristMode.intake, 0);
+      // HATCH INTAKE arm.pidGoToAngle(-131.0);
+      // HATCK INTAKE arm.setArmPose(WristMode.intake, 3);
+      arm.pidGoToAngle(-150.0);
+      arm.setArmPose(WristMode.intake, 10);    
 //      arm.autoSetWrist(WristMode.intake);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
