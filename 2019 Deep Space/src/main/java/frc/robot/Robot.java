@@ -264,42 +264,50 @@ public class Robot extends IterativeRobot {
 
     //Arm
 
+    WristMode outputType = WristMode.output;
+    if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+      outputType = WristMode.cargoShip;
+    }
+
     if (cs.operator1.buttonHeld(Controller.UP_Y)) {
       // high score
       arm.pidGoToAngle(70);
-      arm.setArmPose(WristMode.output, 11.7);
-      //arm.setExtenderTarget(11.7);
-      //arm.autoSetWrist(WristMode.output);
+      arm.setArmPose(outputType, 11.7);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
       // mid score
       arm.pidGoToAngle(15.3);
-      arm.setArmPose(WristMode.output, 0);
-//      arm.setExtenderTarget(0);
-//     arm.autoSetWrist(WristMode.output);
+      arm.setArmPose(outputType, 0);
+      elbowSetToPoint = true;
+      extenderSetToPoint = true;
+      wristSetToPoint = true;
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) {
+      // cargo score
+      arm.pidGoToAngle(-2.7);
+      arm.setArmPose(outputType, 0);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
       // low score
       arm.pidGoToAngle(-79.5);
-//      arm.setExtenderTarget(.7);
-      arm.setArmPose(WristMode.output, 0.7);
-//      arm.autoSetWrist(WristMode.output);
+      arm.setArmPose(outputType, 0.7);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
-      // intake - need to config
-      //arm.pidGoToAngle(-79.5);
-      //arm.setExtenderTarget(.7);
-      // HATCH INTAKE arm.pidGoToAngle(-131.0);
-      // HATCK INTAKE arm.setArmPose(WristMode.intake, 3);
-      arm.pidGoToAngle(-138.0);
-      arm.setArmPose(WristMode.intake, 10);    
-//      arm.autoSetWrist(WristMode.intake);
+
+      if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+        arm.pidGoToAngle(-146.0);
+        arm.setArmPose(WristMode.cargoIntake, 13.7);
+      } else {
+        arm.pidGoToAngle(-138.0);
+        arm.setArmPose(WristMode.intake, 11);
+      }
+
+      // intake    
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
@@ -440,7 +448,14 @@ public class Robot extends IterativeRobot {
     } else {
 
       drive.stopDrivePID();
-      drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY());
+      if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) {
+        drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY()); 
+      } else if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+        drive.setSpeed(cs.driver.getLeftY() * .2, cs.driver.getRightY() * .2); 
+      } else {
+        drive.setSpeed(cs.driver.getLeftY() * .5, cs.driver.getRightY() * .5);
+      }
+
 
     }
 
@@ -529,6 +544,8 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putBoolean("Beam Sensor", arm.grabberHasBall());
     SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
     SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
+
+    SmartDashboard.putNumber("Intake raw", climb.getRawRotateValue());
 
     SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 

@@ -40,7 +40,7 @@ public class Arm {
     private Wrist wrist;
     private Grabber grab;
 
-    public enum WristMode {intake, tucked, output, straight, nothing};
+    public enum WristMode {intake, tucked, output, straight, cargoShip, cargoIntake, nothing};
 
     public Arm() {
 
@@ -315,6 +315,18 @@ public class Arm {
                 wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
 
+            case cargoShip:
+
+                wrist.setSetPoint(-currentElbowAngle + angleOffset - 35);
+
+                break;
+
+            case cargoIntake:
+
+                wrist.setSetPoint(345.8);
+                
+                break;
+
             default:
                 wrist.setSetPoint(wrist.getAngle());
                 break;
@@ -351,6 +363,14 @@ public class Arm {
                 autoSetWrist(WristMode.output);
                 //wrist.setSetPoint(-currentElbowAngle + angleOffset);
 
+                break;
+            case cargoShip:
+                
+                autoSetWrist(WristMode.cargoShip);
+
+                break;
+            case cargoIntake:
+                autoSetWrist(WristMode.cargoIntake);
                 break;
             case straight:
                 // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
