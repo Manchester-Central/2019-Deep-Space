@@ -78,7 +78,7 @@ public class Robot extends IterativeRobot {
     // SmartDashboard.putNumber("D-" + pidName, pid.getD());
     // System.out.print("F:" + pid.getF() + "\t");
     // SmartDashboard.putNumber("F-" + pidName, pid.getF());
-    System.out.print("input:" + x.format(input) + "\t");
+    //System.out.print("input:" + x.format(input) + "\t");
     SmartDashboard.putNumber("Input-" + pidName, input);
     // System.out.print("output:" + output + "\t");
     // SmartDashboard.putNumber("Output-" + pidName, output);
@@ -124,8 +124,6 @@ public class Robot extends IterativeRobot {
     if (galaxyBrain[4]) {
       drive.describeSelf();
     }
-
-    System.out.println();
 
     Camera.changeCamMode(camState.driver);
 
@@ -545,9 +543,9 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
     SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
 
-    SmartDashboard.putNumber("Intake raw", climb.getRawRotateValue());
+    //SmartDashboard.putNumber("Intake raw", climb.getRawRotateValue());
 
-    SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
+    //SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
 
     SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
     // SmartDashboard.putNumber("Current Encoder Count Left",
@@ -557,14 +555,14 @@ public class Robot extends IterativeRobot {
     // SmartDashboard.putNumber("Current Encoder Count Right",
     // drive.getDistanceTicksR());
 
-    SmartDashboard.putNumber("Current p", drive.getP());
-    SmartDashboard.putNumber("Current i", drive.getI());
-    SmartDashboard.putNumber("Current d", drive.getD());
-    SmartDashboard.putNumber("Current f", drive.getF());
+    // SmartDashboard.putNumber("Current p", drive.getP());
+    // SmartDashboard.putNumber("Current i", drive.getI());
+    // SmartDashboard.putNumber("Current d", drive.getD());
+    // SmartDashboard.putNumber("Current f", drive.getF());
 
-    SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
-    SmartDashboard.putBoolean("L", arm.getGrabberLimitSwitchLeft());
-    SmartDashboard.putBoolean("R", arm.getGrabberLimitSwitchRight());
+    // SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
+    // SmartDashboard.putBoolean("L", arm.getGrabberLimitSwitchLeft());
+    // SmartDashboard.putBoolean("R", arm.getGrabberLimitSwitchRight());
 
     
 
