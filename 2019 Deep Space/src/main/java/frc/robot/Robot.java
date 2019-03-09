@@ -501,9 +501,6 @@ public class Robot extends IterativeRobot {
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
       climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
       climb.goToSetPoint();
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
-      climb.setToPosition(IntakeClimber.IN_ANGLE);
-      climb.goToSetPoint();
     } 
     else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
       // set climb to intake

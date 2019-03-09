@@ -40,18 +40,11 @@ public class IntakeClimber {
     private static final double D = 0;
     public static final double MIN_ANGLE = 0.0;
     public static final double MAX_ANGLE = 204.0;
-<<<<<<< HEAD
     public static final double MIN_VOLTAGE = 0.04;
     public static final double MAX_VOLTAGE = 0.62;
-
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
-=======
-    public static final double MAX_LEGAL_ANGLE = 90.0;
-    public static final double MIN_VOLTAGE = 0.075;
-    public static final double MAX_VOLTAGE = 0.676;
->>>>>>> Added new legal limit on climbtake (90 deg)
-
+    public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
     public final double RADIUS = 40;
     public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
    // public final double RADIUS = 40;
