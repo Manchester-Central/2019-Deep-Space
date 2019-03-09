@@ -430,9 +430,9 @@ public class Robot extends IterativeRobot {
       }
     }
 
-    if (cs.driver.buttonTapped(Controller.START)) {
+    if ((cs.operator1.getDPad() == Controller.DPadDirection.UP) && (cs.operator1.buttonHeld(Controller.UP_Y))) {
       //lift.setPositionIn();
-    } else if (cs.driver.buttonTapped(Controller.SELECT)) {
+    } else if ((cs.operator1.getDPad() == Controller.DPadDirection.DOWN) && (cs.operator1.buttonHeld(Controller.UP_Y))) {
       if (isClimbingAllowed()) {
         //lift.setPositionOut();
       }
