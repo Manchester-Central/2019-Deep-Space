@@ -284,6 +284,13 @@ public class Robot extends IterativeRobot {
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
+      // safe position above bottom
+      arm.pidGoToAngle(-90.0);
+      arm.setArmPose(WristMode.tucked, 0);
+      elbowSetToPoint = true;
+      extenderSetToPoint = true;
+      wristSetToPoint = true;  
     } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) {
       // cargo score
       arm.pidGoToAngle(-2.7);
@@ -300,7 +307,10 @@ public class Robot extends IterativeRobot {
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
 
-      if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+      if (climb.getAngle() <= IntakeClimber.INTAKE_ANGLE + 2.0) {
+        arm.pidGoToAngle(-90.0);
+        arm.setArmPose(WristMode.tucked, 0);
+      } else if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
         arm.pidGoToAngle(-146.0);
         arm.setArmPose(WristMode.cargoIntake, 13.7);
       } else {
