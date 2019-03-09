@@ -448,9 +448,11 @@ public class Robot extends IterativeRobot {
     }
 
     if (cs.operator1.buttonHeld(Controller.UP_Y)) {
+
+      //Up to retract back in, Down to push up
       if ((cs.operator1.getDPad() == Controller.DPadDirection.UP)) {
       //lift.setPositionIn();
-    } else if ((cs.operator1.getDPad() == Controller.DPadDirection.DOWN)) {
+      } else if ((cs.operator1.getDPad() == Controller.DPadDirection.DOWN)) {
       // if (isClimbingAllowed()) {
         //lift.setPositionOut();
       //}
