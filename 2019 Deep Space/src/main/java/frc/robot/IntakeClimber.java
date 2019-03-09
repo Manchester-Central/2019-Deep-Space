@@ -9,11 +9,9 @@ package frc.robot;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 

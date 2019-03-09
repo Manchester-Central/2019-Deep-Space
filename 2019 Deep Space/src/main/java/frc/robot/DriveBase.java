@@ -7,17 +7,11 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Victor;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.CanSparkEncoder;
 import frc.ChaosSensors.ChaosBetterCANSpark;
-import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.TalonSRX_Encoder;
-import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 
 /**
  * Calculates new speed

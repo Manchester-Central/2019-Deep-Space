@@ -1,9 +1,6 @@
 
 package frc.robot;
 
-import java.io.Console;
-import java.text.DecimalFormat;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Timer;
@@ -11,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
 import frc.robot.Arm.WristMode;
-import frc.robot.Controller.DPadDirection;
 
 /**
  * 
@@ -69,8 +65,6 @@ public class Robot extends IterativeRobot {
   }
 
   public static void describePID(PIDController pid, String pidName, double input, double output) {
-
-    DecimalFormat x = new DecimalFormat("#.0000");
 
     // System.out.print(pidName + ":\t");
     // System.out.print("P:" + pid.getP() + "\t");
@@ -209,7 +203,6 @@ public class Robot extends IterativeRobot {
     // }
     //manualControls();
 
-    //TODO Connect autosetextender to automated controls
     automatedControls();
     grabberControls();
     driveControls();
