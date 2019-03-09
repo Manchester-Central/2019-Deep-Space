@@ -323,25 +323,6 @@ public class Robot extends IterativeRobot {
 
     }
     enablePids();
-
-    // climbtake
-/*
-    if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
-      climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
-      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
-      climb.setToPosition(IntakeClimber.IN_ANGLE);
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
-      climb.setToPosition(IntakeClimber.OUT_ANGLE);
-      climbSetToPoint = true;
-    } else {
-      climbSetToPoint = false;
-    }
-*/
   }
 
   private void manualControls () {
@@ -370,7 +351,6 @@ public class Robot extends IterativeRobot {
   }
 
   private void grabberControls () {
-
     if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
       // Intake 
       arm.openHatchGrabber();
@@ -385,7 +365,6 @@ public class Robot extends IterativeRobot {
     } else {
       arm.setGrabberSparkSpeed(0);
     }
-
   }
 
   private void robotSafety() {
@@ -410,9 +389,7 @@ public class Robot extends IterativeRobot {
         elbowSetToPoint = true;
         extenderSetToPoint = true;
         wristSetToPoint = true;
-      }
-
-      
+      }    
     }
 
     if (Math.abs(arm.getElbowAngle() - arm.getElbowTargetAngle()) >= Arm.ELBOW_SAFE_ANGLE + 5.0) {
@@ -427,30 +404,22 @@ public class Robot extends IterativeRobot {
     }
   }
 
+  /**
+   * 
+   * Controls for driving: Joysticks: driving (tank drive) X button: PID drive to
+   * align w/ vision target
+   * 
+   */
   private void driveControls() {
-
-    /**
-     * 
-     * Controls for driving: Joysticks: driving (tank drive) X button: PID drive to
-     * align w/ vision target
-     * 
-     */
-
     if (cs.driver.buttonTapped(Controller.LEFT_X)) {
       drive.resetCameraDrivePID();
     }
-
     if (cs.driver.buttonHeld(Controller.LEFT_X)) {
-
       drive.straightCameraDriveWithPID();
-
     } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
-
       drive.stopDrivePID();
       drive.setSpeed(-0.25, -0.25);
-
     } else {
-
       drive.stopDrivePID();
       if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) {
         drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY()); 
@@ -459,28 +428,20 @@ public class Robot extends IterativeRobot {
       } else {
         drive.setSpeed(cs.driver.getLeftY() * .5, cs.driver.getRightY() * .5);
       }
-
-
     }
 
     if (cs.driver.buttonTapped(Controller.START)) {
       //lift.setPositionIn();
-    }
-
-    if (cs.driver.buttonTapped(Controller.SELECT)) {
+    } else if (cs.driver.buttonTapped(Controller.SELECT)) {
       if (isClimbingAllowed()) {
         //lift.setPositionOut();
       }
     }
-
   }
 
   public boolean isClimbingAllowed () {
     return (Timer.getMatchTime() <= 20);
   }
-
- 
-
 
   private void testControls() {
 
