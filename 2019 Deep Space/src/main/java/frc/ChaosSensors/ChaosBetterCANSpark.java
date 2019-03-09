@@ -14,9 +14,8 @@ import frc.FunctionsThatShouldBeInTheJDK;
 /**
  * Add your docs here.
  */
-public class ChaosBetterCANSpark extends CANSparkMax{
+public class ChaosBetterCANSpark extends CANSparkMax {
 
-    private double sign;
     private double adjustment;
     public final double ADJUSTMENT_MAX = 1;
     private double currentSet = 0;
@@ -27,20 +26,19 @@ public class ChaosBetterCANSpark extends CANSparkMax{
 
     }
 
-    public void setAdjustment (double value) {
+    public void setAdjustment(double value) {
         value = FunctionsThatShouldBeInTheJDK.clamp(value, -ADJUSTMENT_MAX, ADJUSTMENT_MAX);
         adjustment = value;
     }
 
-    public double getAdjustment () {
+    public double getAdjustment() {
         return adjustment;
     }
 
-
     @Override
     public void pidWrite(double output) {
-        //System.out.print(adjustment + output);
-        //set(output + adjustment);
+        // System.out.print(adjustment + output);
+        // set(output + adjustment);
         currentSet = output;
     }
 

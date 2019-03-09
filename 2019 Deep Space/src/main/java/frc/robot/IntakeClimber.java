@@ -9,11 +9,9 @@ package frc.robot;
 
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 
@@ -42,10 +40,9 @@ public class IntakeClimber {
     public static final double MAX_ANGLE = 204.0;
     public static final double MIN_VOLTAGE = 0.04;
     public static final double MAX_VOLTAGE = 0.62;
-
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
-
+    public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
     public final double RADIUS = 40;
     public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
    // public final double RADIUS = 40;
@@ -72,7 +69,7 @@ public class IntakeClimber {
 
         if (getAngle() <= OUT_ANGLE && speed > 0)
             speed = 0;
-        else if (getAngle() >= IN_ANGLE && speed < 0)
+        else if (getAngle() >= MAX_LEGAL_ANGLE && speed < 0)
             speed = 0;
 
         rotate0.set(ControlMode.PercentOutput, -speed);

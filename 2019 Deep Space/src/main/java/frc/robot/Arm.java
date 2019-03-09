@@ -11,8 +11,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
@@ -338,14 +336,11 @@ public class Arm {
      */
     public void setArmPose(WristMode mode, double extenderDistance) {
 
-        double currentElbowAngle = getElbowAngle();
         autoSetExtender(extenderDistance);
         
         switch(mode){
 
             case intake:
-                // wrist.setSetPoint(90 - currentElbowAngle);
-                //wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
                 autoSetWrist(WristMode.intake);
                 break;
 

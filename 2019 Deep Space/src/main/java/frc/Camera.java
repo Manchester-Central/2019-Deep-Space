@@ -23,9 +23,9 @@ public class Camera {
 
     public  static boolean isDriver = true;
 
-    static double robotHeight = 9D;
-    static double visionTargetHeight = 380D; // higher vision target
-    static double cameraAngle = 0D;
+    static double robotHeight = 10D; // hmm and a half
+    static double visionTargetHeight = 28.5D; // lower vision target
+    static double cameraAngle = 58D;
     //static double maxAcceleration = 0.04;
     static double maxSpeed = .3;
     static double maxSpeedDistance = 100; 
@@ -45,7 +45,7 @@ public class Camera {
      */
     public static NetworkTable getTable () {
 
-        return NetworkTableInstance.getDefault().getTable("limelight");
+        return NetworkTableInstance.getDefault().getTable("limelight-chaos");
         
     }
 
@@ -58,6 +58,14 @@ public class Camera {
 
         return getTable().getEntry(name);
 
+    }
+
+    /**
+     * 0, driver, 1, not
+     * @param index - index
+     */
+    public static void changePipeline (int index) {
+        getEntry("pipeline").setNumber(index);
     }
 
     /***

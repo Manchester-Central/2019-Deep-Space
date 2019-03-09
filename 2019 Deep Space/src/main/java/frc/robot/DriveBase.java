@@ -7,17 +7,11 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Victor;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.CanSparkEncoder;
 import frc.ChaosSensors.ChaosBetterCANSpark;
-import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.TalonSRX_Encoder;
-import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
 
 /**
  * Calculates new speed
@@ -35,18 +29,18 @@ public class DriveBase {
     private PIDLinked pids;
 
 	// This is raft code
-    Victor leftBackVictor;
-	Victor leftMidVictor;
-	Victor leftFrontVictor;
-	Victor rightBackVictor;
-	Victor rightMidVictor;
-	Victor rightFrontVictor;
+    // Victor leftBackVictor;
+	// Victor leftMidVictor;
+	// Victor leftFrontVictor;
+	// Victor rightBackVictor;
+	// Victor rightMidVictor;
+	// Victor rightFrontVictor;
 
-	ChaosBetterTalonSRX rightTalonSRX;
-	ChaosBetterTalonSRX leftTalonSRX;
+	// ChaosBetterTalonSRX rightTalonSRX;
+	// ChaosBetterTalonSRX leftTalonSRX;
 	
-	TalonSRX_Encoder leftEncoderRaft;
-	TalonSRX_Encoder rightEncoderRaft;
+	// TalonSRX_Encoder leftEncoderRaft;
+	// TalonSRX_Encoder rightEncoderRaft;
 	
 
 	PIDController leftPidController;
@@ -110,55 +104,55 @@ public class DriveBase {
 
         // above is real code, below is raft, comment/uncomment to make work
 		
-		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
-		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
+		// rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
+		//  WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
 		
-		leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON,
-		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
+		// leftTalonSRX = new ChaosBetterTalonSRX(PortConstants.LEFT_CAN_TALON,
+		//  WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, true);
 
-		leftTalonSRX.set(ControlMode.PercentOutput, 0);
+		// leftTalonSRX.set(ControlMode.PercentOutput, 0);
 
-		leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
-		leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
-		leftFrontVictor = new Victor(PortConstants.LEFT_FRONT_TALON);
+		// leftBackVictor = new Victor(PortConstants.LEFT_BACK_TALON);
+		// leftMidVictor = new Victor(PortConstants.LEFT_MID_TALON);
+		// leftFrontVictor = new Victor(PortConstants.LEFT_FRONT_TALON);
 		
-		rightBackVictor = new Victor(PortConstants.RIGHT_BACK_TALON);
-		rightMidVictor = new Victor(PortConstants.RIGHT_MID_TALON);
-		rightFrontVictor = new Victor(PortConstants.RIGHT_FRONT_TALON);
+		// rightBackVictor = new Victor(PortConstants.RIGHT_BACK_TALON);
+		// rightMidVictor = new Victor(PortConstants.RIGHT_MID_TALON);
+		// rightFrontVictor = new Victor(PortConstants.RIGHT_FRONT_TALON);
 		
-		rightBackVictor.setInverted(true);
-		rightMidVictor.setInverted(true);
-		rightFrontVictor.setInverted(true);
+		// rightBackVictor.setInverted(true);
+		// rightMidVictor.setInverted(true);
+		// rightFrontVictor.setInverted(true);
 		
-		leftTalonSRX.setInverted(false);
-		rightTalonSRX.setInverted(true);
+		// leftTalonSRX.setInverted(false);
+		// rightTalonSRX.setInverted(true);
 		
-		leftTalonSRX.enableCurrentLimit(true);
-		rightTalonSRX.enableCurrentLimit(true);
+		// leftTalonSRX.enableCurrentLimit(true);
+		// rightTalonSRX.enableCurrentLimit(true);
 		
-		leftTalonSRX.configContinuousCurrentLimit(30, 0);
-		rightTalonSRX.configContinuousCurrentLimit(30, 0);
+		// leftTalonSRX.configContinuousCurrentLimit(30, 0);
+		// rightTalonSRX.configContinuousCurrentLimit(30, 0);
 		
-		leftTalonSRX.configPeakCurrentDuration(50, 0);
-		rightTalonSRX.configPeakCurrentDuration(50, 0);
+		// leftTalonSRX.configPeakCurrentDuration(50, 0);
+		// rightTalonSRX.configPeakCurrentDuration(50, 0);
 
-		rightTalonSRX.configPeakCurrentLimit(30, 0);
-		leftTalonSRX.configPeakCurrentLimit(30, 0);
+		// rightTalonSRX.configPeakCurrentLimit(30, 0);
+		// leftTalonSRX.configPeakCurrentLimit(30, 0);
 		
-		rightTalonSRX.configClosedloopRamp (1, 0);
-		leftTalonSRX.configClosedloopRamp (1, 0);
+		// rightTalonSRX.configClosedloopRamp (1, 0);
+		// leftTalonSRX.configClosedloopRamp (1, 0);
 
-		leftEncoderRaft = new TalonSRX_Encoder(leftTalonSRX, ParamType.distance);
-		rightEncoderRaft = new TalonSRX_Encoder(rightTalonSRX, ParamType.distance);
+		// leftEncoderRaft = new TalonSRX_Encoder(leftTalonSRX, ParamType.distance);
+		// rightEncoderRaft = new TalonSRX_Encoder(rightTalonSRX, ParamType.distance);
 		
-		//Real Pid
-		// leftPidController = new PIDController(P, I, D, F, leftEncoder, leftFront);
-		// rightPidController = new PIDController(P, I, D, F, rightEncoder, rightFront);
+		// //Real Pid
+		 leftPidController = new PIDController(P, I, D, F, leftEncoder, leftFront);
+		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightFront);
 
 
-		//Raft
-		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
-		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
+		// //Raft
+		// leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
+		// rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
 
 		setTolerance();
 

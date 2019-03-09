@@ -1,16 +1,13 @@
 
 package frc.robot;
 
-import java.io.Console;
-import java.text.DecimalFormat;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
 import frc.robot.Arm.WristMode;
-import frc.robot.Controller.DPadDirection;
 
 /**
  * 
@@ -21,6 +18,7 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
+  PneumaticLift lift;
 
   boolean isAutomated;
 
@@ -41,6 +39,7 @@ public class Robot extends IterativeRobot {
     cs = new ControllerSecretary();
     arm = new Arm();
     climb = new IntakeClimber();
+    lift = null; //new PneumaticLift();
 
     elbowSetToPoint = false;
     extenderSetToPoint = false;
@@ -66,8 +65,6 @@ public class Robot extends IterativeRobot {
   }
 
   public static void describePID(PIDController pid, String pidName, double input, double output) {
-
-    DecimalFormat x = new DecimalFormat("#.0000");
 
     // System.out.print(pidName + ":\t");
     // System.out.print("P:" + pid.getP() + "\t");
@@ -206,7 +203,6 @@ public class Robot extends IterativeRobot {
     // }
     //manualControls();
 
-    //TODO Connect autosetextender to automated controls
     automatedControls();
     grabberControls();
     driveControls();
@@ -281,6 +277,13 @@ public class Robot extends IterativeRobot {
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
+      // safe position above bottom
+      arm.pidGoToAngle(-90.0);
+      arm.setArmPose(WristMode.tucked, 0);
+      elbowSetToPoint = true;
+      extenderSetToPoint = true;
+      wristSetToPoint = true;  
     } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) {
       // cargo score
       arm.pidGoToAngle(-2.7);
@@ -297,7 +300,10 @@ public class Robot extends IterativeRobot {
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
 
-      if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+      if (climb.getAngle() <= IntakeClimber.INTAKE_ANGLE + 2.0) {
+        arm.pidGoToAngle(-90.0);
+        arm.setArmPose(WristMode.tucked, 0);
+      } else if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
         arm.pidGoToAngle(-146.0);
         arm.setArmPose(WristMode.cargoIntake, 13.7);
       } else {
@@ -317,25 +323,6 @@ public class Robot extends IterativeRobot {
 
     }
     enablePids();
-
-    // climbtake
-/*
-    if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
-      climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
-      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
-      climb.setToPosition(IntakeClimber.IN_ANGLE);
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
-      climb.setToPosition(IntakeClimber.OUT_ANGLE);
-      climbSetToPoint = true;
-    } else {
-      climbSetToPoint = false;
-    }
-*/
   }
 
   private void manualControls () {
@@ -364,7 +351,6 @@ public class Robot extends IterativeRobot {
   }
 
   private void grabberControls () {
-
     if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
       // Intake 
       arm.openHatchGrabber();
@@ -379,7 +365,6 @@ public class Robot extends IterativeRobot {
     } else {
       arm.setGrabberSparkSpeed(0);
     }
-
   }
 
   private void robotSafety() {
@@ -404,9 +389,7 @@ public class Robot extends IterativeRobot {
         elbowSetToPoint = true;
         extenderSetToPoint = true;
         wristSetToPoint = true;
-      }
-
-      
+      }    
     }
 
     if (Math.abs(arm.getElbowAngle() - arm.getElbowTargetAngle()) >= Arm.ELBOW_SAFE_ANGLE + 5.0) {
@@ -421,6 +404,12 @@ public class Robot extends IterativeRobot {
     }
   }
 
+  /**
+   * 
+   * Controls for driving: Joysticks: driving (tank drive) X button: PID drive to
+   * align w/ vision target
+   * 
+   */
   private void driveControls() {
 
     /**
@@ -438,33 +427,40 @@ public class Robot extends IterativeRobot {
       speedMultiplier = .2;
     }
 
-
-    if (cs.driver.buttonTapped(Controller.LEFT_X)) {
-      drive.resetCameraDrivePID();
-    }
-
+    // TODO test & configure 
+    // if (cs.driver.buttonTapped(Controller.LEFT_X)) {
+    //   drive.resetCameraDrivePID();
+    // }
     if (cs.driver.buttonHeld(Controller.LEFT_X)) {
-
-      drive.straightCameraDriveWithPID();
-
+      Camera.changePipeline(1);
+      //drive.straightCameraDriveWithPID();
+      
     } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
-
       drive.stopDrivePID();
       drive.setSpeed(-0.5 * speedMultiplier, -0.5 * speedMultiplier);
-
+      Camera.changePipeline(0);
     } else {
-
       drive.stopDrivePID();
       drive.setSpeed(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
-     
+      Camera.changePipeline(0);
 
 
     }
 
+    if (cs.operator1.buttonHeld(Controller.UP_Y)) {
+      if ((cs.operator1.getDPad() == Controller.DPadDirection.UP)) {
+      //lift.setPositionIn();
+    } else if ((cs.operator1.getDPad() == Controller.DPadDirection.DOWN)) {
+      // if (isClimbingAllowed()) {
+        //lift.setPositionOut();
+      //}
+      }
+    }
   }
 
- 
-
+  public boolean isClimbingAllowed () {
+    return (Timer.getMatchTime() <= 30);
+  }
 
   private void testControls() {
 
@@ -504,9 +500,6 @@ public class Robot extends IterativeRobot {
       climb.goToSetPoint();
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
       climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
-      climb.goToSetPoint();
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.RIGHT) {
-      climb.setToPosition(IntakeClimber.IN_ANGLE);
       climb.goToSetPoint();
     } 
     else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
