@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
@@ -21,6 +22,7 @@ public class Robot extends IterativeRobot {
   ControllerSecretary cs;
   Arm arm;
   IntakeClimber climb;
+  PneumaticLift lift;
 
   boolean isAutomated;
 
@@ -41,6 +43,7 @@ public class Robot extends IterativeRobot {
     cs = new ControllerSecretary();
     arm = new Arm();
     climb = new IntakeClimber();
+    lift = null; //new PneumaticLift();
 
     elbowSetToPoint = false;
     extenderSetToPoint = false;
@@ -457,6 +460,20 @@ public class Robot extends IterativeRobot {
 
     }
 
+    if (cs.driver.buttonTapped(Controller.START)) {
+      //lift.setPositionIn();
+    }
+
+    if (cs.driver.buttonTapped(Controller.SELECT)) {
+      if (isClimbingAllowed()) {
+        //lift.setPositionOut();
+      }
+    }
+
+  }
+
+  public boolean isClimbingAllowed () {
+    return (Timer.getMatchTime() <= 20);
   }
 
  
