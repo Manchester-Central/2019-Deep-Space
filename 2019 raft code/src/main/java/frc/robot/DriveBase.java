@@ -24,14 +24,7 @@ import frc.ChaosSensors.TalonSRX_Encoder.ParamType;
  */
 public class DriveBase {
 
-    public ChaosBetterCANSpark leftFront;
-	public ChaosBetterCANSpark rightFront;
-	public ChaosBetterCANSpark leftBack;
-	public ChaosBetterCANSpark rightBack;
-	
-	public CanSparkEncoder leftEncoder;
-	public CanSparkEncoder rightEncoder;
-
+   
     private PIDLinked pids;
 
 	// This is raft code
@@ -95,20 +88,8 @@ public class DriveBase {
 		turningRight = false;
 		turnAngle = 100000;
 
-    	leftFront = new ChaosBetterCANSpark(PortConstants.LEFT_FRONT_SPARK);
-		rightFront = new ChaosBetterCANSpark(PortConstants.RIGHT_FRONT_SPARK);
-		leftBack = new ChaosBetterCANSpark(PortConstants.LEFT_BACK_SPARK);
-		rightBack = new ChaosBetterCANSpark(PortConstants.RIGHT_BACK_SPARK);
-
-		rightFront.setInverted(true);
-		rightBack.setInverted(true);
-
-		leftEncoder = new CanSparkEncoder(leftFront.getEncoder(), WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
-		rightEncoder = new CanSparkEncoder(rightFront.getEncoder(), WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION);
+    
 		
-		
-
-        // above is real code, below is raft, comment/uncomment to make work
 		
 		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
 		 WHEEL_CIRCUMFERENCE_INCHES, ENCODER_TICKS_PER_REVOLUTION, false);
@@ -151,33 +132,30 @@ public class DriveBase {
 		leftEncoderRaft = new TalonSRX_Encoder(leftTalonSRX, ParamType.distance);
 		rightEncoderRaft = new TalonSRX_Encoder(rightTalonSRX, ParamType.distance);
 		
-		//Real Pid
-		// leftPidController = new PIDController(P, I, D, F, leftEncoder, leftFront);
-		// rightPidController = new PIDController(P, I, D, F, rightEncoder, rightFront);
 
 
 		//Raft
-		leftPidController = new PIDController(P, I, D, F, leftEncoder, leftTalonSRX);
-		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightTalonSRX);
+		leftPidController = new PIDController(P, I, D, F, leftEncoderRaft, leftTalonSRX);
+		rightPidController = new PIDController(P, I, D, F, rightEncoderRaft, rightTalonSRX);
 
 		setTolerance();
 
 		
 		pids = new PIDLinked(leftPidController, rightPidController);
 		
-		pids.setSparks(leftFront, rightFront);
+		pids.setSparks(leftTalonSRX, rightTalonSRX);
 
-		Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
+		Robot.describePID(leftPidController, "leftDrivePID", leftEncoderRaft.pidGet(), leftTalonSRX.getPIDWrite());
 
-		Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
+		Robot.describePID(rightPidController, "rightDrivePID", rightEncoderRaft.pidGet(), rightTalonSRX.getPIDWrite());
 	}
 
 	public void describeSelf () {
-		Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
-		System.out.println ("leftAdjustment: " + leftFront.getAdjustment() + "\t");
+		Robot.describePID(leftPidController, "leftDrivePID", leftEncoderRaft.pidGet(), leftTalonSRX.getPIDWrite());
+		//System.out.println ("leftAdjustment: " + leftTalonSRX.getAdjustment() + "\t");
 
-		Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
-		System.out.println ("rightAdjustment: " + rightFront.getAdjustment() + "\t");
+		Robot.describePID(rightPidController, "rightDrivePID", rightEncoderRaft.pidGet(), rightTalonSRX.getPIDWrite());
+		//System.out.println ("rightAdjustment: " + rightTalonSRX.getAdjustment() + "\t");
 
 	}
 
@@ -236,8 +214,8 @@ public class DriveBase {
 	}
 
 	public void resetEncoders () {
-		rightEncoder.reset();
-		leftEncoder.reset();
+		rightEncoderRaft.reset();
+		leftEncoderRaft.reset();
 		
 	}
 	
@@ -253,35 +231,36 @@ public class DriveBase {
 		rightSpeed = FunctionsThatShouldBeInTheJDK.clamp(rightSpeed, -1, 1);
 
 		
-		//leftTalonSRX.set(ControlMode.PercentOutput, leftSpeed);
-		leftFront.set(leftSpeed);
-		leftBack.set (leftSpeed);
-		rightFront.set(rightSpeed);
-		rightBack.set(rightSpeed);
-		//followTalon();
+		leftTalonSRX.set(ControlMode.PercentOutput, leftSpeed);
+		rightTalonSRX.set(ControlMode.PercentOutput, rightSpeed);
+		// leftFront.set(leftSpeed);
+		// leftBack.set (leftSpeed);
+		// rightFront.set(rightSpeed);
+		// rightBack.set(rightSpeed);
+		followTalon();
 		
 		//System.out.println(leftSpeed);
 
 	}
 
-	// public void followTalon () {
+	public void followTalon () {
 
-	// 	double leftSpeed = leftFront.get();
-	// 	double rightSpeed = rightFront.get();
+		double leftSpeed = leftTalonSRX.get();
+		double rightSpeed = rightTalonSRX.get();
 
-	// 	leftBackVictor.set(leftSpeed);
-	// 	leftMidVictor.set(leftSpeed);
-	// 	leftFrontVictor.set(leftSpeed);
+		leftBackVictor.set(leftSpeed);
+		leftMidVictor.set(leftSpeed);
+		leftFrontVictor.set(leftSpeed);
 
-	// 	rightBackVictor.set(rightSpeed);
-	// 	rightMidVictor.set(rightSpeed);
-	// 	rightFrontVictor.set(rightSpeed);
+		rightBackVictor.set(rightSpeed);
+		rightMidVictor.set(rightSpeed);
+		rightFrontVictor.set(rightSpeed);
 		
-	// }
+	}
 	
 	public String getDriveSpeeds() {
 
-		return "Left speed = " + leftFront.get() + ", Right speed = " + rightFront.get();
+		return "Left speed = " + leftTalonSRX.get() + ", Right speed = " + rightTalonSRX.get();
 
 	}
 
@@ -290,12 +269,12 @@ public class DriveBase {
 	/***
 	 * drive based on the camera autonomously
 	 */
-	@Deprecated
+	//@Deprecated
     public void cameraDrive() {
 
-        double[] speedValues = Camera.getDriveDirections(leftFront.get(), rightFront.get());
-        setSpeed(speedValues[0] * .1D, speedValues[1] * .1D);
-
+        double[] speedValues = Camera.getDriveDirections(leftTalonSRX.get(), rightTalonSRX.get());
+        //setSpeed(speedValues[0], speedValues[1]);
+		System.out.println (speedValues[0] + ", " + speedValues[1]);
 
 		
 	}
@@ -303,23 +282,30 @@ public class DriveBase {
 	// @Deprecated
 	// public void testMotors (ControllerSecretary cs) {
 	// 	if (cs.driver.getDPad()  == Controller.DPadDirection.UP) {
-	// 		leftTalonSRX.set(1);
+	// 		leftTalonSRX.set(0.4);
 	// 	} else if (cs.driver.getDPad()  == Controller.DPadDirection.LEFT) {
-	// 		leftBackVictor.set(1);
+	// 		leftBackVictor.set(0.4);
 	// 	} else if (cs.driver.getDPad()  == Controller.DPadDirection.DOWN) {
-	// 		leftMidVictor.set(1);
+	// 		leftMidVictor.set(0.4);
 	// 	} else if (cs.driver.getDPad()  == Controller.DPadDirection.RIGHT) {
-	// 		leftFrontVictor.set(1);
+	// 		leftFrontVictor.set(0.4);
 	// 	} else if (cs.driver.buttonHeld(Controller.UP_Y)) {
-	// 		rightTalonSRX.set(1);
+	// 		rightTalonSRX.set(0.4);
 	// 	} else if (cs.driver.buttonHeld(Controller.LEFT_X)) {
-	// 		rightBackVictor.set(1);
+	// 		rightBackVictor.set(0.4);
 	// 	} else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
-	// 		rightMidVictor.set(1);
+	// 		rightMidVictor.set(0.4);
 	// 	} else if (cs.driver.buttonHeld(Controller.RIGHT_B)) {
-	// 		rightFrontVictor.set(1);
+	// 		rightFrontVictor.set(0.4);
 	// 	} else {
-	// 	  setSpeed(0.0, 0.0);
+	// 		leftTalonSRX.set(0);
+	// 		leftBackVictor.set(0);
+	// 		leftMidVictor.set(0);
+	// 		leftFrontVictor.set(0);
+	// 		rightTalonSRX.set(0);
+	// 		rightBackVictor.set(0);
+	// 		rightMidVictor.set(0);
+	// 		rightFrontVictor.set(0);
 	// 	}
 	// }
 
@@ -358,8 +344,8 @@ public class DriveBase {
 	public void straightCameraDriveWithPID () {
 
 		double angle = Camera.getEntry("tx").getDouble(0);
-		if (leftEncoder.pidGet() < driveDistance
-		|| rightEncoder.pidGet() < driveDistance ){
+		if (leftEncoderRaft.pidGet() < driveDistance
+		|| rightEncoderRaft.pidGet() < driveDistance ){
 
 			if (Math.abs(angle) > ANGLE_TOLERANCE && !leftPidController.isEnabled() 
 			&& !rightPidController.isEnabled()) {
@@ -384,13 +370,13 @@ public class DriveBase {
 		} else {
 
 			if (turnAngle > 0) {
-				if (rightEncoder.pidGet() < driveDistance
+				if (rightEncoderRaft.pidGet() < driveDistance
 				 + (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
 					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
 				else 
 					setSpeed(0, 0);
 			} else {
-				if (leftEncoder.pidGet() < driveDistance 
+				if (leftEncoderRaft.pidGet() < driveDistance 
 				+ (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
 					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
 				else 
@@ -406,11 +392,11 @@ public class DriveBase {
 	public void cameraDriveWithPID () {
 
 		if (turningRight) {
-			if (leftEncoder.pidGet() > arcLength)
+			if (leftEncoderRaft.pidGet() > arcLength)
 				pids.enableSpecificPID(1);
 				//pids.drive();
 		} else {
-			if (rightEncoder.pidGet() > arcLength)
+			if (rightEncoderRaft.pidGet() > arcLength)
 				pids.enableSpecificPID(0);
 				//pids.drive();
 		}
@@ -470,9 +456,9 @@ public class DriveBase {
 	public double getF () {return leftPidController.getF();}
 	public double getSetPoint () {return leftPidController.getSetpoint();}
 	public double getError () {return leftPidController.getError();}
-	public double getDistanceInchesL() { return leftEncoder.pidGet();}
+	public double getDistanceInchesL() { return leftEncoderRaft.pidGet();}
 	//public double getDistanceTicksL() { return leftTalonSRX.getCurrentPositionTicks();}
-	public double getDistanceInchesR() { return rightEncoder.pidGet();}
+	public double getDistanceInchesR() { return rightEncoderRaft.pidGet();}
 	//public double getDistanceTicksR() { return rightTalonSRX.getCurrentPositionTicks();}
 	public PIDLinked getPids () {return pids;}
 	public double getArcLength () {return arcLength;}

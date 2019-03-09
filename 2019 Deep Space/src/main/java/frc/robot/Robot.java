@@ -430,6 +430,15 @@ public class Robot extends IterativeRobot {
      * 
      */
 
+    double speedMultiplier = 0.5;
+
+    if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) {
+      speedMultiplier = 1;
+    } else if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+      speedMultiplier = .2;
+    }
+
+
     if (cs.driver.buttonTapped(Controller.LEFT_X)) {
       drive.resetCameraDrivePID();
     }
@@ -441,18 +450,13 @@ public class Robot extends IterativeRobot {
     } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
 
       drive.stopDrivePID();
-      drive.setSpeed(-0.25, -0.25);
+      drive.setSpeed(-0.5 * speedMultiplier, -0.5 * speedMultiplier);
 
     } else {
 
       drive.stopDrivePID();
-      if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) {
-        drive.setSpeed(cs.driver.getLeftY(), cs.driver.getRightY()); 
-      } else if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
-        drive.setSpeed(cs.driver.getLeftY() * .2, cs.driver.getRightY() * .2); 
-      } else {
-        drive.setSpeed(cs.driver.getLeftY() * .5, cs.driver.getRightY() * .5);
-      }
+      drive.setSpeed(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
+     
 
 
     }
