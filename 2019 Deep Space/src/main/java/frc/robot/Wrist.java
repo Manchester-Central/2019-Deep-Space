@@ -23,7 +23,7 @@ public class Wrist {
    public static final double CIRCUMFERENCE = 2 * Math.PI;
    public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
    public static final double DEFAULT_ANGLE = 0.0;
-   public static final double TUCKED_POSITION = 180.0;
+   public static final double TUCKED_POSITION = 160.0;
    public static final double MIN_ANGLE = 0.0;
    public static final double MAX_ANGLE = 360.0;
    public static final double MIN_ANGLE_VOLTAGE = 0.469;

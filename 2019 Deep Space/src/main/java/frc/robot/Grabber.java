@@ -42,11 +42,11 @@ public class Grabber {
    }
 
    public void extendHatchGrabber () {
-      hatch.set(Value.kReverse);
+      hatch.set(Value.kForward);
    }
 
    public void retractHatchGrabber () {
-      hatch.set(Value.kForward);
+      hatch.set(Value.kReverse);
    }
 
    public boolean getLimitSwitchLeft () {

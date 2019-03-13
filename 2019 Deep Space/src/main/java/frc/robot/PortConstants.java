@@ -62,6 +62,6 @@ public class PortConstants {
 	public static final int LIMIT_SWITCH_RIGHT = 2;
 	public static final int BEAM_SENSOR = 0;
 
-	public static final int CLIMB_SOLENOID = 0;
+	public static final int CLIMB_SOLENOID = 2;
 
 }

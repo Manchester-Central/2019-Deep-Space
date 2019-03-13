@@ -341,6 +341,19 @@ public class DriveBase {
 			pids.enableSpecificPID(1);
 	}
 
+	public void turnToVisionTarget () {
+		if (Math.abs(Camera.GetHorizontalAngle()) > ANGLE_TOLERANCE) {
+			setSpeed(0, 0);
+		} else if (Camera.GetHorizontalAngle() > 0) {
+			setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
+		} else {
+			setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
+		}
+	}
+
+	/**
+	 * To be called initially with the tap of the straightCameraDriveWithPID function
+	 */
 	public void resetCameraDrivePID () {
 
 		resetEncoders();
@@ -349,6 +362,10 @@ public class DriveBase {
 
 	} 
 
+	/**
+	 * Turns to face vision target, drives directly towards vision target, 
+	 * and continues turning until flush
+	 */
 	public void straightCameraDriveWithPID () {
 
 		double angle = Camera.getEntry("tx").getDouble(0);
@@ -397,6 +414,9 @@ public class DriveBase {
 
 	}
 
+	/**
+	 * goes through an s curve through timing the pids out of sync, needs the init function
+	 */
 	public void cameraDriveWithPID () {
 
 		if (turningRight) {

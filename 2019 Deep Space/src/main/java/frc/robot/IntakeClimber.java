@@ -29,6 +29,7 @@ public class IntakeClimber {
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
     public static final double ROTATE_SPEED = 1.0;
     public static final double INTAKE_SPEED = -1;
+    public static final double CLIMB_SPEED = -0.3;
     public static final double VERTICAL_POSITION = 115.0;
     public static final double INTAKE_ANGLE = 55.0;
     public static final double IN_ANGLE = 205.0;
@@ -37,9 +38,9 @@ public class IntakeClimber {
     private static final double I = 0;
     private static final double D = 0;
     public static final double MIN_ANGLE = 0.0;
-    public static final double MAX_ANGLE = 204.0;
-    public static final double MIN_VOLTAGE = 0.04;
-    public static final double MAX_VOLTAGE = 0.62;
+    public static final double MAX_ANGLE = VERTICAL_POSITION;
+    public static final double MIN_VOLTAGE = 0.137;
+    public static final double MAX_VOLTAGE = 0.35;
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
     public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
