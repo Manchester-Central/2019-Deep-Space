@@ -45,11 +45,11 @@ public class Wrist {
       // speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
       anglePot = new LinearPot(PortConstants.WRIST_POT, MIN_ANGLE_VOLTAGE, MAX_ANGLE_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
       pid = new PIDController(P, I, D, anglePot, speedController);
-      Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
+     // Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
    }
 
    public void describeWristPID () {
-      Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
+     //Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
    }
 
    public double getWristTargetAngle() {

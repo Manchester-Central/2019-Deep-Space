@@ -72,6 +72,8 @@ public class DriveBase {
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
 	public static final double LENGTH_BETWEEN_WHEELS = 28.0;
 
+	public static final double MANUAL_CAMERA_DRIVE_PORPORTIONAL = 24D;
+
 	// used for camera stuff
 	private boolean turningRight;
 	private double distance;
@@ -161,18 +163,34 @@ public class DriveBase {
 		
 		pids.setSparks(leftFront, rightFront);
 
-		Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
+		//Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
 
-		Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
+		//Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
 	}
 
 	public void describeSelf () {
-		Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
-		System.out.println ("leftAdjustment: " + leftFront.getAdjustment() + "\t");
+		//Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
+		//System.out.println ("leftAdjustment: " + leftFront.getAdjustment() + "\t");
 
-		Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
-		System.out.println ("rightAdjustment: " + rightFront.getAdjustment() + "\t");
+		//Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
+		//System.out.println ("rightAdjustment: " + rightFront.getAdjustment() + "\t");
 
+	}
+
+	public void manualFollowCamera (double joystickLeft, double joystickRight) {
+		// fov 54 horizontal
+
+		double p = FunctionsThatShouldBeInTheJDK.clamp(
+			Camera.getDistance() / MANUAL_CAMERA_DRIVE_PORPORTIONAL, 0, 1);
+		double turnAmount = (Camera.GetHorizontalAngle() / 27) * p;
+
+		double average = (joystickLeft + joystickRight) / 2;
+
+		double resultLeft = FunctionsThatShouldBeInTheJDK.clamp(average + turnAmount, -1, 1);
+		double resultRight = FunctionsThatShouldBeInTheJDK.clamp(average - turnAmount, -1, 1);
+
+		setSpeed(resultLeft , resultRight);
+		
 	}
 
 	public void resetSquareSum () {

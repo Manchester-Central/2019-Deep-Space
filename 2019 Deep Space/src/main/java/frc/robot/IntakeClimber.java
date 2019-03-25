@@ -39,8 +39,8 @@ public class IntakeClimber {
     private static final double D = 0;
     public static final double MIN_ANGLE = 0.0;
     public static final double MAX_ANGLE = VERTICAL_POSITION;
-    public static final double MIN_VOLTAGE = 0.137;
-    public static final double MAX_VOLTAGE = 0.35;
+    public static final double MIN_VOLTAGE = 0.12;
+    public static final double MAX_VOLTAGE = 0.338;
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
     public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
@@ -59,11 +59,11 @@ public class IntakeClimber {
         flywheel = new WPI_VictorSPX(PortConstants.FLYWHEEL);
         anglePot = new LinearPot(PortConstants.CLIMBER_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
         pid = new PIDController(P, I, D, anglePot, group);
-        Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.get());
+        //Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.get());
     }
 
     public void describeClimberPID () {
-        Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.getPIDWrite());
+        //Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.getPIDWrite());
     }
 
     public void setRotateSpeed (double speed) {

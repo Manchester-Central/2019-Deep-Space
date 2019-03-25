@@ -3,7 +3,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Camera;
 import frc.Camera.camState;
@@ -87,7 +86,7 @@ public class Robot extends IterativeRobot {
     // System.out.print("Error:" + pid.getError() + "\t");
     // SmartDashboard.putNumber("Error-" + pidName, pid.getError());
 
-    System.out.print("Enabled:" + pid.isEnabled() + "\t");
+    //System.out.print("Enabled:" + pid.isEnabled() + "\t");
     SmartDashboard.putBoolean("Enabled-" + pidName, pid.isEnabled());
   }
 
@@ -261,7 +260,7 @@ public class Robot extends IterativeRobot {
     //Arm
     if ( !cs.operator1.buttonHeld(Controller.RIGHT_BUMPER) &&  !cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
       if (arm.grabberHasBall()) {
-       outputType = WristMode.cargoShip;
+       outputType = WristMode.tilt;
      } else {
         outputType = WristMode.output;
       }
@@ -271,7 +270,7 @@ public class Robot extends IterativeRobot {
     if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
 
       if (outputType == WristMode.output) {
-        outputType = WristMode.cargoShip;
+        outputType = WristMode.tilt;
       } else {
        outputType = WristMode.output;
       }
@@ -295,26 +294,26 @@ public class Robot extends IterativeRobot {
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.START)) {
       // safe position above bottom
-      arm.pidGoToAngle(-90.0);
-      arm.setArmPose(WristMode.tucked, 0);
+      arm.pidGoToAngle(-105.0);
+      arm.setArmPose(WristMode.safe, 0);
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;  
     } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) {
       // cargo score
-      arm.pidGoToAngle(-2.7 + armModifier(Controller.LEFT_TRIGGER, outputType));
-      arm.setArmPose(outputType, 0 + extenderModifier(Controller.LEFT_TRIGGER, outputType));
+      arm.pidGoToAngle(0 + armModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
+      arm.setArmPose(WristMode.cargoShip, 0 + extenderModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
     } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
       // low score
-      arm.pidGoToAngle(-77.5 + armModifier(Controller.DOWN_A, outputType));
-      arm.setArmPose(outputType, 0.7 + extenderModifier(Controller.DOWN_A, outputType));
+      arm.pidGoToAngle(-52.5 + armModifier(Controller.DOWN_A, outputType));
+      arm.setArmPose(outputType, 4.1 + extenderModifier(Controller.DOWN_A, outputType));
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
-    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X) || cs.operator1.getDPad() == DPadDirection.LEFT) {
 
       if (climb.getAngle() > IntakeClimber.INTAKE_ANGLE + 2.0) {
         arm.pidGoToAngle(-90.0);
@@ -335,6 +334,14 @@ public class Robot extends IterativeRobot {
       elbowSetToPoint = true;
       extenderSetToPoint = true;
       wristSetToPoint = true;
+    } else if (cs.operator1.getDPad() == DPadDirection.DOWN && climb.getAngle() < IntakeClimber.INTAKE_ANGLE) {
+
+      arm.pidGoToAngle(-146.0);
+      arm.setArmPose(WristMode.cargoIntake, 13.7);
+
+      elbowSetToPoint = true;
+      extenderSetToPoint = true;
+      wristSetToPoint = true;
     } else {
       
       elbowSetToPoint = false;
@@ -351,7 +358,7 @@ public class Robot extends IterativeRobot {
     double modifier = 0D;
     switch (button) {
       case Controller.DOWN_A:
-        modifier = 31D;
+        modifier = 31D - 24D;
         break;
       case Controller.UP_Y:
         modifier = 8D;
@@ -378,7 +385,7 @@ public class Robot extends IterativeRobot {
         modifier = 0D;
         break;
       case Controller.UP_Y:
-        modifier = 1.5D;
+        modifier = -1.9D;
         break;
       case Controller.RIGHT_B:
         modifier = 0D;
@@ -429,7 +436,7 @@ public class Robot extends IterativeRobot {
     } else if (arm.grabberHasHatch()) {
       arm.openHatchGrabber();
       arm.setGrabberSparkSpeed(0);
-      System.out.println("has hatch");
+     // System.out.println("has hatch");
     } else {
       arm.setGrabberSparkSpeed(0);
     }
@@ -499,10 +506,10 @@ public class Robot extends IterativeRobot {
     // if (cs.driver.buttonTapped(Controller.LEFT_X)) {
      // drive.resetCameraDrivePID();
     // }
-    if (cs.driver.buttonHeld(Controller.LEFT_X)) {
+    if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) {
       Camera.changePipeline(1);
       //drive.straightCameraDriveWithPID();
-      drive.turnToVisionTarget();
+      drive.manualFollowCamera(cs.driver.getLeftY(), cs.driver.getRightY());
     } else if (cs.driver.getDPad() == DPadDirection.DOWN) {
       drive.stopDrivePID();
       drive.setSpeed(-0.5 * speedMultiplier, -0.4 * speedMultiplier);
@@ -522,9 +529,9 @@ public class Robot extends IterativeRobot {
     //if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
 
       //Up to retract back in, Down to push up
-      if (cs.driver.buttonHeld(Controller.LEFT_BUMPER) ) {
+      if (cs.driver.buttonHeld(Controller.UP_Y) ) {
       lift.setPositionIn();
-      } else if (cs.driver.buttonHeld(Controller.LEFT_TRIGGER)) {
+      } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
       //if (isClimbingAllowed()) {
         lift.setPositionOut();
       //}
@@ -561,14 +568,15 @@ public class Robot extends IterativeRobot {
 
   }
 
-  private void climbtakeControls() {
+  private void 
+  climbtakeControls() {
 
     /**
      * 
      * Climb Controls: Left Trigger moves climb mech down Right Trigger moves climb
      * mech up
      */
-    if (cs.operator1.buttonHeld(Controller.LEFT_X)) {
+    if (cs.operator1.buttonHeld(Controller.LEFT_X) && cs.operator1.getDPad() != DPadDirection.DOWN) {
       climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
       climb.goToSetPoint();
     } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
@@ -604,6 +612,8 @@ public class Robot extends IterativeRobot {
 
     } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
       climb.setFlywheel(-IntakeClimber.INTAKE_SPEED);
+    } else if (climb.getAngle() < IntakeClimber.INTAKE_ANGLE - (IntakeClimber.INTAKE_ANGLE/2)) {
+      climb.setFlywheel((cs.driver.getLeftY() + cs.driver.getRightY())/ 2) ;
     } else {
       climb.setFlywheel(0);
     }
@@ -627,7 +637,8 @@ public class Robot extends IterativeRobot {
     SmartDashboard.putBoolean("Beam Sensor", arm.grabberHasBall());
     SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
     SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
-
+    SmartDashboard.putNumber("arm position: ", arm.getElbowAngle());
+    SmartDashboard.putNumber("arm raw", arm.getRawElbow());
     //SmartDashboard.putNumber("Intake raw", climb.getRawRotateValue());
 
     //SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());

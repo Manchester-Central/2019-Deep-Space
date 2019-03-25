@@ -38,7 +38,7 @@ public class Arm {
     private Wrist wrist;
     private Grabber grab;
 
-    public enum WristMode {intake, tucked, output, straight, cargoShip, cargoIntake, nothing};
+    public enum WristMode {intake, tucked, output, straight, tilt, cargoIntake, cargoShip, safe, nothing};
 
     public Arm() {
 
@@ -61,8 +61,8 @@ public class Arm {
         elbowPID.setInputRange(ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
         extenderPID.setInputRange(ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
 
-        Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbow.get());
-        Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
+       // Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbow.get());
+       // Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
 
         extender.setInverted(true);
 
@@ -70,11 +70,11 @@ public class Arm {
     }
 
     public void describeElbowPID () {
-        Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbowGroup.getPIDWrite());
+      //  Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbowGroup.getPIDWrite());
     }
 
     public void describeExtenderPID () {
-        Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
+       // Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
     }
 
     public void describeWristPID () {
@@ -313,9 +313,14 @@ public class Arm {
                 wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
 
-            case cargoShip:
+            case tilt:
 
                 wrist.setSetPoint(-currentElbowAngle + angleOffset - 35);
+
+                break;
+            case cargoShip:
+
+                wrist.setSetPoint(-currentElbowAngle + angleOffset - 45);
 
                 break;
 
@@ -324,6 +329,10 @@ public class Arm {
                 wrist.setSetPoint(345.8);
                 
                 break;
+
+                case safe:
+                    wrist.setSetPoint(Wrist.TUCKED_POSITION + 10);
+                    break;
 
             default:
                 wrist.setSetPoint(wrist.getAngle());
@@ -359,11 +368,14 @@ public class Arm {
                 //wrist.setSetPoint(-currentElbowAngle + angleOffset);
 
                 break;
-            case cargoShip:
+            case tilt:
                 
-                autoSetWrist(WristMode.cargoShip);
+                autoSetWrist(WristMode.tilt);
 
                 break;
+            case cargoShip:
+                    autoSetWrist(WristMode.cargoShip);
+                    break;
             case cargoIntake:
                 autoSetWrist(WristMode.cargoIntake);
                 break;
@@ -371,6 +383,10 @@ public class Arm {
                 // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
                 wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
+
+            case safe:
+                    wrist.setSetPoint(Wrist.TUCKED_POSITION - 10);
+                    break;
 
             default:
                 wrist.setSetPoint(wrist.getAngle());
