@@ -23,14 +23,18 @@ public class Camera {
 
     public  static boolean isDriver = true;
 
-    static double robotHeight = 8.25D;
-    static double visionTargetHeight = 38D; // higher vision target
-    static double cameraAngle = 0D;
-    //static double maxAcceleration = 0.04;
-    static double maxSpeed = .6;
-    static double maxSpeedDistance = 40; 
+    private static String limelight = "limelight-chaos";
 
-    
+    final static double robotHeight = 0D;
+    final static double visionTargetHeight = 3.5D; // higher vision target
+    final static double cameraAngle = 0D;
+    //static double maxAcceleration = 0.04;
+    final static double maxSpeed = .6;
+    final static double maxSpeedDistance = 200; 
+    public static final int DRIVER_VISION = 2;
+    public static final int CAMERA_VISION = 3;
+
+    public static final double AREA_CONSTANT = 65;
 
 
     /***
@@ -49,7 +53,7 @@ public class Camera {
      */
     public static NetworkTable getTable () {
 
-        return NetworkTableInstance.getDefault().getTable("limelight-chaos");
+        return NetworkTableInstance.getDefault().getTable(limelight);
         
     }
 
@@ -71,7 +75,32 @@ public class Camera {
      */
     public static double getDistance () {
 
+        if (getEntry("ta").getDouble(1.0) <= 0.5) {
+            return 0.0;
+        }
         return (visionTargetHeight - robotHeight) / (Math.tan( Math.toRadians(getEntry("ty").getDouble(69) + cameraAngle)));
+
+    }
+
+
+    public static double getDistanceFromArea() {
+
+        // A = ta, theta = horizontal and vertical
+
+        double area = getEntry("ta").getDouble(0);
+        double maxHorizontalAngle = Math.toRadians(59.6);
+        double maxVerticalAngle = Math.toRadians(49.7);
+        double thorMax = 320;
+        double tvertMax = 320;
+        
+        double thetaH = Math.atan(thorMax * maxHorizontalAngle / getEntry("thor").getDouble(0));
+        double thetaV = Math.atan(tvertMax * maxVerticalAngle / getEntry("tvert").getDouble(0));
+
+        double denominator = 2* (Math.tan(thetaH/2) + Math.tan(thetaV/2));
+
+        return AREA_CONSTANT * denominator / area;
+
+        //return AREA_CONSTANT / getEntry("ta").getDouble(1);
 
     }
 
@@ -91,9 +120,9 @@ public class Camera {
      */
     public static void switchPipelines(int pipeline) {
         //TODO make work
-        System.out.println(getEntry("pipeline").setNumber(pipeline));
+       // System.out.println(getEntry("pipeline").setNumber(pipeline));
 
-        //NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+        NetworkTableInstance.getDefault().getTable(limelight).getEntry("pipeline").setNumber(pipeline);
 
     }
     

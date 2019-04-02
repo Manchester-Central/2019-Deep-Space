@@ -62,7 +62,7 @@ public class Controller {
     }
 
     public double getLeftY() {
-        return -stick.getRawAxis(1);
+        return stick.getRawAxis(1);
     }
 
     public double getRightX() {
@@ -70,7 +70,7 @@ public class Controller {
     }
 
     public double getRightY() {
-        return -stick.getRawAxis(3);
+        return stick.getRawAxis(3);
     }
     
     public DPadDirection getDPad() {

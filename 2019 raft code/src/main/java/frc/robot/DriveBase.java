@@ -70,6 +70,10 @@ public class DriveBase {
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
 	public static final double LENGTH_BETWEEN_WHEELS = 28.0;
+	
+	public static final double MANUAL_CAMERA_DRIVE_PORPORTIONAL = 35.0;
+	public static final double HATCH_SCORING_DISTANCE = 5.0;
+	public boolean withinHatchRange = false;
 
 	// used for camera stuff
 	private boolean turningRight;
@@ -87,8 +91,6 @@ public class DriveBase {
 
 		turningRight = false;
 		turnAngle = 100000;
-
-    
 		
 		
 		rightTalonSRX = new ChaosBetterTalonSRX(PortConstants.RIGHT_CAN_TALON,
@@ -157,6 +159,35 @@ public class DriveBase {
 		Robot.describePID(rightPidController, "rightDrivePID", rightEncoderRaft.pidGet(), rightTalonSRX.getPIDWrite());
 		//System.out.println ("rightAdjustment: " + rightTalonSRX.getAdjustment() + "\t");
 
+	}
+
+	public void manualFollowCamera (double joystickLeft, double joystickRight) {
+		followCameraBase(Camera.getDistance(), joystickLeft, joystickRight);
+	}
+
+	public void manualFollowCameraByArea (double joystickLeft, double joystickRight) {
+		followCameraBase(Camera.getDistanceFromArea(), joystickLeft, joystickRight);
+	}
+
+	private void followCameraBase (double distance, double joystickLeft, double joystickRight) {
+
+		// fov 54 horizontal
+	
+		withinHatchRange = distance <= HATCH_SCORING_DISTANCE;	
+		
+		double p = FunctionsThatShouldBeInTheJDK.clamp(
+			distance / MANUAL_CAMERA_DRIVE_PORPORTIONAL, 0, 1);
+		double turnAmount = (Camera.GetHorizontalAngle() / 29.8) * p;
+
+		double average = (joystickLeft + joystickRight) / 2;
+
+
+		double resultLeft = FunctionsThatShouldBeInTheJDK.clamp(average + turnAmount, -1, 1);
+		double resultRight = FunctionsThatShouldBeInTheJDK.clamp(average - turnAmount, -1, 1);
+
+
+		setSpeed(resultLeft , resultRight);
+		
 	}
 
 	public void resetSquareSum () {
@@ -449,7 +480,7 @@ public class DriveBase {
 		//rightPidController.setSetpoint(rightTalonSRX.inchesToTicks(setPoint));
 	}
 
-
+	public boolean withinHatchRange()  { return withinHatchRange; }
 	public double getP () {return leftPidController.getP();}
     public double getI () {return leftPidController.getI();}
 	public double getD () {return leftPidController.getD();}

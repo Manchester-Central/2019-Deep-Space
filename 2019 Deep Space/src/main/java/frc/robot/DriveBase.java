@@ -176,12 +176,21 @@ public class DriveBase {
 		//System.out.println ("rightAdjustment: " + rightFront.getAdjustment() + "\t");
 
 	}
-
+	
 	public void manualFollowCamera (double joystickLeft, double joystickRight) {
+		followCameraBase(Camera.getDistance(), joystickLeft, joystickRight);
+	}
+
+	public void manualFollowCameraByArea (double joystickLeft, double joystickRight) {
+		followCameraBase(Camera.getDistanceFromArea(), joystickLeft, joystickRight);
+	}
+
+	private void followCameraBase (double distance, double joystickLeft, double joystickRight) {
+
 		// fov 54 horizontal
 
 		double p = FunctionsThatShouldBeInTheJDK.clamp(
-			Camera.getDistance() / MANUAL_CAMERA_DRIVE_PORPORTIONAL, 0, 1);
+			distance / MANUAL_CAMERA_DRIVE_PORPORTIONAL, 0, 1);
 		double turnAmount = (Camera.GetHorizontalAngle() / 27) * p;
 
 		double average = (joystickLeft + joystickRight) / 2;
@@ -192,6 +201,7 @@ public class DriveBase {
 		setSpeed(resultLeft , resultRight);
 		
 	}
+
 
 	public void resetSquareSum () {
 
@@ -311,6 +321,8 @@ public class DriveBase {
 
 		
 	}
+
+	
 
 	// @Deprecated
 	// public void testMotors (ControllerSecretary cs) {

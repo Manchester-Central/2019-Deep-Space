@@ -21,14 +21,17 @@ public class Camera {
 
     public static camState state = camState.driver;
 
-    public  static boolean isDriver = true;
+    public static boolean isDriver = true;
 
-    static double robotHeight = 10D; // hmm and a half
-    static double visionTargetHeight = 28.5D; // lower vision target
-    static double cameraAngle = 58D;
+    public static final double robotHeight = 10D; // hmm and a half
+    public static final double visionTargetHeight = 28.5D; // lower vision target
+    public static final double cameraAngle = 58D;
     //static double maxAcceleration = 0.04;
-    static double maxSpeed = .3;
-    static double maxSpeedDistance = 100; 
+    public static final double maxSpeed = .3;
+    public static final double maxSpeedDistance = 100; 
+
+    public static final double AREA_CONSTANT = 1;
+
     /***
      *  states for the camera image
      */
@@ -86,6 +89,12 @@ public class Camera {
     public static double GetHorizontalAngle () {
 
         return getEntry("tx").getDouble(0);
+
+    }
+
+    public static double getDistanceFromArea() {
+
+        return AREA_CONSTANT / getEntry("ta").getDouble(1);
 
     }
     

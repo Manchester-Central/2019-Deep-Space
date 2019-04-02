@@ -133,6 +133,8 @@ public class Robot extends IterativeRobot {
 
     // System.out.println (Camera.GetHorizontalAngle());
 
+   // System.out.println (Camera.getDistanceFromArea());
+
     updateDashboard();
 
   }

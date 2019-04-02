@@ -87,6 +87,7 @@ public class Robot extends IterativeRobot {
 
     System.out.print("Enabled:" + pid.isEnabled() + "\t");
     SmartDashboard.putBoolean("Enabled-" + pidName, pid.isEnabled());
+   
   }
 
   /**
@@ -107,7 +108,9 @@ public class Robot extends IterativeRobot {
     //   galaxyBrain[3] = !galaxyBrain[3];
     // } else if (cs.driver.buttonTapped(Controller.RIGHT_BUMPER)) {
     //   galaxyBrain[4] = !galaxyBrain[4];
-    // }
+    // } 
+
+    SmartDashboard.putBoolean("In Hatch Range", drive.withinHatchRange());
 
     // if (galaxyBrain[0]) {
     //   arm.describeElbowPID();
@@ -132,7 +135,17 @@ public class Robot extends IterativeRobot {
 
     // }
 
-    // System.out.println (Camera.GetHorizontalAngle());
+    System.out.println(Camera.getDistance());
+
+    if (cs.driver.buttonHeld(Controller.LEFT_BUMPER) || cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+      //drive.resetCameraDrivePID();
+      Camera.switchPipelines(Camera.CAMERA_VISION);
+    } else {
+      Camera.switchPipelines(Camera.DRIVER_VISION);
+    }
+    
+    SmartDashboard.updateValues();
+    
 
   }
 
@@ -152,11 +165,11 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousPeriodic() {
 
-    if (cs.operator1.buttonHeld(Controller.SELECT)) {
-      isAutomated = true;
-    } else if (cs.operator1.buttonHeld(Controller.START)) {
-      isAutomated = false;
-    }
+    // if (cs.operator1.buttonHeld(Controller.SELECT)) {
+    //   isAutomated = true;
+    // } else if (cs.operator1.buttonHeld(Controller.START)) {
+    //   isAutomated = false;
+    // }
     
   }
 
@@ -170,8 +183,8 @@ public class Robot extends IterativeRobot {
 
     // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
 
-    drive.resetEncoders();
-    drive.stopDrivePID();
+    //drive.resetEncoders();
+    //drive.stopDrivePID();
 
     // arm.set
 
@@ -183,18 +196,25 @@ public class Robot extends IterativeRobot {
   @Override
   public void teleopPeriodic() {
 
-    testControls();
-    driveControls();
+   // testControls();
+    //driveControls();
 
     //drive.stopDrivePID();
 
-  }
 
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
+    // System.out.println(Camera.getDistance());
+
+    // if (cs.driver.buttonHeld(Controller.LEFT_BUMPER) || cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+    //   //drive.resetCameraDrivePID();
+    //   Camera.switchPipelines(Camera.CAMERA_VISION);
+    //  // drive.manualFollowCamera(cs.driver.getRightY(), cs.driver.getLeftY());
+    //   //System.out.println (Camera.getDistanceFromArea());
+      
+    // } else {
+    //   Camera.switchPipelines(Camera.DRIVER_VISION);
+    //  // drive.setSpeed(cs.driver.getRightY(), cs.driver.getLeftY());
+    // }
+    
 
   }
 
@@ -252,13 +272,13 @@ public class Robot extends IterativeRobot {
   @Override
   public void disabledPeriodic() {
 
-    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
+    // drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
 
-    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+    // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
 
-    if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
-      drive.resetEncoders();
-    }
+    // if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+    //   drive.resetEncoders();
+    // }
 
   }
 

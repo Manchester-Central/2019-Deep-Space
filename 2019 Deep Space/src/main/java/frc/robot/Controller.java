@@ -32,7 +32,9 @@ public class Controller {
 
     public static enum DPadDirection {
 		LEFT, RIGHT, UP, DOWN, UP_RIGHT, DOWN_RIGHT, UP_LEFT, DOWN_LEFT, NONE
-	}
+    }
+    
+    private double[] adjustments = {0,0,0,0};
 
     // hi
 
@@ -58,19 +60,25 @@ public class Controller {
     }
 
     public double getLeftX() {
-        return stick.getRawAxis(0);
+        return stick.getRawAxis(0) - adjustments[0];
     }
 
     public double getLeftY() {
-        return -stick.getRawAxis(1);
+        return -stick.getRawAxis(1) - adjustments[1];
     }
 
     public double getRightX() {
-        return stick.getRawAxis(2);
+        return stick.getRawAxis(2)- adjustments[2];
     }
 
     public double getRightY() {
-        return -stick.getRawAxis(3);
+        return -stick.getRawAxis(3) -  adjustments[3];
+    }
+
+    public void calibrate() {
+        for (int i = 0; i < 4; i++) {
+            adjustments[i] = stick.getRawAxis(i);
+        }
     }
     
     public DPadDirection getDPad() {

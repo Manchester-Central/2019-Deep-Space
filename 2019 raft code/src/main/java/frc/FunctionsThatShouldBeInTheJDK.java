@@ -34,5 +34,9 @@ public class FunctionsThatShouldBeInTheJDK {
 
     }
 
+    public static boolean withinRange(double value, double lowerRange, double upperRange) {
+        return (value >= lowerRange) && (value <= upperRange);
+    }
+
     
 }
