@@ -9,9 +9,6 @@ import frc.Camera.camState;
 import frc.robot.Arm.WristMode;
 import frc.robot.Controller.DPadDirection;
 
-/**
- * 
- */
 public class Robot extends IterativeRobot {
 
   DriveBase drive;
@@ -22,17 +19,16 @@ public class Robot extends IterativeRobot {
 
   boolean isAutomated;
 
-  boolean[] galaxyBrain = { true, true, true, true, true };
-
   boolean elbowSetToPoint;
   boolean extenderSetToPoint;
   boolean wristSetToPoint;
   boolean climbSetToPoint;
   WristMode outputType;
 
-  /**
-   * 
-   */
+  ///
+  // Iterative Robot template functions: 
+  ///
+
   @Override
   public void robotInit() {
     outputType = WristMode.output;
@@ -66,82 +62,6 @@ public class Robot extends IterativeRobot {
 
   }
 
-  public static void describePID(PIDController pid, String pidName, double input, double output) {
-
-    // System.out.print(pidName + ":\t");
-    // System.out.print("P:" + pid.getP() + "\t");
-    // SmartDashboard.putNumber("P-" + pidName, pid.getP());
-    // System.out.print("I:" + pid.getI() + "\t");
-    // SmartDashboard.putNumber("I-" + pidName, pid.getI());
-    // System.out.print("D:" + pid.getD() + "\t");
-    // SmartDashboard.putNumber("D-" + pidName, pid.getD());
-    // System.out.print("F:" + pid.getF() + "\t");
-    // SmartDashboard.putNumber("F-" + pidName, pid.getF());
-    //System.out.print("input:" + x.format(input) + "\t");
-    SmartDashboard.putNumber("Input-" + pidName, input);
-    // System.out.print("output:" + output + "\t");
-    // SmartDashboard.putNumber("Output-" + pidName, output);
-    // System.out.print("Target:" + pid.getSetpoint() + "\t");
-    // SmartDashboard.putNumber("Target-" + pidName, pid.getSetpoint());
-    // System.out.print("Error:" + pid.getError() + "\t");
-    // SmartDashboard.putNumber("Error-" + pidName, pid.getError());
-
-    //System.out.print("Enabled:" + pid.isEnabled() + "\t");
-    SmartDashboard.putBoolean("Enabled-" + pidName, pid.isEnabled());
-  }
-
-  /**
-   * 
-   */
-  @Override
-  public void robotPeriodic() {
-
-    if (cs.driver.buttonTapped(Controller.DOWN_A)) {
-      galaxyBrain[0] = !galaxyBrain[0];
-    } else if (cs.driver.buttonTapped(Controller.LEFT_X)) {
-      galaxyBrain[1] = !galaxyBrain[1];
-    } else if (cs.driver.buttonTapped(Controller.UP_Y)) {
-      galaxyBrain[2] = !galaxyBrain[2];
-    } else if (cs.driver.buttonTapped(Controller.RIGHT_B)) {
-      galaxyBrain[3] = !galaxyBrain[3];
-    } else if (cs.driver.buttonTapped(Controller.RIGHT_BUMPER)) {
-      galaxyBrain[4] = !galaxyBrain[4];
-    }
-
-    if (galaxyBrain[0]) {
-      arm.describeElbowPID();
-    }
-    if (galaxyBrain[1]) {
-      arm.describeExtenderPID();
-    }
-    if (galaxyBrain[2]) {
-      arm.describeWristPID();
-    }
-    if (galaxyBrain[3]) {
-      climb.describeClimberPID();
-    }
-    if (galaxyBrain[4]) {
-      drive.describeSelf();
-    }
-
-    Camera.changeCamMode(camState.driver);
-
-    // if (cs.driver.buttonTapped(Controller.UP_Y)) {
-    //   Camera.toggleCamState();
-
-    // }
-
-    // System.out.println (Camera.GetHorizontalAngle());
-
-   // System.out.println (Camera.getDistanceFromArea());
-
-    updateDashboard();
-
-  }
-
-  /**
-   * 
-   */
   @Override
   public void autonomousInit() {
 
@@ -149,81 +69,273 @@ public class Robot extends IterativeRobot {
     drive.stopDrivePID();
   }
 
-  /**
-   * 
-   */
-  @Override
-  public void autonomousPeriodic() {
-
-    if (cs.operator1.buttonHeld(Controller.SELECT)) {
-      isAutomated = true;
-    } else if (cs.operator1.buttonHeld(Controller.START)) {
-      isAutomated = false;
-    }
-    
-    automatedControls();
-    grabberControls();
-    driveControls();
-    climbtakeControls();
-
-  }
-
   @Override
   public void teleopInit() {
-
-    // drive.setPIDValues(SmartDashboard.getNumber("p-value", 0.5),
-    // SmartDashboard.getNumber("i-value", 0),
-    // smartdashboard.getNumber("d-value", 0), SmartDashboard.getNumber("f-value",
-    // 0));
-
-    // drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
 
     drive.resetEncoders();
     drive.stopDrivePID();
 
-    // arm.set
+  }
+
+  @Override
+  public void robotPeriodic() {
+
+    Camera.changeCamMode(camState.driver);
+
+    updateDashboard();
 
   }
 
-  /**
-   * 
-   */
   @Override
-  public void teleopPeriodic() {
+  public void autonomousPeriodic() {
 
-   
-    if (cs.operator1.buttonHeld(Controller.SELECT)) {
-      isAutomated = true;
-    } else if (cs.operator1.buttonHeld(Controller.START)) {
-      isAutomated = false;
-    }
-
-    // if (isAutomated) {
-    //   automatedControls();
-    //   robotSafety();
-    //   enablePids();
-    // } else {
-    //   manualControls();
-       //disablePids();
-    // }
-    //manualControls();
-
-    automatedControls();
+    
+    armControls();
     grabberControls();
     driveControls();
     climbtakeControls();
 
-    
-    
+  }
+
+  @Override
+  public void teleopPeriodic() {
+
+    armControls();
+    grabberControls();
+    driveControls();
+    climbtakeControls();
 
   }
 
-  /**
-   * This function is called periodically during test mode.
-   */
   @Override
-  public void testPeriodic() {
+  public void disabledPeriodic() {
 
+    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
+
+    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
+
+    if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+      drive.resetEncoders();
+    }
+
+  }
+
+  ///
+  // Major system functions:
+  ///
+
+
+  private void armControls () {
+
+    // reacts to the prescence of a ball unless inputing/outputing
+    if ( !cs.operator1.buttonHeld(Controller.RIGHT_BUMPER) &&  !cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+      if (arm.grabberHasBall()) {
+       outputType = WristMode.tilt;
+     } else {
+        outputType = WristMode.output;
+      }
+    }
+  
+    // inverses current wrist output type
+    if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
+
+      if (outputType == WristMode.output) {
+        outputType = WristMode.tilt;
+      } else {
+       outputType = WristMode.output;
+      }
+
+    }
+
+    // arm position based on user control
+    armEnumeration();
+    
+  }
+  
+  private void grabberControls () {
+    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) { // output
+
+      arm.closeHatchGrabber();
+      arm.setGrabberSparkSpeed(-Grabber.INTAKE_OUTPUT_SPEED);
+
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) { // intake
+
+      arm.openHatchGrabber();
+      arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
+
+    } else if (arm.grabberHasHatch()) { // auto hatch grab
+
+      arm.openHatchGrabber();
+      arm.setGrabberSparkSpeed(0);
+
+    } else {
+
+      arm.setGrabberSparkSpeed(0);
+
+    }
+  }
+
+  private void driveControls() {
+
+    // speed modes: fast, 1; normal, .5; slow, .2
+    double speedMultiplier = 0.5;
+    if (cs.driver.buttonHeld(Controller.RIGHT_TRIGGER)) {
+      speedMultiplier = 1;
+    } else if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
+      speedMultiplier = .2;
+    }
+
+    // drive modes
+    if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) { // camera assisted manual drive
+
+      Camera.changePipeline(1);
+      drive.manualFollowCamera(cs.driver.getLeftY(), cs.driver.getRightY());
+
+    } else if (cs.driver.getDPad() == DPadDirection.DOWN) { // straight backwards
+
+      drive.setSpeed(-0.5 * speedMultiplier, -0.4 * speedMultiplier);
+      Camera.changePipeline(0);
+
+    } else if (cs.driver.getDPad() == DPadDirection.UP) { // straight forwards
+      
+      drive.setSpeed(0.5 * speedMultiplier, 0.4 * speedMultiplier);
+      Camera.changePipeline(0);
+
+    } else { // normal manual drive
+      
+      drive.setSpeed(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
+      Camera.changePipeline(0);
+
+    }
+
+    //Up to retract back in, Down to push up
+    if (cs.driver.buttonHeld(Controller.UP_Y) ) {
+      lift.setPositionIn();
+    } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
+      lift.setPositionOut();
+    }
+  }
+
+  private void climbtakeControls() {
+
+    // climb positions
+    climbSetToPoint = true;
+    if (cs.operator1.buttonHeld(Controller.LEFT_X)
+     && cs.operator1.getDPad() != DPadDirection.DOWN) { // climb 2 position
+
+      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
+      climb.goToSetPoint();
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) { // climb 1 position
+
+      climb.setToPosition(IntakeClimber.OUT_ANGLE);
+      climb.goToSetPoint();
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) { // vertical position
+
+      climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
+      climb.goToSetPoint();
+
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) { // intake position
+
+      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
+      climb.goToSetPoint();
+
+    } else { // climb stop
+
+      climb.setFlywheel(0);
+      climb.stopPIDRotate();
+      climbSetToPoint = false;
+
+    }
+
+    // Flywheel speeds
+    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) { // Intake & climb
+      
+      if (cs.operator1.getDPad() == DPadDirection.DOWN) {
+        climb.setFlywheel(IntakeClimber.CLIMB_SPEED);
+      } else {
+        climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
+      }
+
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) { // Output
+
+      climb.setFlywheel(-IntakeClimber.INTAKE_SPEED);
+
+    } else if (climb.getAngle() < 
+              IntakeClimber.INTAKE_ANGLE - (IntakeClimber.INTAKE_ANGLE/2)) { // Driver climb override
+
+      climb.setFlywheel((cs.driver.getLeftY() + cs.driver.getRightY())/ 2) ;
+      
+    } else { // Stop
+
+      climb.setFlywheel(0);
+
+    }
+  }
+
+
+  ///
+  // Supplementary functions:
+  ///
+
+
+  private void armEnumeration () {
+
+    elbowSetToPoint = true;
+    extenderSetToPoint = true;
+    wristSetToPoint = true;
+
+    if (cs.operator1.buttonHeld(Controller.UP_Y)) { // high score
+      
+
+      arm.pidGoToAngle(72 + armModifier(Controller.UP_Y, outputType));
+      arm.setArmPose(outputType, 13.7 + extenderModifier(Controller.UP_Y, outputType));
+    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) { // mid score
+      
+      arm.pidGoToAngle(17.3 + armModifier(Controller.RIGHT_B, outputType));
+      arm.setArmPose(outputType, 0 + extenderModifier(Controller.RIGHT_B, outputType));
+     
+    } else if (cs.operator1.buttonHeld(Controller.START)) { // safe position above bottom
+      
+      arm.pidGoToAngle(-105.0);
+      arm.setArmPose(WristMode.safe, 0);
+       
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) { // cargo score
+      
+      arm.pidGoToAngle(0 + armModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
+      arm.setArmPose(WristMode.cargoShip, 0 + extenderModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
+     
+    } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) { // low score/hatch intake
+      
+      arm.pidGoToAngle(-52.5 + armModifier(Controller.DOWN_A, outputType));
+      arm.setArmPose(outputType, 4.1 + extenderModifier(Controller.DOWN_A, outputType));
+     
+    } else if (cs.operator1.buttonHeld(Controller.LEFT_X)
+     || cs.operator1.getDPad() == DPadDirection.LEFT) { // ball intake
+
+      if (climb.getAngle() > IntakeClimber.INTAKE_ANGLE + 2.0) {
+        arm.pidGoToAngle(-90.0);
+        arm.setArmPose(WristMode.tucked, 0);
+      } else {
+        arm.pidGoToAngle(-146.0);
+        arm.setArmPose(WristMode.cargoIntake, 13.7);
+       } 
+    
+    } else if (cs.operator1.getDPad() == DPadDirection.DOWN 
+    && climb.getAngle() < IntakeClimber.INTAKE_ANGLE) { // climb position
+
+      arm.pidGoToAngle(-146.0);
+      arm.setArmPose(WristMode.cargoIntake, 13.7);
+
+    } else {
+      
+      elbowSetToPoint = false;
+      extenderSetToPoint = false;
+      wristSetToPoint = false;
+
+    }
+    enablePids();
   }
 
   private void enablePids () {
@@ -248,110 +360,6 @@ public class Robot extends IterativeRobot {
       climb.stopPIDRotate();
    
    
-  }
-
-  private void disablePids () {
-    arm.disableElbowPID();
-    arm.disableExtenderPID();
-    arm.stopWristPID();
-    climb.stopPIDRotate();
-  }
-
-  private void automatedControls () {
-
-    //Arm
-    if ( !cs.operator1.buttonHeld(Controller.RIGHT_BUMPER) &&  !cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
-      if (arm.grabberHasBall()) {
-       outputType = WristMode.tilt;
-     } else {
-        outputType = WristMode.output;
-      }
-    }
-  
-
-    if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
-
-      if (outputType == WristMode.output) {
-        outputType = WristMode.tilt;
-      } else {
-       outputType = WristMode.output;
-      }
-
-    }
-
-    if (cs.operator1.buttonHeld(Controller.UP_Y)) {
-      // high score
-
-      arm.pidGoToAngle(72 + armModifier(Controller.UP_Y, outputType));
-      arm.setArmPose(outputType, 13.7 + extenderModifier(Controller.UP_Y, outputType));
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;
-    } else if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
-      // mid score
-      arm.pidGoToAngle(17.3 + armModifier(Controller.RIGHT_B, outputType));
-      arm.setArmPose(outputType, 0 + extenderModifier(Controller.RIGHT_B, outputType));
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;
-    } else if (cs.operator1.buttonHeld(Controller.START)) {
-      // safe position above bottom
-      arm.pidGoToAngle(-105.0);
-      arm.setArmPose(WristMode.safe, 0);
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;  
-    } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) {
-      // cargo score
-      arm.pidGoToAngle(0 + armModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
-      arm.setArmPose(WristMode.cargoShip, 0 + extenderModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;
-    } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) {
-      // low score
-      arm.pidGoToAngle(-52.5 + armModifier(Controller.DOWN_A, outputType));
-      arm.setArmPose(outputType, 4.1 + extenderModifier(Controller.DOWN_A, outputType));
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;
-    } else if (cs.operator1.buttonHeld(Controller.LEFT_X) || cs.operator1.getDPad() == DPadDirection.LEFT) {
-
-      if (climb.getAngle() > IntakeClimber.INTAKE_ANGLE + 2.0) {
-        arm.pidGoToAngle(-90.0);
-        arm.setArmPose(WristMode.tucked, 0);
-        //if (!climbSetToPoint) {
-        //   climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
-        //   climb.goToSetPoint();
-        // }
-      } else {// if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
-        arm.pidGoToAngle(-146.0);
-        arm.setArmPose(WristMode.cargoIntake, 13.7);
-       }// else {
-      //   arm.pidGoToAngle(-138.0);
-      //   arm.setArmPose(WristMode.intake, 11);
-      // }
-
-      // intake    
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;
-    } else if (cs.operator1.getDPad() == DPadDirection.DOWN && climb.getAngle() < IntakeClimber.INTAKE_ANGLE) {
-
-      arm.pidGoToAngle(-146.0);
-      arm.setArmPose(WristMode.cargoIntake, 13.7);
-
-      elbowSetToPoint = true;
-      extenderSetToPoint = true;
-      wristSetToPoint = true;
-    } else {
-      
-      elbowSetToPoint = false;
-      extenderSetToPoint = false;
-      wristSetToPoint = false;
-
-    }
-    enablePids();
   }
 
   public double armModifier (int button, WristMode mode) {
@@ -402,15 +410,43 @@ public class Robot extends IterativeRobot {
     return modifier;
   }
 
-  private void manualControls () {
 
-    // if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
-    //   climb.setRotateSpeed(IntakeClimber.ROTATE_SPEED);
-    // } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
-    //   climb.setRotateSpeed(-IntakeClimber.ROTATE_SPEED);
-    // } else {
-    //   climb.setRotateSpeed(0);
-    // }
+  ///
+  // Debug and informational functions:
+  ///
+
+
+  public static void describePID(PIDController pid, String pidName, double input, double output) {
+
+    SmartDashboard.putNumber("Input-" + pidName, input);
+    SmartDashboard.putBoolean("Enabled-" + pidName, pid.isEnabled());
+  }
+
+  public void updateDashboard() {
+
+    SmartDashboard.putBoolean("Beam Sensor", arm.grabberHasBall());
+    SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
+    SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
+    SmartDashboard.putNumber("arm position: ", arm.getElbowAngle());
+    SmartDashboard.putNumber("arm raw", arm.getRawElbow());
+
+    SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
+
+    SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
+
+    
+
+    SmartDashboard.updateValues();
+
+  }
+
+
+  ///
+  // Unused and deprecated functions:
+  ///
+
+
+  private void manualControls () {
 
     climbtakeControls();
 
@@ -427,21 +463,32 @@ public class Robot extends IterativeRobot {
 
   }
 
-  private void grabberControls () {
-    if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
-      // Intake 
-      arm.closeHatchGrabber();
-      arm.setGrabberSparkSpeed(-Grabber.INTAKE_OUTPUT_SPEED);
-    } else if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
-      arm.openHatchGrabber();
-      arm.setGrabberSparkSpeed(Grabber.INTAKE_OUTPUT_SPEED);
-    } else if (arm.grabberHasHatch()) {
-      arm.openHatchGrabber();
-      arm.setGrabberSparkSpeed(0);
-     // System.out.println("has hatch");
-    } else {
-      arm.setGrabberSparkSpeed(0);
+  public boolean isClimbingAllowed () {
+    return true;//(Timer.getMatchTime() <= 30);
+  }
+
+  private void testControls() {
+
+    drive.setSpeed(cs.driver.getLeftY()* 0.25, cs.driver.getRightY()* 0.25);
+
+    arm.setElbowSpeed(cs.operator1.getLeftY() * 0.25);
+    arm.setExtenderSpeed(cs.operator1.getRightY() * 0.25);
+
+    arm.setWristSpeed(cs.operator2.getLeftY()* 0.25);
+    climb.setRotateSpeed(cs.operator2.getRightY()* 0.25);
+
+    if (cs.operator1.buttonTapped(Controller.UP_Y)) {
+    arm.openHatchGrabber();
+    } else if (cs.operator1.buttonTapped(Controller.DOWN_A)) {
+    arm.closeHatchGrabber();
     }
+
+    if (cs.operator2.getDPad().equals(DPadDirection.UP)) {
+    arm.setWristSpeed(0.1);
+    } else if (cs.operator2.getDPad().equals(DPadDirection.DOWN)) {
+    arm.setWristSpeed(-0.1);
+    }
+
   }
 
   private void robotSafety() {
@@ -481,191 +528,11 @@ public class Robot extends IterativeRobot {
     }
   }
 
-  /**
-   * 
-   * Controls for driving: Joysticks: driving (tank drive) X button: PID drive to
-   * align w/ vision target
-   * 
-   */
-  private void driveControls() {
-
-    /**
-     * 
-     * Controls for driving: Joysticks: driving (tank drive) X button: PID drive to
-     * align w/ vision target
-     * 
-     */
-
-    double speedMultiplier = 0.5;
-
-    if (cs.driver.buttonHeld(Controller.RIGHT_TRIGGER)) {
-      speedMultiplier = 1;
-    } else if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
-      speedMultiplier = .2;
-    }
-
-    // TODO test & configure 
-    // if (cs.driver.buttonTapped(Controller.LEFT_X)) {
-     // drive.resetCameraDrivePID();
-    // }
-    if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) {
-      Camera.changePipeline(1);
-      //drive.straightCameraDriveWithPID();
-      drive.manualFollowCamera(cs.driver.getLeftY(), cs.driver.getRightY());
-    } else if (cs.driver.getDPad() == DPadDirection.DOWN) {
-      drive.stopDrivePID();
-      drive.setSpeed(-0.5 * speedMultiplier, -0.4 * speedMultiplier);
-      Camera.changePipeline(0);
-    } else if (cs.driver.getDPad() == DPadDirection.UP) {
-      drive.stopDrivePID();
-      drive.setSpeed(0.5 * speedMultiplier, 0.4 * speedMultiplier);
-      Camera.changePipeline(0);
-    } else {
-      drive.stopDrivePID();
-      drive.setSpeed(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
-      Camera.changePipeline(0);
-
-
-    }
-
-    //if (cs.operator1.buttonHeld(Controller.RIGHT_B)) {
-
-      //Up to retract back in, Down to push up
-      if (cs.driver.buttonHeld(Controller.UP_Y) ) {
-      lift.setPositionIn();
-      } else if (cs.driver.buttonHeld(Controller.DOWN_A)) {
-      //if (isClimbingAllowed()) {
-        lift.setPositionOut();
-      //}
-      }
-    //}
-  }
-
-  //TODO look at before competition
-  public boolean isClimbingAllowed () {
-    return true;//(Timer.getMatchTime() <= 30);
-  }
-
-  private void testControls() {
-
-    // drive.setSpeed(cs.driver.getLeftY()* 0.25, cs.driver.getRightY()* 0.25);
-
-    arm.setElbowSpeed(cs.operator1.getLeftY() * 0.25);
-    arm.setExtenderSpeed(cs.operator1.getRightY() * 0.25);
-
-    // arm.setWristSpeed(cs.operator2.getLeftY()* 0.25);
-    // climb.setRotateSpeed(cs.operator2.getRightY()* 0.25);
-
-    // if (cs.operator1.buttonTapped(Controller.UP_Y)) {
-    // arm.extendHatchGrabber();
-    // } else if (cs.operator1.buttonTapped(Controller.DOWN_A)) {
-    // arm.retractHatchGrabber();
-    // }
-
-    // if (cs.operator2.getDPad().equals(DPadDirection.UP)) {
-    // arm.setWristSpeed(0.1);
-    // } else if (cs.operator2.getDPad().equals(DPadDirection.DOWN)) {
-    // arm.setWristSpeed(-0.1);
-    // }
-
-  }
-
-  private void 
-  climbtakeControls() {
-
-    /**
-     * 
-     * Climb Controls: Left Trigger moves climb mech down Right Trigger moves climb
-     * mech up
-     */
-    if (cs.operator1.buttonHeld(Controller.LEFT_X) && cs.operator1.getDPad() != DPadDirection.DOWN) {
-      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
-      climb.goToSetPoint();
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.DOWN) {
-      // set climb to climb "position"
-      climb.setToPosition(IntakeClimber.OUT_ANGLE);
-      //climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
-      climb.goToSetPoint();
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) {
-      climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
-      climb.goToSetPoint();
-      climbSetToPoint = true;
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.LEFT) {
-      // set climb to intake
-      climb.setToPosition(IntakeClimber.INTAKE_ANGLE);
-      //climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
-      climb.goToSetPoint();
-      climbSetToPoint = true;
-    }  else {
-      climb.setFlywheel(0);
-      climb.stopPIDRotate();
-      climbSetToPoint = false;
-    }
-
-    if (cs.operator1.buttonHeld(Controller.RIGHT_BUMPER)) {
-      
-      if (cs.operator1.getDPad() == DPadDirection.DOWN) {
-
-        climb.setFlywheel(IntakeClimber.CLIMB_SPEED);
-      } else {
-        climb.setFlywheel(IntakeClimber.INTAKE_SPEED);
-      }
-
-    } else if (cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
-      climb.setFlywheel(-IntakeClimber.INTAKE_SPEED);
-    } else if (climb.getAngle() < IntakeClimber.INTAKE_ANGLE - (IntakeClimber.INTAKE_ANGLE/2)) {
-      climb.setFlywheel((cs.driver.getLeftY() + cs.driver.getRightY())/ 2) ;
-    } else {
-      climb.setFlywheel(0);
-    }
-  }
-
-  @Override
-  public void disabledPeriodic() {
-
-    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
-
-    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-
-    if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
-      drive.resetEncoders();
-    }
-
-  }
-
-  public void updateDashboard() {
-
-    SmartDashboard.putBoolean("Beam Sensor", arm.grabberHasBall());
-    SmartDashboard.putBoolean("Bump Sensor (Left)", arm.getGrabberLimitSwitchLeft());
-    SmartDashboard.putBoolean("Bump Sensor (Right)", arm.getGrabberLimitSwitchRight());
-    SmartDashboard.putNumber("arm position: ", arm.getElbowAngle());
-    SmartDashboard.putNumber("arm raw", arm.getRawElbow());
-    //SmartDashboard.putNumber("Intake raw", climb.getRawRotateValue());
-
-    //SmartDashboard.putNumber("Current Drive Target", drive.getSetPoint());
-
-    SmartDashboard.putNumber("Current Encoder Inches Left", drive.getDistanceInchesL());
-    // SmartDashboard.putNumber("Current Encoder Count Left",
-    // drive.getDistanceTicksL());
-
-    SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
-    // SmartDashboard.putNumber("Current Encoder Count Right",
-    // drive.getDistanceTicksR());
-
-    // SmartDashboard.putNumber("Current p", drive.getP());
-    // SmartDashboard.putNumber("Current i", drive.getI());
-    // SmartDashboard.putNumber("Current d", drive.getD());
-    // SmartDashboard.putNumber("Current f", drive.getF());
-
-    // SmartDashboard.putString("Current Drive", drive.getDriveSpeeds());
-    // SmartDashboard.putBoolean("L", arm.getGrabberLimitSwitchLeft());
-    // SmartDashboard.putBoolean("R", arm.getGrabberLimitSwitchRight());
-
-    
-
-    SmartDashboard.updateValues();
-
+  private void disablePids () {
+    arm.disableElbowPID();
+    arm.disableExtenderPID();
+    arm.stopWristPID();
+    climb.stopPIDRotate();
   }
 
 }

@@ -24,6 +24,7 @@ public class Grabber {
    DigitalInput switchRight;
    DigitalInput beamSensor;
 
+   // positive = input
    public static final double INTAKE_OUTPUT_SPEED = 0.7;
 
    
