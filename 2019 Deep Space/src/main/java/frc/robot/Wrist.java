@@ -11,9 +11,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 
-/**
- * Add your docs here.
- */
 public class Wrist {
 
    ChaosBetterTalonSRX speedController;
@@ -38,18 +35,13 @@ public class Wrist {
 
    public Wrist() {
 
-      speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION,
-            false);
+      speedController = new ChaosBetterTalonSRX(PortConstants.WRIST, 
+         CIRCUMFERENCE, ENCODER_TICKS_PER_REVOLUTION, false);
       speedController.setInverted(false);
          
-      // speedControllerEncoder = new TalonSRX_Encoder(speedController, ParamType.angle);
-      anglePot = new LinearPot(PortConstants.WRIST_POT, MIN_ANGLE_VOLTAGE, MAX_ANGLE_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
+      anglePot = new LinearPot(PortConstants.WRIST_POT,
+         MIN_ANGLE_VOLTAGE, MAX_ANGLE_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
       pid = new PIDController(P, I, D, anglePot, speedController);
-     // Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
-   }
-
-   public void describeWristPID () {
-     //Robot.describePID(pid, "wrist pid", anglePot.getValue(), speedController.getPIDWrite());
    }
 
    public double getWristTargetAngle() {

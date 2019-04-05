@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
-/**
- * Add your docs here.
- */
 public class Grabber {
    
    Spark intake;

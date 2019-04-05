@@ -48,7 +48,8 @@ public class ArmConstants {
     public static final double ARM_DISTANCE_X_FROM_FRAME = 5;
     public static final double MAX_REACH_X_BEYOND_FRAME = 30;
     public static final double GRABBER_LENGTH = 12;
-    public static final double MAX_REACH_X = ARM_DISTANCE_X_FROM_FRAME + MAX_REACH_X_BEYOND_FRAME - GRABBER_LENGTH;  
+    public static final double MAX_REACH_X = ARM_DISTANCE_X_FROM_FRAME
+     + MAX_REACH_X_BEYOND_FRAME - GRABBER_LENGTH;  
 
     public static final double GEAR_RATIO = 266.78 ;
     public static final double NUMBER_OF_MOTORS = 2.0 ;

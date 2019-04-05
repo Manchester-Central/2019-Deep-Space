@@ -15,9 +15,6 @@ import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 
-/**
- * Add your docs here.
- */
 public class IntakeClimber {
 
     ChaosBetterTalonSRX rotate0;
@@ -26,6 +23,7 @@ public class IntakeClimber {
     PIDController pid;
     LinearPot anglePot;
 
+    // constants
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
     public static final double ROTATE_SPEED = 1.0;
     public static final double INTAKE_SPEED = -1;
@@ -34,9 +32,6 @@ public class IntakeClimber {
     public static final double INTAKE_ANGLE = 55.0;
     public static final double IN_ANGLE = 205.0;
     public static final double OUT_ANGLE = 0.0;
-    private static final double P = .07;
-    private static final double I = 0;
-    private static final double D = 0;
     public static final double MIN_ANGLE = 0.0;
     public static final double MAX_ANGLE = VERTICAL_POSITION;
     public static final double MIN_VOLTAGE = 0.12;
@@ -44,26 +39,25 @@ public class IntakeClimber {
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
     public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
-    public final double RADIUS = 40;
-    public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
-   // public final double RADIUS = 40;
-   // public final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
-
-    //private double sign;
+    public static final double RADIUS = 40;
+    public static final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
+    public static final double P = .07;
+    public static final double I = 0;
+    public static final double D = 0;
 
     public IntakeClimber () {
-        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0, 
-        2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
-        rotate1 = new WPI_VictorSPX(PortConstants.INTAKE_1);
-        ChaosBetterSpeedController group = new ChaosBetterSpeedController(rotate0, rotate1, 20);
-        flywheel = new WPI_VictorSPX(PortConstants.FLYWHEEL);
-        anglePot = new LinearPot(PortConstants.CLIMBER_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
-        pid = new PIDController(P, I, D, anglePot, group);
-        //Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.get());
-    }
 
-    public void describeClimberPID () {
-        //Robot.describePID(pid, "intake pid", anglePot.getValue(), rotate0.getPIDWrite());
+        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0, 
+            2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
+        rotate1 = new WPI_VictorSPX(PortConstants.INTAKE_1);
+        
+        ChaosBetterSpeedController group = new ChaosBetterSpeedController(rotate0, rotate1, 20);
+        anglePot = new LinearPot(PortConstants.CLIMBER_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
+        
+        pid = new PIDController(P, I, D, anglePot, group);
+
+        flywheel = new WPI_VictorSPX(PortConstants.FLYWHEEL);
+        
     }
 
     public void setRotateSpeed (double speed) {
@@ -102,9 +96,12 @@ public class IntakeClimber {
     }
 
     public boolean isClimbtakeUnsafe() {
-        boolean belowSafety = (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE) && (getTargetAngle() > CLIMBTAKE_MAX_SAFE_ANGLE);
-        boolean aboveSafety = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) && (getTargetAngle() < CLIMBTAKE_MIN_SAFE_ANGLE);
-        boolean inDangerZone = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) && (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE);
+        boolean belowSafety = (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE) 
+            && (getTargetAngle() > CLIMBTAKE_MAX_SAFE_ANGLE);
+        boolean aboveSafety = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) 
+            && (getTargetAngle() < CLIMBTAKE_MIN_SAFE_ANGLE);
+        boolean inDangerZone = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) 
+            && (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE);
 
         return (belowSafety) ||  (aboveSafety) ||  (inDangerZone);
     }

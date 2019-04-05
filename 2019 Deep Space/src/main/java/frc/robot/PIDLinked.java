@@ -10,13 +10,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PIDController;
 import frc.ChaosSensors.ChaosBetterCANSpark;
 
-/**
- * Add your docs here.
- */
+//
+//
+// DEAD CLASS (used and referenced as legacy, possibly to be deleted or tested with)
+//
+//
+
 public class PIDLinked {
 
-    //KYSPID[] pids;
-    
     PIDController[] pids;
     ChaosBetterCANSpark[] sparks;
 

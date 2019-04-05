@@ -25,9 +25,9 @@ public class Arm {
     private ChaosBetterSpeedController elbowGroup;
     private WPI_TalonSRX extender;
 
-    private double angleOffset = 0;
+    public static final double angleOffset = 0;
     public static final double ELBOW_SAFE_ANGLE = 15;
-    private static final double ARM_HOLD_POWER = 0.19;
+    public static final double ARM_HOLD_POWER = 0.19;
 
     private PIDController elbowPID;
     private PIDController extenderPID;
@@ -43,42 +43,36 @@ public class Arm {
     public Arm() {
 
         grab = new Grabber ();
+
         elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
         elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
         elbowGroup = new ChaosBetterSpeedController(elbow, elbow2, ArmConstants.MAX_ELBOW_ACCELERATION);
+
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
+
         wrist = new Wrist();
 
         elbowPot = new LinearPot(PortConstants.ELBOW_POT, ArmConstants.MIN_ELBOW_VOLTAGE,
-                ArmConstants.MAX_ELBOW_VOLTAGE, ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
-        extenderPot = new LinearPot(PortConstants.EXTENDER_POT, ArmConstants.MIN_EXTENDER_VOLTAGE,
-                ArmConstants.MAX_EXTENDER_VOLTAGE, ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
+            ArmConstants.MAX_ELBOW_VOLTAGE, ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
 
-        elbowPID = new PIDController(ArmConstants.ELBOW_P, ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbowGroup);
-        extenderPID = new PIDController(ArmConstants.EXTENDER_P, ArmConstants.EXTENDER_I, ArmConstants.EXTENDER_D,
-                extenderPot, extender);
+        extenderPot = new LinearPot(PortConstants.EXTENDER_POT, ArmConstants.MIN_EXTENDER_VOLTAGE,
+            ArmConstants.MAX_EXTENDER_VOLTAGE, ArmConstants.MIN_EXTENDER_LENGTH,
+                ArmConstants.MAX_EXTENDER_LENGTH);
+
+        elbowPID = new PIDController(ArmConstants.ELBOW_P, 
+            ArmConstants.ELBOW_I, ArmConstants.ELBOW_D, elbowPot, elbowGroup);
+
+        extenderPID = new PIDController(ArmConstants.EXTENDER_P,
+            ArmConstants.EXTENDER_I, ArmConstants.EXTENDER_D,extenderPot, extender);
+
         setFeedForward();
+
         elbowPID.setInputRange(ArmConstants.MIN_ELBOW_ANGLE, ArmConstants.MAX_ELBOW_ANGLE);
         extenderPID.setInputRange(ArmConstants.MIN_EXTENDER_LENGTH, ArmConstants.MAX_EXTENDER_LENGTH);
-
-       // Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbow.get());
-       // Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
 
         extender.setInverted(true);
 
         
-    }
-
-    public void describeElbowPID () {
-      //  Robot.describePID(elbowPID, "elbow pid", elbowPot.getValue(), elbowGroup.getPIDWrite());
-    }
-
-    public void describeExtenderPID () {
-       // Robot.describePID(extenderPID, "extender pid", extenderPot.getValue(), extender.get());
-    }
-
-    public void describeWristPID () {
-        wrist.describeWristPID();
     }
 
     public void enableExtenderPID () {
@@ -102,17 +96,12 @@ public class Arm {
      * @param speed
      */
     public void setExtenderSpeed(double speed) {
-        // if ((getExtenderPosition() >= ArmConstants.MAX_EXTENDER_LENGTH) && (speed > 0)) {
-        //     speed = 0;
-        // } else if ((getExtenderPosition() <= ArmConstants.MIN_EXTENDER_LENGTH) && (speed < 0)) {
-        //     speed = 0;
-        // } else if (outsideReach(getExtenderPosition(), getElbowAngle()) && (speed > 0)) {
-        //     speed = 0;
-        // }
-        // extender.set(speed - (1.0/6.0));
+        
         extenderPID.disable();
-        double adjustedSpeed = (FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(speed, 0, 0.1)) ? speed -/*- Math.sin(getElbowAngle()*/ (0.18) : speed;
+        double adjustedSpeed = (FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(speed, 0, 0.1))
+            ? speed -/*- Math.sin(getElbowAngle()*/ (0.18) : speed;
         extender.set(adjustedSpeed);
+
     }
 
     /***
@@ -122,37 +111,34 @@ public class Arm {
     public void setElbowSpeed(double speed) {
         double angle = getElbowAngle();
 
-        if ((angle >= ArmConstants.MAX_ELBOW_ANGLE) && (speed > 0)) {
+        boolean armIsGoingPastMax = (angle >= ArmConstants.MAX_ELBOW_ANGLE) && (speed > 0);
+        boolean armIsGoingPastMin = (angle <= ArmConstants.MIN_ELBOW_ANGLE) && (speed < 0);
+
+        // If angle and speed are going in the same direction then the arm moves away
+        // from the penalty zone
+        boolean illegal = outsideReach(getExtenderPosition(), angle) &&
+            FunctionsThatShouldBeInTheJDK.getSign(angle) != FunctionsThatShouldBeInTheJDK.getSign(speed);
+
+        if (armIsGoingPastMax || armIsGoingPastMin || illegal) {
             speed = 0;
-        } else if ((angle <= ArmConstants.MIN_ELBOW_ANGLE) && (speed < 0)) {
-            speed = 0;
-        } else if (outsideReach(getExtenderPosition(), angle)) {
-            // If angle and speed are going in the same direction then the arm moves away
-            // from the penalty zone
-            if (FunctionsThatShouldBeInTheJDK.getSign(angle) != FunctionsThatShouldBeInTheJDK.getSign(speed)) {
-                speed = 0;
-            }
         }
         elbow.set(speed);
     }
 
-    /***
-     * Sets the speed of the arm to oppose gravity
-     * https://www.chiefdelphi.com/t/velocity-limiting-pid/164908/22
-     */
     public void setFeedForward() {
-        // elbowPID.setF(ArmConstants.TOTAL_WEIGHT * getCenterOfMass() *Math.cos(Math.toRadians(elbowPot.getValue()) /(ArmConstants.NUMBER_OF_MOTORS
-        //         * ArmConstants.GEAR_RATIO * ArmConstants.MOTOR_STALL_TORQUE)));
-
         elbowPID.setF(Math.cos(Math.toRadians(elbowPot.get())) * ARM_HOLD_POWER );
     }
 
     public boolean elbowInPosition() {
-        return !elbowPID.isEnabled() || FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), 0.5);
+        return !elbowPID.isEnabled() || 
+            FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(
+                getElbowAngle(), elbowPID.getSetpoint(), 0.5);
     }
 
     public boolean elbowIsSafe() {
-        return !elbowPID.isEnabled() || FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(getElbowAngle(), elbowPID.getSetpoint(), ELBOW_SAFE_ANGLE);
+        return !elbowPID.isEnabled() || 
+            FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(
+                getElbowAngle(), elbowPID.getSetpoint(), ELBOW_SAFE_ANGLE);
     }
 
     public void setExtenderTarget(double target) {
@@ -168,20 +154,14 @@ public class Arm {
      * @param angle - 0 is parallel to ground, positive = up, negative = down
      */
     public void pidGoToAngle(double angle) {
-        // REMEMBER @TODO
-        //setArmDistance(0);
         setFeedForward();
-        
-
         elbowPID.setSetpoint(angle);
-        
-        //System.out.print (", " + elbowPID.getF() + "\n");
-        //elbowPID.enable();
     }
 
     public void setArmToVerticalPosition (double positionInches) {
 
-        double theta = Math.atan2((positionInches - ArmConstants.ARM_HEIGHT_INCHES), ArmConstants.ARM_LENGTH);
+        double theta = Math.atan2(
+            (positionInches - ArmConstants.ARM_HEIGHT_INCHES), ArmConstants.ARM_LENGTH);
         
         double minArmLength = ArmConstants.ARM_LENGTH / Math.cos(theta);
 
@@ -191,18 +171,15 @@ public class Arm {
             setExtenderTarget(Math.max(ArmConstants.ARM_LENGTH, minArmLength));
         }
 
-        //elbowPID.enable();
-        //extenderPID.enable();
-
     }
 
     
 
     public double getCenterOfMass() {
 
-        return ((ArmConstants.ARM_WEIGHT * ArmConstants.ARM_CENTER_OF_MASS
-            + ArmConstants.EXTENDER_ARM_WEIGHT * (ArmConstants.EXTENSION_TOTAL_CENTER_OF_MASS + getExtenderPosition())) 
-            / (ArmConstants.TOTAL_WEIGHT));
+        return ((ArmConstants.ARM_WEIGHT * ArmConstants.ARM_CENTER_OF_MASS + 
+            ArmConstants.EXTENDER_ARM_WEIGHT * (ArmConstants.EXTENSION_TOTAL_CENTER_OF_MASS + 
+                getExtenderPosition())) / (ArmConstants.TOTAL_WEIGHT));
 
     }
 
@@ -289,50 +266,36 @@ public class Arm {
         switch(mode){
 
             case intake:
-                // wrist.setSetPoint(90 - currentElbowAngle);
-                //elbow:-131,  wrist = 314
-                //wrist.setSetPoint(180 + currentElbowAngle - angleOffset);
                 wrist.setSetPoint(315);
                 break;
 
             case tucked:
                 wrist.setSetPoint(Wrist.TUCKED_POSITION);
-            
                 break;
-            case output:
-                // if (currentElbowAngle > 0) {
-                //     wrist.setSetPoint(270 - currentElbowAngle);
-                // } else {
-                //     wrist.setSetPoint(360 - currentElbowAngle);
-                // }
-                    wrist.setSetPoint(-currentElbowAngle + angleOffset);
 
+            case output:
+                wrist.setSetPoint(-currentElbowAngle + angleOffset);
                 break;
+
             case straight:
-                // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
                 wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
 
             case tilt:
-
                 wrist.setSetPoint(-currentElbowAngle + angleOffset - 35);
-
                 break;
+
             case cargoShip:
-
                 wrist.setSetPoint(-currentElbowAngle + angleOffset - 45);
-
                 break;
 
             case cargoIntake:
-
                 wrist.setSetPoint(345.8);
-                
                 break;
 
-                case safe:
-                    wrist.setSetPoint(Wrist.TUCKED_POSITION + 10);
-                    break;
+            case safe:
+                wrist.setSetPoint(Wrist.TUCKED_POSITION + 10);
+                break;
 
             default:
                 wrist.setSetPoint(wrist.getAngle());
@@ -354,39 +317,32 @@ public class Arm {
                 break;
 
             case tucked:
-                //wrist.setSetPoint(Wrist.TUCKED_POSITION);
                 autoSetWrist(WristMode.tucked);
-            
                 break;
+
             case output:
-                // if (currentElbowAngle > 0) {
-                //     wrist.setSetPoint(270 - currentElbowAngle);
-                // } else {
-                //     wrist.setSetPoint(360 - currentElbowAngle);
-                // }
                 autoSetWrist(WristMode.output);
-                //wrist.setSetPoint(-currentElbowAngle + angleOffset);
-
                 break;
+
             case tilt:
-                
                 autoSetWrist(WristMode.tilt);
-
                 break;
+
             case cargoShip:
-                    autoSetWrist(WristMode.cargoShip);
-                    break;
+                autoSetWrist(WristMode.cargoShip);
+                break;
+
             case cargoIntake:
                 autoSetWrist(WristMode.cargoIntake);
                 break;
+
             case straight:
-                // wrist.setSetPoint(Wrist.DEFAULT_ANGLE);
                 wrist.setSetPoint(Wrist.TUCKED_POSITION + 90.0);
                 break;
 
             case safe:
-                    wrist.setSetPoint(Wrist.TUCKED_POSITION - 10);
-                    break;
+                wrist.setSetPoint(Wrist.TUCKED_POSITION - 10);
+                break;
 
             default:
                 wrist.setSetPoint(wrist.getAngle());
@@ -408,8 +364,6 @@ public class Arm {
             setWristToArmAngle(WristMode.tucked);
         }
 
-        //wrist.goToSetPoint();
-
     }
 
     public void autoSetExtender(double extenderDistance) {
@@ -419,8 +373,6 @@ public class Arm {
        } else {
            extenderPID.setSetpoint(0.0);;
        }
-
-       //wrist.goToSetPoint();
 
    }
 

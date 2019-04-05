@@ -10,9 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
-/**
- * Add your docs here.
- */
+
 public class ChaosBetterSpeedController extends SpeedControllerGroup {
 
     double currentSet;
