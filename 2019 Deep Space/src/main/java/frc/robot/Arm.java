@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
 import frc.FunctionsThatShouldBeInTheJDK;
+import frc.ChaosSensors.ChaosBetterSpeedController;
 import frc.ChaosSensors.ChaosBetterTalonSRX;
 import frc.ChaosSensors.LinearPot;
 
@@ -127,12 +128,13 @@ public class Arm {
 
     public void setFeedForward() {
         elbowPID.setF(Math.cos(Math.toRadians(elbowPot.get())) * ARM_HOLD_POWER );
+        
     }
 
     public boolean elbowInPosition() {
         return !elbowPID.isEnabled() || 
-            FunctionsThatShouldBeInTheJDK.withinPlusOrMinus(
-                getElbowAngle(), elbowPID.getSetpoint(), 0.5);
+            FunctionsThatShouldBeInTheJDK.withinPlusOrMinus
+            (getElbowAngle(), elbowPID.getSetpoint(), 0.5);
     }
 
     public boolean elbowIsSafe() {
@@ -352,7 +354,7 @@ public class Arm {
 
 
     /**
-     * 
+     * Keeps wrist tucked until elbow is close to target
      * @param targetMode - The mode that the wrist will be set to once arm is in position,
      * either intake or output
      */
@@ -366,6 +368,10 @@ public class Arm {
 
     }
 
+    /***
+     * Keeps the extender completely retracted until the elbow is near target
+     * @param extenderDistance - the distance to extend the arm
+     */
     public void autoSetExtender(double extenderDistance) {
 
         if (elbowIsSafe()) {
@@ -389,12 +395,13 @@ public class Arm {
          grab.setSpark (speed);
     }
 
+    
    public void openHatchGrabber () {
-      grab.extendHatchGrabber();
+      grab.openHatchGrabber();
    }
 
    public void closeHatchGrabber () {
-      grab.retractHatchGrabber();
+      grab.closeHatchGrabber();
    }
 
    public boolean getGrabberLimitSwitchLeft () {

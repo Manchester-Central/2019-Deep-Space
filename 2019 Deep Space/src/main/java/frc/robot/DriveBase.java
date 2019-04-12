@@ -56,7 +56,7 @@ public class DriveBase {
 
 	public static final double ENCODER_TICKS_PER_REVOLUTION = 4100D;
 	public static final double WHEEL_CIRCUMFERENCE_INCHES = 4*Math.PI;
-	public static final double SCORING_DISTANCE = 5.0;
+	public static final double HATCH_SCORING_DISTANCE = 5.0;
 	public static final double LENGTH_BETWEEN_WHEELS = 28.0;
 
 	public static final double MANUAL_CAMERA_DRIVE_PORPORTIONAL = 24D;
@@ -161,14 +161,15 @@ public class DriveBase {
 	}
 
 
-	public boolean getWithinScoringDistance (double distance) {
-		return distance < SCORING_DISTANCE;
+	public boolean withinScoringDistance (double distance) {
+		return distance <= HATCH_SCORING_DISTANCE;
 	}
 
-	public boolean getWithinScoringDistance () {
-		return Camera.getDistance() < SCORING_DISTANCE;
+	public boolean withinScoringDistance () {
+		return Camera.getDistance() <= HATCH_SCORING_DISTANCE;
 	}
 
+	
 	public double getP () {return leftPidController.getP();}
     public double getI () {return leftPidController.getI();}
 	public double getD () {return leftPidController.getD();}

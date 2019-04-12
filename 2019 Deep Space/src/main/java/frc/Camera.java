@@ -23,6 +23,9 @@ public class Camera {
 
     public static boolean isDriver = true;
 
+    public static int DRIVER_VISION = 0;
+    public static int CAMERA_VISION = 1;
+
     public static final double robotHeight = 10D; // hmm and a half
     public static final double visionTargetHeight = 28.5D; // lower vision target
     public static final double cameraAngle = 58D;
@@ -64,7 +67,7 @@ public class Camera {
     }
 
     /**
-     * 0, driver, 1, not
+     * 0 = driver, 1 = camera processing
      * @param index - index
      */
     public static void changePipeline (int index) {

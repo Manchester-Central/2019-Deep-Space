@@ -39,11 +39,11 @@ public class Grabber {
       intake.set(speed);
    }
 
-   public void extendHatchGrabber () {
+   public void openHatchGrabber () {
       hatch.set(Value.kForward);
    }
 
-   public void retractHatchGrabber () {
+   public void closeHatchGrabber () {
       hatch.set(Value.kReverse);
    }
 

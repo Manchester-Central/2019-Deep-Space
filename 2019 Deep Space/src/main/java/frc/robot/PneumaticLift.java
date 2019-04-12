@@ -23,11 +23,17 @@ public class PneumaticLift {
 
     }
    
+    /***
+     * Pneumatics retracted back in
+     */
     public void setPositionIn () {
         pneumatic.set(false);
 
     }
 
+    /***
+     * Pneumatics pushed out, lifts robot
+     */
     public void setPositionOut () {
         pneumatic.set(true);
 

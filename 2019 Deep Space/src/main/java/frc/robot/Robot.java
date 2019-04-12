@@ -26,7 +26,9 @@ public class Robot extends IterativeRobot {
   WristMode outputType;
 
   ///
+  ///
   // Iterative Robot template functions: 
+  ///
   ///
 
   @Override
@@ -81,6 +83,7 @@ public class Robot extends IterativeRobot {
   public void robotPeriodic() {
 
     Camera.changeCamMode(camState.driver);
+    SmartDashboard.putBoolean("Within Hatch Scoring Distance", drive.withinScoringDistance());
 
     updateDashboard();
 
@@ -110,10 +113,6 @@ public class Robot extends IterativeRobot {
   @Override
   public void disabledPeriodic() {
 
-    drive.setPIDValues(0.001, 0.00001, 0.000001, 0.0);
-
-    drive.setDriveDistance(SmartDashboard.getNumber("setpoint", 12.0));
-
     if (cs.driver.buttonHeld(Controller.RIGHT_BUMPER)) {
       drive.resetEncoders();
     }
@@ -128,7 +127,9 @@ public class Robot extends IterativeRobot {
   private void armControls () {
 
     // reacts to the prescence of a ball unless inputing/outputing
-    if ( !cs.operator1.buttonHeld(Controller.RIGHT_BUMPER) &&  !cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+    if ( !cs.operator1.buttonHeld(Controller.RIGHT_BUMPER) &&  
+         !cs.operator1.buttonHeld(Controller.RIGHT_TRIGGER)) {
+
       if (arm.grabberHasBall()) {
        outputType = WristMode.tilt;
      } else {
@@ -138,13 +139,7 @@ public class Robot extends IterativeRobot {
   
     // inverses current wrist output type
     if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
-
-      if (outputType == WristMode.output) {
-        outputType = WristMode.tilt;
-      } else {
-       outputType = WristMode.output;
-      }
-
+      outputType = (outputType == WristMode.output) ? WristMode.tilt : WristMode.output;
     }
 
     // arm position based on user control
@@ -188,25 +183,27 @@ public class Robot extends IterativeRobot {
     // drive modes
     if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) { // camera assisted manual drive
 
-      Camera.changePipeline(1);
+      Camera.changePipeline(Camera.CAMERA_VISION);
       drive.manualFollowCamera(cs.driver.getLeftY(), cs.driver.getRightY());
 
-    } else if (cs.driver.getDPad() == DPadDirection.DOWN) { // straight backwards
-
-      drive.setSpeed(-0.5 * speedMultiplier, -0.4 * speedMultiplier);
-      Camera.changePipeline(0);
-
-    } else if (cs.driver.getDPad() == DPadDirection.UP) { // straight forwards
+    } else {
       
-      drive.setSpeed(0.5 * speedMultiplier, 0.4 * speedMultiplier);
-      Camera.changePipeline(0);
+      Camera.changePipeline(Camera.DRIVER_VISION);
 
-    } else { // normal manual drive
-      
-      drive.setSpeed(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
-      Camera.changePipeline(0);
+      if (cs.driver.getDPad() == DPadDirection.DOWN) { // straight backwards
 
-    }
+        drive.setSpeed(-0.5 * speedMultiplier, -0.4 * speedMultiplier);
+
+      } else if (cs.driver.getDPad() == DPadDirection.UP) { // straight forwards
+        
+        drive.setSpeed(0.5 * speedMultiplier, 0.4 * speedMultiplier);
+
+      } else { // normal manual drive
+        
+        drive.setSpeed(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
+
+      }
+  }
 
     //Up to retract back in, Down to push up
     if (cs.driver.buttonHeld(Controller.UP_Y) ) {
@@ -276,7 +273,9 @@ public class Robot extends IterativeRobot {
 
 
   ///
+  ///
   // Supplementary functions:
+  ///
   ///
 
 
@@ -330,7 +329,7 @@ public class Robot extends IterativeRobot {
 
     } else {
       
-      elbowSetToPoint = false;
+      elbowSetToPoint = false; 
       extenderSetToPoint = false;
       wristSetToPoint = false;
 
@@ -412,7 +411,9 @@ public class Robot extends IterativeRobot {
 
 
   ///
+  ///
   // Debug and informational functions:
+  ///
   ///
 
 
