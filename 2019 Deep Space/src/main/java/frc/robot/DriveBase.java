@@ -59,7 +59,7 @@ public class DriveBase {
 	public static final double HATCH_SCORING_DISTANCE = 5.0;
 	public static final double LENGTH_BETWEEN_WHEELS = 28.0;
 
-	public static final double MANUAL_CAMERA_DRIVE_PORPORTIONAL = 24D;
+	public static final double MANUAL_CAMERA_DRIVE_PORPORTIONAL = 80D;
 
 	// used for camera stuff
 	private boolean turningRight;
@@ -112,8 +112,7 @@ public class DriveBase {
 
 		// fov 54 horizontal
 
-		double p = FunctionsThatShouldBeInTheJDK.clamp(
-			distance / MANUAL_CAMERA_DRIVE_PORPORTIONAL, 0, 1);
+		double p = FunctionsThatShouldBeInTheJDK.clamp(distance / MANUAL_CAMERA_DRIVE_PORPORTIONAL, 0, 1);
 		double turnAmount = (Camera.GetHorizontalAngle() / 27) * p;
 
 		double average = (joystickLeft + joystickRight) / 2;

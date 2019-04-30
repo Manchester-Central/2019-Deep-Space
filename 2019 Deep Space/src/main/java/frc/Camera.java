@@ -33,16 +33,27 @@ public class Camera {
     public static final double maxSpeed = .3;
     public static final double maxSpeedDistance = 100; 
 
-    public static final double AREA_CONSTANT = 1;
+    public static final double AREA_CONSTANT = Math.pow(Math.tan(54/2), 2);
+    public static final double RADIAL_CONSTANT = 2.10412;
 
     /***
      *  states for the camera image
      */
-    public static enum camState {driver, image};
+    public static enum camState {
+        driver, image;
+    
+        public camState flip () {
+            return (this == image) ? driver : image;
+        }
+
+    };
     /***
      *  states for the state of the camera's led
      */
-    public static enum ledState {on, off, blink, pipeline};
+    public static enum ledState {
+        on, off, blink, pipeline;
+
+    };
     
 
     /***
@@ -97,10 +108,10 @@ public class Camera {
 
     public static double getDistanceFromArea() {
 
-        return AREA_CONSTANT / getEntry("ta").getDouble(1);
+        return RADIAL_CONSTANT / (Math.sqrt(getEntry("ta").getDouble(0d) * AREA_CONSTANT));
 
     }
-    
+
     /***
      * get the drive values for following the vision target
      * @param currentSpeedLeft current left side set speed

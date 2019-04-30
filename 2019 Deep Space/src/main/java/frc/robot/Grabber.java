@@ -22,7 +22,7 @@ public class Grabber {
    DigitalInput beamSensor;
 
    // positive = input
-   public static final double INTAKE_OUTPUT_SPEED = 0.7;
+   public static final double INTAKE_OUTPUT_SPEED = 1.0;
 
    
    public Grabber () {

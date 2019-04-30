@@ -35,7 +35,7 @@ public class IntakeClimber {
     public static final double OUT_ANGLE = 0.0;
     public static final double MIN_ANGLE = 0.0;
     public static final double MAX_ANGLE = VERTICAL_POSITION;
-    public static final double MIN_VOLTAGE = 0.12;
+    public static final double MIN_VOLTAGE = 0.1057;
     public static final double MAX_VOLTAGE = 0.338;
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;

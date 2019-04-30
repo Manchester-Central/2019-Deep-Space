@@ -39,7 +39,16 @@ public class Arm {
     private Wrist wrist;
     private Grabber grab;
 
-    public enum WristMode {intake, tucked, output, straight, tilt, cargoIntake, cargoShip, safe, nothing};
+    public enum WristMode {
+        intake, tucked, output, straight, tilt, cargoIntake, cargoShip, safe, nothing;
+    
+        public WristMode flip (WristMode val1, WristMode val2) {
+            if (this != val1 && this != val2)
+                return this;
+            return (this == val1) ? val2 : val1;
+        }
+    
+    };
 
     public Arm() {
 

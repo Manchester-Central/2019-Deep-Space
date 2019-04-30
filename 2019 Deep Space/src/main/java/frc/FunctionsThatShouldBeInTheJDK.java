@@ -54,15 +54,5 @@ public class FunctionsThatShouldBeInTheJDK {
     public static boolean withinRange(double value, double lowerBound, double upperBound) {
         return (value >= lowerBound) && (value <= upperBound);
     }
-
-    public static WristMode getInverse(WristMode mode, WristMode defaultValue, WristMode value2) {
-
-        return (mode == defaultValue) ? value2 : defaultValue;
-    }
-
-    public static camState getInverse (camState state) {
-        return (state == camState.driver) ? camState.image : camState.driver;
-    }
-
     
 }

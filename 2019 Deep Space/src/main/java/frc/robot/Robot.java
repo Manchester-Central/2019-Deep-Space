@@ -82,7 +82,7 @@ public class Robot extends IterativeRobot {
   @Override
   public void robotPeriodic() {
 
-    Camera.changeCamMode(camState.driver);
+    Camera.changeCamMode(camState.image);
     SmartDashboard.putBoolean("Within Hatch Scoring Distance", drive.withinScoringDistance());
 
     updateDashboard();
@@ -139,7 +139,7 @@ public class Robot extends IterativeRobot {
   
     // inverses current wrist output type
     if (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) {
-      outputType = (outputType == WristMode.output) ? WristMode.tilt : WristMode.output;
+      outputType = outputType.flip(WristMode.tilt, WristMode.output);
     }
 
     // arm position based on user control
@@ -184,7 +184,7 @@ public class Robot extends IterativeRobot {
     if (cs.driver.buttonHeld(Controller.LEFT_BUMPER)) { // camera assisted manual drive
 
       Camera.changePipeline(Camera.CAMERA_VISION);
-      drive.manualFollowCamera(cs.driver.getLeftY(), cs.driver.getRightY());
+      drive.manualFollowCamera(cs.driver.getLeftY() * speedMultiplier, cs.driver.getRightY() * speedMultiplier);
 
     } else {
       
@@ -228,7 +228,10 @@ public class Robot extends IterativeRobot {
       climb.setToPosition(IntakeClimber.OUT_ANGLE);
       climb.goToSetPoint();
 
-    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP) { // vertical position
+    } else if (cs.operator1.getDPad() == Controller.DPadDirection.UP
+                || cs.operator1.buttonHeld(Controller.DOWN_A)
+                || cs.operator1.buttonHeld(Controller.RIGHT_B)
+                || cs.operator1.buttonHeld(Controller.UP_Y)) { // vertical position
 
       climb.setToPosition(IntakeClimber.VERTICAL_POSITION);
       climb.goToSetPoint();
@@ -260,7 +263,8 @@ public class Robot extends IterativeRobot {
       climb.setFlywheel(-IntakeClimber.INTAKE_SPEED);
 
     } else if (climb.getAngle() < 
-              IntakeClimber.INTAKE_ANGLE - (IntakeClimber.INTAKE_ANGLE/2)) { // Driver climb override
+              IntakeClimber.INTAKE_ANGLE - (IntakeClimber.INTAKE_ANGLE/2)
+              || cs.operator1.getDPad() == DPadDirection.DOWN) { // Driver climb override
 
       climb.setFlywheel((cs.driver.getLeftY() + cs.driver.getRightY())/ 2) ;
       
@@ -271,7 +275,7 @@ public class Robot extends IterativeRobot {
     }
   }
 
-
+  
   ///
   ///
   // Supplementary functions:
@@ -297,7 +301,7 @@ public class Robot extends IterativeRobot {
      
     } else if (cs.operator1.buttonHeld(Controller.START)) { // safe position above bottom
       
-      arm.pidGoToAngle(-105.0);
+      arm.pidGoToAngle(-103.0);
       arm.setArmPose(WristMode.safe, 0);
        
     } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) { // cargo score
@@ -373,7 +377,7 @@ public class Robot extends IterativeRobot {
         modifier = 8D;
         break;
       case Controller.RIGHT_B:
-        modifier = 10D;
+        modifier = 15D;
         break;
       case Controller.LEFT_TRIGGER:
         modifier = 0D;
@@ -391,7 +395,7 @@ public class Robot extends IterativeRobot {
     double modifier = 0D;
     switch (button) {
       case Controller.DOWN_A:
-        modifier = 0D;
+        modifier = -4.0D;
         break;
       case Controller.UP_Y:
         modifier = -1.9D;
@@ -435,7 +439,10 @@ public class Robot extends IterativeRobot {
 
     SmartDashboard.putNumber("Current Encoder Inches Right", drive.getDistanceInchesR());
 
-    
+    SmartDashboard.putNumber("climb raw", climb.getRawRotateValue());
+    SmartDashboard.putNumber("climb", climb.getAngle());
+
+    SmartDashboard.putNumber("pipeline", Camera.getEntry("getpipe").getDouble(131));
 
     SmartDashboard.updateValues();
 
