@@ -25,6 +25,8 @@ public class Robot extends IterativeRobot {
   boolean climbSetToPoint;
   WristMode outputType;
 
+  boolean automatedArmPositionMode;
+
   ///
   ///
   // Iterative Robot template functions: 
@@ -33,6 +35,9 @@ public class Robot extends IterativeRobot {
 
   @Override
   public void robotInit() {
+
+    automatedArmPositionMode = false;
+
     outputType = WristMode.output;
 
     drive = new DriveBase();
@@ -67,15 +72,14 @@ public class Robot extends IterativeRobot {
   @Override
   public void autonomousInit() {
 
-    drive.resetEncoders();
-    drive.stopDrivePID();
+    initiateRobotControl();
+
   }
 
   @Override
   public void teleopInit() {
 
-    drive.resetEncoders();
-    drive.stopDrivePID();
+    initiateRobotControl();
 
   }
 
@@ -93,21 +97,25 @@ public class Robot extends IterativeRobot {
   public void autonomousPeriodic() {
 
     
-    armControls();
-    grabberControls();
-    driveControls();
-    climbtakeControls();
+    robotControl();
 
   }
 
   @Override
   public void teleopPeriodic() {
 
-    armControls();
-    grabberControls();
-    driveControls();
-    climbtakeControls();
+    robotControl();
 
+  }
+
+  @Override
+  public void disabledInit() {
+
+    isAutomated = false;
+    arm.disableElbowPID();
+    arm.disableExtenderPID();
+    arm.stopWristPID();
+    climb.stopPIDRotate();
   }
 
   @Override
@@ -123,6 +131,16 @@ public class Robot extends IterativeRobot {
   // Major system functions:
   ///
 
+  private void robotControl () {
+    armControls();
+    grabberControls();
+    driveControls();
+    climbtakeControls();
+  }
+
+  private void initiateRobotControl () {
+    isAutomated = automatedArmPositionMode; 
+  }
 
   private void armControls () {
 
@@ -331,7 +349,7 @@ public class Robot extends IterativeRobot {
       arm.pidGoToAngle(-146.0);
       arm.setArmPose(WristMode.cargoIntake, 13.7);
 
-    } else {
+    } else if (!isAutomated) {
       
       elbowSetToPoint = false; 
       extenderSetToPoint = false;
