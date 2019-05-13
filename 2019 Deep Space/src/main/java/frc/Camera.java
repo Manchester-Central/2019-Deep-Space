@@ -10,7 +10,6 @@ package frc;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.FunctionsThatShouldBeInTheJDK;
 
 /**
  * Add your docs here.
@@ -35,6 +34,16 @@ public class Camera {
 
     public static final double AREA_CONSTANT = Math.pow(Math.tan(54/2), 2);
     public static final double RADIAL_CONSTANT = 2.10412;
+
+    //Calibration
+    public static double focalLength = 0d;
+    public static final double testDistance = 10.5d;
+
+    public static final double targetHeight = 5.5d;
+    public static final double targetWidth = 2d;
+
+    public static final double heightWidthRatio = targetHeight / targetWidth;
+
 
     /***
      *  states for the camera image
@@ -85,6 +94,29 @@ public class Camera {
         getEntry("pipeline").setNumber(index);
     }
 
+    public static double getRectHeightFromArea () {
+
+        return Math.sqrt(getArea() * heightWidthRatio);
+    } 
+    
+    public static void calibrateF () {
+        focalLength = getRectHeightFromArea() * testDistance / targetHeight;
+    }
+
+    public static double getVerticalAngle () {
+        return getEntry("ty").getDouble(0);
+    }
+
+    public static double getArea () {
+        return getEntry("ta").getDouble(0);
+    }
+
+    public static double getDistanceFromArea() {
+
+        return targetHeight * focalLength / getRectHeightFromArea();
+
+    }
+
     /***
      * Gets the distance from the camera to the vision target using their heights, the angle of the camera, 
      * and the read ty vartical-angle-from-center-to-target value from the limelight
@@ -106,11 +138,11 @@ public class Camera {
 
     }
 
-    public static double getDistanceFromArea() {
+    // public static double getDistanceFromArea() {
 
-        return RADIAL_CONSTANT / (Math.sqrt(getEntry("ta").getDouble(0d) * AREA_CONSTANT));
+    //     return RADIAL_CONSTANT / (Math.sqrt(getEntry("ta").getDouble(0d) * AREA_CONSTANT));
 
-    }
+    // }
 
     /***
      * get the drive values for following the vision target
