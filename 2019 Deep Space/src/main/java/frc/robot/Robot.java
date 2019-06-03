@@ -323,12 +323,16 @@ public class Robot extends IterativeRobot {
       arm.setArmPose(WristMode.safe, 0);
        
     } else if (cs.operator1.buttonHeld(Controller.LEFT_TRIGGER)) { // cargo score
+
+      WristMode outputTypeCargo =
+       (cs.operator1.buttonHeld(Controller.LEFT_BUMPER)) ? WristMode.tilt : Wristmode.output;
       
-      arm.pidGoToAngle(0 + armModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
-      arm.setArmPose(WristMode.cargoShip, 0 + extenderModifier(Controller.LEFT_TRIGGER, WristMode.cargoShip));
+      arm.pidGoToAngle(0 + armModifier(Controller.LEFT_TRIGGER, outputTypeCargo));
+      arm.setArmPose(WristMode.cargoShip, 0 + extenderModifier(Controller.LEFT_TRIGGER, outputTypeCargo);
      
     } else if (cs.operator1.buttonHeld(Controller.DOWN_A)) { // low score/hatch intake
       
+
       arm.pidGoToAngle(-52.5 + armModifier(Controller.DOWN_A, outputType));
       arm.setArmPose(outputType, 4.1 + extenderModifier(Controller.DOWN_A, outputType));
      
@@ -422,7 +426,7 @@ public class Robot extends IterativeRobot {
         modifier = 0D;
         break;
       case Controller.LEFT_TRIGGER:
-        modifier = 0D;
+        modifier = 6D;
         break;
       default:
         modifier = 0D;
