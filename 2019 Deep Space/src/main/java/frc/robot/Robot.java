@@ -426,7 +426,7 @@ public class Robot extends IterativeRobot {
         modifier = 0D;
         break;
       case Controller.LEFT_TRIGGER:
-        modifier = 6D;
+        modifier = 2D;
         break;
       default:
         modifier = 0D;
