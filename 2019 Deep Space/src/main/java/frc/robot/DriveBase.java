@@ -28,26 +28,16 @@ public class DriveBase {
 
 	PIDController leftPidController;
 	PIDController rightPidController;
-
-	
 	
 	private double P = 0.25;
 	private double I = 0.4;
 	private double D = 0;
 	private double F = 0.5;
-	private double setPoint = 24.0;
-
-	private double minAngleFound;
-	private int i;
-	private double[] squareSum;
-
-	private double driveDistance;
-	private double turnAngle;
 
 	public static final int SQUARE_COUNTER = 10;
 	public static final double FIND_ANGLE_SPEED = 0.07;
 	public static final double SPIN_DISTANCE = 12;
-	
+
 	public static final double TOLERANCE = 2.5;
 	public static final double ANGLE_TOLERANCE = 1;
 
@@ -57,25 +47,11 @@ public class DriveBase {
 	public static final double LENGTH_BETWEEN_WHEELS = 28.0;
 
 	public static final double MANUAL_CAMERA_DRIVE_PORPORTIONAL = 80D;
-
 	// used for camera stuff
-	private boolean turningRight;
-	private double distance;
-	private double arcLength;
-	// used for camera stuff 
 
-    public DriveBase() {
+	public DriveBase() {
 
-		minAngleFound = 90D;
-		squareSum = new double[SQUARE_COUNTER];
-		i = 0;
-
-		driveDistance = 0;
-
-		turningRight = false;
-		turnAngle = 100000;
-
-    	leftFront = new ChaosBetterCANSpark(PortConstants.LEFT_FRONT_SPARK);
+		leftFront = new ChaosBetterCANSpark(PortConstants.LEFT_FRONT_SPARK);
 		rightFront = new ChaosBetterCANSpark(PortConstants.RIGHT_FRONT_SPARK);
 		leftBack = new ChaosBetterCANSpark(PortConstants.LEFT_BACK_SPARK);
 		rightBack = new ChaosBetterCANSpark(PortConstants.RIGHT_BACK_SPARK);
@@ -169,7 +145,6 @@ public class DriveBase {
 	public double getError () {return leftPidController.getError();}
 	public double getDistanceInchesL() { return leftEncoder.pidGet();}
 	public double getDistanceInchesR() { return rightEncoder.pidGet();}
-	public double getArcLength () {return arcLength;}
 
 
 
