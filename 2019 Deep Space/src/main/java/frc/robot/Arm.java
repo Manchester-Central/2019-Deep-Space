@@ -383,9 +383,9 @@ public class Arm {
     public void autoSetExtender(double extenderDistance) {
 
         if (elbowIsSafe()) {
-           extenderPID.setSetpoint(extenderDistance);;
+           extenderPID.setSetpoint(extenderDistance);
        } else {
-           extenderPID.setSetpoint(0.0);;
+           extenderPID.setSetpoint(0.0);
        }
 
    }
