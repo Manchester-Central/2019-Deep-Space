@@ -24,9 +24,7 @@ public class IntakeClimber {
     PIDController pid;
     LinearPot anglePot;
 
-    // constants
     public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
-    public static final double ROTATE_SPEED = 1.0;
     public static final double INTAKE_SPEED = -1;
     public static final double CLIMB_SPEED = -0.3;
     public static final double VERTICAL_POSITION = 115.0;
@@ -40,8 +38,6 @@ public class IntakeClimber {
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
     public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
-    public static final double RADIUS = 40;
-    public static final double WHEEL_CIRCUMFERENCE_INCHES = 2*Math.PI * RADIUS;
     public static final double P = .07;
     public static final double I = 0;
     public static final double D = 0;
