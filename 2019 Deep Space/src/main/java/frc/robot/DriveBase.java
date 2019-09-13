@@ -7,21 +7,23 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.PIDController;
 import frc.Camera;
 import frc.FunctionsThatShouldBeInTheJDK;
 import frc.ChaosSensors.CanSparkEncoder;
-import frc.ChaosSensors.ChaosBetterCANSpark;
 
 /**
  * Calculates new speed
  */
 public class DriveBase {
 
-    public ChaosBetterCANSpark leftFront;
-	public ChaosBetterCANSpark rightFront;
-	public ChaosBetterCANSpark leftBack;
-	public ChaosBetterCANSpark rightBack;
+	public CANSparkMax leftFront;
+	public CANSparkMax rightFront;
+	public CANSparkMax leftBack;
+	public CANSparkMax rightBack;
 	
 	public CanSparkEncoder leftEncoder;
 	public CanSparkEncoder rightEncoder;
@@ -51,10 +53,15 @@ public class DriveBase {
 
 	public DriveBase() {
 
-		leftFront = new ChaosBetterCANSpark(PortConstants.LEFT_FRONT_SPARK);
-		rightFront = new ChaosBetterCANSpark(PortConstants.RIGHT_FRONT_SPARK);
-		leftBack = new ChaosBetterCANSpark(PortConstants.LEFT_BACK_SPARK);
-		rightBack = new ChaosBetterCANSpark(PortConstants.RIGHT_BACK_SPARK);
+		leftFront = new CANSparkMax(PortConstants.LEFT_FRONT_SPARK, MotorType.kBrushless);
+		rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
+		leftBack = new CANSparkMax(PortConstants.LEFT_BACK_SPARK, MotorType.kBrushless);
+		rightBack = new CANSparkMax(PortConstants.RIGHT_BACK_SPARK, MotorType.kBrushless);
+		
+		leftFront.setSmartCurrentLimit(50);
+		rightFront.setSmartCurrentLimit(50);
+		leftBack.setSmartCurrentLimit(50);
+		rightBack.setSmartCurrentLimit(50);
 
 		rightFront.setInverted(true);
 		rightBack.setInverted(true);
