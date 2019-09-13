@@ -15,30 +15,15 @@ import frc.FunctionsThatShouldBeInTheJDK;
  * Add your docs here.
  */
 public class ChaosBetterCANSpark extends CANSparkMax {
-
-    private double adjustment;
-    public final double ADJUSTMENT_MAX = 1;
     private double currentSet = 0;
 
     public ChaosBetterCANSpark(int port) {
         super(port, MotorType.kBrushless);
         setSmartCurrentLimit(50);
-
-    }
-
-    public void setAdjustment(double value) {
-        value = FunctionsThatShouldBeInTheJDK.clamp(value, -ADJUSTMENT_MAX, ADJUSTMENT_MAX);
-        adjustment = value;
-    }
-
-    public double getAdjustment() {
-        return adjustment;
     }
 
     @Override
     public void pidWrite(double output) {
-        // System.out.print(adjustment + output);
-        // set(output + adjustment);
         currentSet = output;
     }
 

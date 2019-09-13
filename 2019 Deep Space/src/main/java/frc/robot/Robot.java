@@ -48,7 +48,6 @@ public class Robot extends IterativeRobot {
 
     drive.setTolerance();
 
-    drive.stopDrivePID();
     arm.disableElbowPID();
     arm.disableExtenderPID();
     climb.stopPIDRotate();

@@ -26,9 +26,6 @@ public class DriveBase {
 	public CanSparkEncoder leftEncoder;
 	public CanSparkEncoder rightEncoder;
 
-    private PIDLinked pids;
-	
-
 	PIDController leftPidController;
 	PIDController rightPidController;
 
@@ -93,11 +90,6 @@ public class DriveBase {
 		rightPidController = new PIDController(P, I, D, F, rightEncoder, rightFront);
 
 		setTolerance();
-
-		pids = new PIDLinked(leftPidController, rightPidController);
-		
-		pids.setSparks(leftFront, rightFront);
-
 	}
 	
 	public void manualFollowCamera (double joystickLeft, double joystickRight) {
@@ -177,7 +169,6 @@ public class DriveBase {
 	public double getError () {return leftPidController.getError();}
 	public double getDistanceInchesL() { return leftEncoder.pidGet();}
 	public double getDistanceInchesR() { return rightEncoder.pidGet();}
-	public PIDLinked getPids () {return pids;}
 	public double getArcLength () {return arcLength;}
 
 
@@ -194,223 +185,10 @@ public class DriveBase {
 //
 //
 
-
-
-
-	/**
-	 * To be called initially with the tap of the straightCameraDriveWithPID function
-	 */
-	public void resetCameraDrivePID () {
-
-		resetEncoders();
-		turnAngle =  Math.toRadians(Camera.getEntry("tx").getDouble(0));
-		driveDistance = 100000;
-
-	} 
-
-	/**
-	 * Turns to face vision target, drives directly towards vision target, 
-	 * and continues turning until flush
-	 */
-	public void straightCameraDriveWithPID () {
-
-		double angle = Camera.getEntry("tx").getDouble(0);
-		if (leftEncoder.pidGet() < driveDistance
-		|| rightEncoder.pidGet() < driveDistance ){
-
-			if (Math.abs(angle) > ANGLE_TOLERANCE && !leftPidController.isEnabled() 
-			&& !rightPidController.isEnabled()) {
-				if (angle > 0) 
-					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
-				else
-					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
-			} else {
-				if (driveDistance == 100000) {
-					setSpeed(0, 0);
-					resetEncoders();
-					
-					//y/x = z/x, tan(theta) x = z
-					driveDistance = Camera.getDistance()
-						- (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2);
-						//System.out.println(driveDistance);
-				}
-				pids.set(driveDistance, driveDistance);
-				pids.drive();
-			}
-
-		} else {
-
-			if (turnAngle > 0) {
-				if (rightEncoder.pidGet() < driveDistance
-					+ (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
-					setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
-				else 
-					setSpeed(0, 0);
-			} else {
-				if (leftEncoder.pidGet() < driveDistance 
-				+ (Math.tan(Math.abs(turnAngle)) * LENGTH_BETWEEN_WHEELS / 2))
-					setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
-				else 
-					setSpeed(0, 0);
-			}
-
-		}
-
-		
-
-	}
-
-	/**
-	 * goes through an s curve through timing the pids out of sync, needs the init function
-	 */
-	public void cameraDriveWithPID () {
-
-		if (turningRight) {
-			if (leftEncoder.pidGet() > arcLength)
-				pids.enableSpecificPID(1);
-		} else {
-			if (rightEncoder.pidGet() > arcLength)
-				pids.enableSpecificPID(0);
-		}
-
-	}
-
-	public void drivePID() {
-
-		pids.drive();
-
-	}
-
-	public void stopDrivePID() {
-		pids.sparks[0].setAdjustment(0);
-		pids.sparks[1].setAdjustment(0);
-		pids.stop();
-	}
-
 	public void setTolerance() {
 		rightPidController.setAbsoluteTolerance(TOLERANCE);
-		leftPidController.setAbsoluteTolerance(TOLERANCE);
-		
+		leftPidController.setAbsoluteTolerance(TOLERANCE);	
 	}
 
-	public void setPIDValues(double p, double i, double d, double f) {
-		pids.setPIDValues(p, i, d, f);
-	}
-
-	public void setDriveDistance(double setPoint) {
-		pids.set(setPoint, setPoint);
-	}
-
-	public void describeSelf () {
-		//Robot.describePID(leftPidController, "leftDrivePID", leftEncoder.pidGet(), leftFront.getPIDWrite());
-		//System.out.println ("leftAdjustment: " + leftFront.getAdjustment() + "\t");
-
-		//Robot.describePID(rightPidController, "rightDrivePID", rightEncoder.pidGet(), rightFront.getPIDWrite());
-		//System.out.println ("rightAdjustment: " + rightFront.getAdjustment() + "\t");
-
-	}
-
-	public void resetSquareSum () {
-
-		for (int i = 0; i < SQUARE_COUNTER; i++) {
-			squareSum[i] = 90;
-		}
-
-		turningRight = true;
-		minAngleFound = 90;
-	}
-
-	private void addValueToSquareSum (double value) {
-		for (int i = 0; i < SQUARE_COUNTER - 1; i++) {
-			squareSum[i + 1] = i; 
-		}
-
-		squareSum[0] = value;
-	}
-
-	public double getAverageCamValue () {
-		double sum = 0;
-		for (double x : squareSum) {
-			sum += x;
-		}
-		return sum / SQUARE_COUNTER;
-	}
-
-	public boolean squareWithVisionTarget () {
-		addValueToSquareSum(Camera.getEntry("ty").getDouble(20));
-		
-		i++;
-		if (i % SQUARE_COUNTER != 0) {
-			return true;
-		}
-
-		if (getAverageCamValue() < minAngleFound) {
-			minAngleFound = getAverageCamValue();
-			if (turningRight) {
-				setSpeed (FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
-			} else {
-				setSpeed (-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
-			}
-			return true;
-		}
-
-		if (turningRight) {
-			turningRight = false;
-			return true;
-		}
-
-		setSpeed(0.0, 0.0);
-
-		return false;
-	}
-
-
-	/***
-	 * drive based on the camera autonomously
-	 */
-	@Deprecated
-	public void cameraDrive() {
-
-		double[] speedValues = Camera.getDriveDirections(leftFront.get(), rightFront.get());
-		setSpeed(speedValues[0] * .1D, speedValues[1] * .1D);
-
-
-		
-	}
-
-	public void initializeCameraDrive () {
-
-			
-			
-		double horizontalAngle = Camera.getEntry("tx").getDouble(0D);
-		double sign = FunctionsThatShouldBeInTheJDK.getSign(horizontalAngle);
-		double absoluteHorizontalAngle = sign * horizontalAngle;
-		double absCamAngleRadians = Math.toRadians (absoluteHorizontalAngle);
-
-		turningRight = sign > 0D;
-
-		arcLength = ((Math.PI/2) - absCamAngleRadians) * LENGTH_BETWEEN_WHEELS;
-		distance = Camera.getDistance() - (LENGTH_BETWEEN_WHEELS* Math.sin(absCamAngleRadians));
-
-		double driveDistance = distance + arcLength;
-
-		pids.set(driveDistance, driveDistance);
-
-		if (turningRight)
-			pids.enableSpecificPID(0);
-		else
-			pids.enableSpecificPID(1);
-	}
-
-	public void turnToVisionTarget () {
-		if (Math.abs(Camera.GetHorizontalAngle()) > ANGLE_TOLERANCE) {
-			setSpeed(0, 0);
-		} else if (Camera.GetHorizontalAngle() > 0) {
-			setSpeed(FIND_ANGLE_SPEED, -FIND_ANGLE_SPEED);
-		} else {
-			setSpeed(-FIND_ANGLE_SPEED, FIND_ANGLE_SPEED);
-		}
-	}
-	
 //myNemChef - Chris - Eason - Harriet
 }
