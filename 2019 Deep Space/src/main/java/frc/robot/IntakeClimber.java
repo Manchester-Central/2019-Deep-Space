@@ -79,9 +79,9 @@ public class IntakeClimber {
 
     public IntakeClimber () {
 
-        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0,
+        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_TALON,
             2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
-        rotate1 = new WPI_VictorSPX(PortConstants.INTAKE_1);
+        rotate1 = new WPI_VictorSPX(PortConstants.INTAKE_VICTOR);
 
         ChaosBetterSpeedController group = new ChaosBetterSpeedController(rotate0, rotate1, 20);
         anglePot = new LinearPot(PortConstants.CLIMBER_POT, CAL_A_VOLTAGE, CAL_B_VOLTAGE, CAL_A_ANGLE, CAL_B_ANGLE);

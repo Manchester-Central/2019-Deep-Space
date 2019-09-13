@@ -53,8 +53,8 @@ public class Arm {
 
         grab = new Grabber ();
 
-        elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
-        elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
+        elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_TALON, 0, 0, false);
+        elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_SPARK);
         elbowGroup = new ChaosBetterSpeedController(elbow, elbow2, ArmConstants.MAX_ELBOW_ACCELERATION);
 
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);

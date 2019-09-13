@@ -11,57 +11,46 @@ package frc.robot;
  * Assigns port constants
  */
 public class PortConstants {
-
-
-    // test robot ports
-
-
+ 	// raft robot connections
 	static int LEFT_BACK_TALON = 0;
 	static int LEFT_MID_TALON = 1;
 	static int LEFT_FRONT_TALON = 2;
-	
+
 	static int RIGHT_BACK_TALON = 3;
 	static int RIGHT_MID_TALON = 4;
 	static int RIGHT_FRONT_TALON = 5;
 	
-	
 	static int LEFT_CAN_TALON = 4;
 	static int RIGHT_CAN_TALON = 3;
 
-	// real robot ports
-    public final static int LEFT_FRONT_SPARK = 10;
-	public final static int LEFT_BACK_SPARK = 11;
-	public final static int RIGHT_FRONT_SPARK = 9; 
-	public final static int RIGHT_BACK_SPARK = 8;
+	// 2019 robot connections
+	public final static int LEFT_FRONT_SPARK = 10; // CAN bus
+	public final static int LEFT_BACK_SPARK = 11; // CAN bus
+	public final static int RIGHT_FRONT_SPARK = 9; // CAN bus
+	public final static int RIGHT_BACK_SPARK = 8; // CAN bus
 
-	public final static int GRABBER_SPARK = 0;
-	public final static int FORWARD_HATCH = 0;
-	public final static int REVERSE_HATCH = 1;
+	public final static int GRABBER_SPARK = 0; // PWM
+	public final static int FORWARD_HATCH = 0; // PCM
+	public final static int REVERSE_HATCH = 1; // PCM
 
-	
-	public final static int ELBOW_JOINT = 3;
-	public final static int ELBOW_2 = 7;
-	public final static int EXTENDER = 4;
-	public final static int WRIST = 2;
+	public final static int ELBOW_TALON = 3; // CAN bus
+	public final static int ELBOW_SPARK = 7; // CAN bus
+	public final static int EXTENDER = 4; // CAN bus
+	public final static int WRIST = 2; // CAN bus
 
+	public final static int INTAKE_TALON = 1; // CAN bus
+	public final static int INTAKE_VICTOR = 6; // CAN bus
 
-	public final static int INTAKE_0 = 1;
-	public final static int INTAKE_1 = 6;
+	public final static int FLYWHEEL = 5; // CAN bus
 
-	public final static int FLYWHEEL = 5;
+	public final static int WRIST_POT = 3; // A2D
+	public final static int EXTENDER_POT = 2; // A2D
+	public final static int ELBOW_POT = 1; // A2D
+	public final static int CLIMBER_POT = 0; // A2D
 
-	public final static int WRIST_POT = 3;
-	public final static int EXTENDER_POT = 2;
-	public final static int ELBOW_POT = 1;
-	public final static int CLIMBER_POT = 0;
+	public static final int LIMIT_SWITCH_LEFT = 1; // DIO
+	public static final int LIMIT_SWITCH_RIGHT = 2; // DIO
+	public static final int BEAM_SENSOR = 0; // DIO
 
-	public static final int EXTENDER_ENCODER_A = 3;
-	public static final int EXTENDER_ENCODER_B = 4;
-
-	public static final int LIMIT_SWITCH_LEFT = 1;
-	public static final int LIMIT_SWITCH_RIGHT = 2;
-	public static final int BEAM_SENSOR = 0;
-
-	public static final int CLIMB_SOLENOID = 2;
-
+	public static final int CLIMB_SOLENOID = 2; // PCM
 }
