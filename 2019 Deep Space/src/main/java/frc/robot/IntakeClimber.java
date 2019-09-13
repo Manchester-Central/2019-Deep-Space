@@ -24,37 +24,72 @@ public class IntakeClimber {
     PIDController pid;
     LinearPot anglePot;
 
-    public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
-    public static final double INTAKE_SPEED = -1;
-    public static final double CLIMB_SPEED = -0.3;
+    /*              (The 0 angle may appear calibrated slightly below level
+     *        90     with the floor because of the bend in the arm itself.
+     *         |     It's also zero-ed at the movment limit, not true level.)
+     *         |
+     *   0 ----+---- 180
+     *                                ____
+     *                                | \ \
+     *                                |  \ \
+     *              (4)               |  |\ \
+     *                 (5)            |  | \ \
+     *                    /O/         |  |  \ \
+     *                   / /          |  |   \ \    |
+     *     (3)          / /           |  |    \ \   |
+     *                 / /            |  |     \ \  |
+     *                / /    (6)      |  |    +------+
+     *               / /      (2)     |  |    |      |<
+     *               +--------------------+   +------+
+     *  (1)          |                    |
+     *               +--------------------+
+     *                  U              U
+     *
+     * 1: "out" position, the maximum the climb-take can be rotated out
+     * 2: "in" position, the maximum the climb-take can be folded in
+     * 3: "intake" position for pulling in a "cargo" gamepeice
+     * 4: "vertical" position is used to keep the climb-take within the robot
+     *    frame permiter while avoiding contact with the arm
+     * 5,6: "MAX_SAFE" and "MIN_SAFE", between these positions the climb-take
+     *      is located within the arm's normal range of motion
+     */
+
+    // Known positions
     public static final double VERTICAL_POSITION = 115.0;
     public static final double INTAKE_ANGLE = 55.0;
     public static final double IN_ANGLE = 205.0;
-    public static final double OUT_ANGLE = 0.0;
-    public static final double MIN_ANGLE = 0.0;
-    public static final double MAX_ANGLE = VERTICAL_POSITION;
-    public static final double MIN_VOLTAGE = 0.1057;
-    public static final double MAX_VOLTAGE = 0.338;
     public static final double CLIMBTAKE_MAX_SAFE_ANGLE = VERTICAL_POSITION + 5.0;
     public static final double CLIMBTAKE_MIN_SAFE_ANGLE = IN_ANGLE - 5.0;
     public static final double MAX_LEGAL_ANGLE = VERTICAL_POSITION;
+    public static final double OUT_ANGLE = 0.0;
+
+    // Calibration positions and potetiometer readings
+    public static final double CAL_A_ANGLE = 0.0;
+    public static final double CAL_B_ANGLE = VERTICAL_POSITION;
+    public static final double CAL_A_VOLTAGE = 0.1057;
+    public static final double CAL_B_VOLTAGE = 0.338;
+
+
+    public static final double ENCODER_TICKS_PER_REVOLUTION = 4100;
+    public static final double INTAKE_SPEED = -1;
+    public static final double CLIMB_SPEED = -0.3;
     public static final double P = .07;
     public static final double I = 0;
     public static final double D = 0;
 
     public IntakeClimber () {
 
-        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0, 
+        rotate0 = new ChaosBetterTalonSRX(PortConstants.INTAKE_0,
             2 * Math.PI, ENCODER_TICKS_PER_REVOLUTION, false);
         rotate1 = new WPI_VictorSPX(PortConstants.INTAKE_1);
-        
+
         ChaosBetterSpeedController group = new ChaosBetterSpeedController(rotate0, rotate1, 20);
-        anglePot = new LinearPot(PortConstants.CLIMBER_POT, MIN_VOLTAGE, MAX_VOLTAGE, MIN_ANGLE, MAX_ANGLE);
-        
+        anglePot = new LinearPot(PortConstants.CLIMBER_POT, CAL_A_VOLTAGE, CAL_B_VOLTAGE, CAL_A_ANGLE, CAL_B_ANGLE);
+
         pid = new PIDController(P, I, D, anglePot, group);
 
         flywheel = new WPI_VictorSPX(PortConstants.FLYWHEEL);
-        
+
     }
 
     public void setRotateSpeed (double speed) {
@@ -66,7 +101,7 @@ public class IntakeClimber {
 
         rotate0.set(ControlMode.PercentOutput, -speed);
         rotate1.set(ControlMode.PercentOutput, -speed);
-    
+
     }
 
     public void goToSetPoint () {
@@ -79,7 +114,7 @@ public class IntakeClimber {
 
     public void setFlywheel (double speed) {
         flywheel.set(ControlMode.PercentOutput, speed);
-        
+
     }
 
     public double getAngle () {
@@ -93,11 +128,11 @@ public class IntakeClimber {
     }
 
     public boolean isClimbtakeUnsafe() {
-        boolean belowSafety = (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE) 
+        boolean belowSafety = (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE)
             && (getTargetAngle() > CLIMBTAKE_MAX_SAFE_ANGLE);
-        boolean aboveSafety = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) 
+        boolean aboveSafety = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE)
             && (getTargetAngle() < CLIMBTAKE_MIN_SAFE_ANGLE);
-        boolean inDangerZone = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE) 
+        boolean inDangerZone = (getAngle() >= IntakeClimber.CLIMBTAKE_MIN_SAFE_ANGLE)
             && (getAngle() <= IntakeClimber.CLIMBTAKE_MAX_SAFE_ANGLE);
 
         return (belowSafety) ||  (aboveSafety) ||  (inDangerZone);
