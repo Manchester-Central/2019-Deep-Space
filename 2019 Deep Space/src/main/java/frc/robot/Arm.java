@@ -26,7 +26,6 @@ public class Arm {
     private ChaosBetterSpeedController elbowGroup;
     private WPI_TalonSRX extender;
 
-    public static final double angleOffset = 0;
     public static final double ELBOW_SAFE_ANGLE = 15;
     public static final double ARM_HOLD_POWER = 0.19;
 
@@ -285,7 +284,7 @@ public class Arm {
                 break;
 
             case output:
-                wrist.setSetPoint(-currentElbowAngle + angleOffset);
+                wrist.setSetPoint(-currentElbowAngle);
                 break;
 
             case straight:
@@ -293,11 +292,11 @@ public class Arm {
                 break;
 
             case tilt:
-                wrist.setSetPoint(-currentElbowAngle + angleOffset - 35);
+                wrist.setSetPoint(-currentElbowAngle - 35);
                 break;
 
             case cargoShip:
-                wrist.setSetPoint(-currentElbowAngle + angleOffset - 45);
+                wrist.setSetPoint(-currentElbowAngle - 45);
                 break;
 
             case cargoIntake:
