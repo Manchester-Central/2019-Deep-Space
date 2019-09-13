@@ -19,32 +19,27 @@ public class ChaosBetterTalonSRX extends WPI_TalonSRX implements PIDOutput{
 
     public final double ENCODER_TICKS_PER_REVOLUTION, WHEEL_CIRCUMFERENCE_INCHES;
     private double sign;
-    private double adjustment;
     public final double ADJUSTMENT_MAX = 1;
 
 
     double currentSet = 0;
+
     /***
      * WPI TalonSRX with added functionality
-     * @param port - 
-     * @param circumference - 
+     * 
+     * @param port
+     * @param circumference
      * @param encoderTicksPerRevolution
      */
-    
     public ChaosBetterTalonSRX(int port, double circumference, double encoderTicksPerRevolution, boolean isInverted) {
 
         super(port);
-        adjustment = 1D;
         WHEEL_CIRCUMFERENCE_INCHES = circumference;
         ENCODER_TICKS_PER_REVOLUTION = encoderTicksPerRevolution;
         sign = (isInverted) ? -1 : 1;
     }
 
-    public void setAdjustment (double value) {
-        value = FunctionsThatShouldBeInTheJDK.clamp(value, -ADJUSTMENT_MAX, ADJUSTMENT_MAX);
-        adjustment = 0D + value;
-    }
-
+    
     public void resetEncoder() {   
         getSensorCollection().setQuadraturePosition(0,10);
     }
