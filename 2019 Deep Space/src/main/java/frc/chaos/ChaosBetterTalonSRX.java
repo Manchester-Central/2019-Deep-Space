@@ -5,12 +5,11 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.ChaosSensors;
+package frc.chaos;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.PIDOutput;
-import frc.FunctionsThatShouldBeInTheJDK;
 
 /**
  * Add your docs here.

@@ -8,8 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.PIDController;
-import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.LinearPot;
+import frc.chaos.ChaosBetterTalonSRX;
+import frc.chaos.LinearPot;
 
 public class Wrist {
 

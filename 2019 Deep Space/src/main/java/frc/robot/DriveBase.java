@@ -11,9 +11,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.PIDController;
-import frc.Camera;
-import frc.FunctionsThatShouldBeInTheJDK;
-import frc.ChaosSensors.CanSparkEncoder;
+import frc.chaos.Camera;
+import frc.chaos.FunctionsThatShouldBeInTheJDK;
+import frc.chaos.CanSparkEncoder;
 
 /**
  * Calculates new speed
@@ -57,7 +57,7 @@ public class DriveBase {
 		rightFront = new CANSparkMax(PortConstants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
 		leftBack = new CANSparkMax(PortConstants.LEFT_BACK_SPARK, MotorType.kBrushless);
 		rightBack = new CANSparkMax(PortConstants.RIGHT_BACK_SPARK, MotorType.kBrushless);
-		
+
 		leftFront.setSmartCurrentLimit(50);
 		rightFront.setSmartCurrentLimit(50);
 		leftBack.setSmartCurrentLimit(50);

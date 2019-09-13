@@ -4,8 +4,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.Camera;
-import frc.Camera.camState;
+import frc.chaos.Camera;
+import frc.chaos.Camera.camState;
 import frc.robot.Arm.WristMode;
 import frc.robot.Controller.DPadDirection;
 

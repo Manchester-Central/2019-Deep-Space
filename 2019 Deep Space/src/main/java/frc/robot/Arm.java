@@ -11,10 +11,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
-import frc.FunctionsThatShouldBeInTheJDK;
-import frc.ChaosSensors.ChaosBetterSpeedController;
-import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.LinearPot;
+import frc.chaos.FunctionsThatShouldBeInTheJDK;
+import frc.chaos.ChaosBetterSpeedController;
+import frc.chaos.ChaosBetterTalonSRX;
+import frc.chaos.LinearPot;
 
 /**
  * Add your docs here.

@@ -12,9 +12,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
-import frc.ChaosSensors.ChaosBetterSpeedController;
-import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.LinearPot;
+import frc.chaos.ChaosBetterSpeedController;
+import frc.chaos.ChaosBetterTalonSRX;
+import frc.chaos.LinearPot;
 
 public class IntakeClimber {
 
