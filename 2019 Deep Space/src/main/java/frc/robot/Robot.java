@@ -4,8 +4,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.Camera;
-import frc.Camera.camState;
+import frc.chaos.Camera;
+import frc.chaos.Camera.camState;
 import frc.robot.Arm.WristMode;
 import frc.robot.Controller.DPadDirection;
 
@@ -25,8 +25,6 @@ public class Robot extends IterativeRobot {
   boolean climbSetToPoint;
   WristMode outputType;
 
-  boolean automatedArmPositionMode;
-
   ///
   ///
   // Iterative Robot template functions:
@@ -35,9 +33,6 @@ public class Robot extends IterativeRobot {
 
   @Override
   public void robotInit() {
-
-    automatedArmPositionMode = false;
-
     outputType = WristMode.output;
 
     drive = new DriveBase();
@@ -51,11 +46,8 @@ public class Robot extends IterativeRobot {
     wristSetToPoint = false;
     climbSetToPoint = false;
 
-    isAutomated = false;
-
     drive.setTolerance();
 
-    drive.stopDrivePID();
     arm.disableElbowPID();
     arm.disableExtenderPID();
     climb.stopPIDRotate();
@@ -71,16 +63,10 @@ public class Robot extends IterativeRobot {
 
   @Override
   public void autonomousInit() {
-
-    initiateRobotControl();
-
   }
 
   @Override
   public void teleopInit() {
-
-    initiateRobotControl();
-
   }
 
   @Override
@@ -110,8 +96,6 @@ public class Robot extends IterativeRobot {
 
   @Override
   public void disabledInit() {
-
-    isAutomated = false;
     arm.disableElbowPID();
     arm.disableExtenderPID();
     arm.stopWristPID();
@@ -136,10 +120,6 @@ public class Robot extends IterativeRobot {
     grabberControls();
     driveControls();
     climbtakeControls();
-  }
-
-  private void initiateRobotControl () {
-    isAutomated = automatedArmPositionMode;
   }
 
   private void armControls () {
@@ -353,12 +333,11 @@ public class Robot extends IterativeRobot {
       arm.pidGoToAngle(-146.0);
       arm.setArmPose(WristMode.cargoIntake, 13.7);
 
-    } else if (!isAutomated) {
+    } else {
 
       elbowSetToPoint = false;
       extenderSetToPoint = false;
       wristSetToPoint = false;
-
     }
     enablePids();
   }

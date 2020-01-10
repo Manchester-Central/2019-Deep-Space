@@ -5,10 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc;
-
-import frc.Camera.camState;
-import frc.robot.Arm.WristMode;
+package frc.chaos;
 
 /**
  * CHAOS Commands that don't exist, but now exist

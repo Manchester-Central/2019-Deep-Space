@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc;
+package frc.chaos;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -16,11 +16,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  */
 public class Camera {
 
-    //
-
     public static camState state = camState.driver;
-
-    public static boolean isDriver = true;
 
     public static int DRIVER_VISION = 0;
     public static int CAMERA_VISION = 1;
@@ -138,12 +134,6 @@ public class Camera {
 
     }
 
-    // public static double getDistanceFromArea() {
-
-    //     return RADIAL_CONSTANT / (Math.sqrt(getEntry("ta").getDouble(0d) * AREA_CONSTANT));
-
-    // }
-
     /***
      * get the drive values for following the vision target
      * @param currentSpeedLeft current left side set speed
@@ -178,10 +168,6 @@ public class Camera {
         return driveValues;
 
     }
-
-    
-
-    //public static 
     
     /***
      *  change the state of the camera to vision or image processing
@@ -191,14 +177,10 @@ public class Camera {
 
         if (set.equals(camState.image)) {
             getEntry("camMode").setNumber(0);
-            isDriver = false;
         } else  {
             getEntry("camMode").setNumber(1); 
-            isDriver = true;
         } 
-
         state = set;
-    
     }
 
     public static void toggleCamState () {
@@ -220,7 +202,7 @@ public class Camera {
     }
 
     public static boolean isDriver() {
-        return isDriver;
+        return state.equals(camState.driver);
     }
 
     public static boolean cameraStateIsDriver () {

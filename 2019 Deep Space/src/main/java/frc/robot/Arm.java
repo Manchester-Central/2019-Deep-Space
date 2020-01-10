@@ -11,10 +11,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.PIDController;
-import frc.FunctionsThatShouldBeInTheJDK;
-import frc.ChaosSensors.ChaosBetterSpeedController;
-import frc.ChaosSensors.ChaosBetterTalonSRX;
-import frc.ChaosSensors.LinearPot;
+import frc.chaos.FunctionsThatShouldBeInTheJDK;
+import frc.chaos.ChaosBetterSpeedController;
+import frc.chaos.ChaosBetterTalonSRX;
+import frc.chaos.LinearPot;
 
 /**
  * Add your docs here.
@@ -26,7 +26,6 @@ public class Arm {
     private ChaosBetterSpeedController elbowGroup;
     private WPI_TalonSRX extender;
 
-    public static final double angleOffset = 0;
     public static final double ELBOW_SAFE_ANGLE = 15;
     public static final double ARM_HOLD_POWER = 0.19;
 
@@ -54,8 +53,8 @@ public class Arm {
 
         grab = new Grabber ();
 
-        elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_JOINT, 0, 0, false);
-        elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_2);
+        elbow = new ChaosBetterTalonSRX(PortConstants.ELBOW_TALON, 0, 0, false);
+        elbow2 = new WPI_VictorSPX(PortConstants.ELBOW_SPARK);
         elbowGroup = new ChaosBetterSpeedController(elbow, elbow2, ArmConstants.MAX_ELBOW_ACCELERATION);
 
         extender = new WPI_TalonSRX(PortConstants.EXTENDER);
@@ -285,7 +284,7 @@ public class Arm {
                 break;
 
             case output:
-                wrist.setSetPoint(-currentElbowAngle + angleOffset);
+                wrist.setSetPoint(-currentElbowAngle);
                 break;
 
             case straight:
@@ -293,11 +292,11 @@ public class Arm {
                 break;
 
             case tilt:
-                wrist.setSetPoint(-currentElbowAngle + angleOffset - 35);
+                wrist.setSetPoint(-currentElbowAngle - 35);
                 break;
 
             case cargoShip:
-                wrist.setSetPoint(-currentElbowAngle + angleOffset - 45);
+                wrist.setSetPoint(-currentElbowAngle - 45);
                 break;
 
             case cargoIntake:
@@ -384,9 +383,9 @@ public class Arm {
     public void autoSetExtender(double extenderDistance) {
 
         if (elbowIsSafe()) {
-           extenderPID.setSetpoint(extenderDistance);;
+           extenderPID.setSetpoint(extenderDistance);
        } else {
-           extenderPID.setSetpoint(0.0);;
+           extenderPID.setSetpoint(0.0);
        }
 
    }
