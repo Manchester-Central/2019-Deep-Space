@@ -31,7 +31,7 @@ public class IntakeClimber {
     public static final double INTAKE_SPEED = -1;
     public static final double CLIMB_SPEED = -0.3;
     public static final double VERTICAL_POSITION = 115.0;
-    public static final double INTAKE_ANGLE = 55.0;
+    public static final double INTAKE_ANGLE = 50.0;
     public static final double IN_ANGLE = 205.0;
     public static final double OUT_ANGLE = 0.0;
     private static final double P = .07;
